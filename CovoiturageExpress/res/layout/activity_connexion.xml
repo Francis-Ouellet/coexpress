@@ -1,0 +1,46 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.francisouellet.covoiturageexpress.ConnexionActivity" >
+
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:hint="@string/lbl_courriel"
+        android:id="@+id/connexion_courriel" />
+    
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/connexion_courriel"
+        android:hint="@string/lbl_mot_de_passe"
+        android:id="@+id/connexion_mot_de_passe" />
+    
+    <Button
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/connexion_mot_de_passe"
+        android:text="@string/lbl_connexion"
+        android:onClick="" />
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/lbl_creer_un_compte"
+        android:onClick="" />
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="@string/lbl_mot_de_passe_oublie"
+        android:onClick="" />
+
+</RelativeLayout>
