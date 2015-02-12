@@ -1,4 +1,9 @@
-package com.francisouellet.covoiturageexpress;
+package com.francisouellet.covoiturageexpress.activities;
+
+import com.francisouellet.covoiturageexpress.R;
+import com.francisouellet.covoiturageexpress.R.id;
+import com.francisouellet.covoiturageexpress.R.layout;
+import com.francisouellet.covoiturageexpress.R.menu;
 
 import android.app.Activity;
 import android.os.Bundle;
