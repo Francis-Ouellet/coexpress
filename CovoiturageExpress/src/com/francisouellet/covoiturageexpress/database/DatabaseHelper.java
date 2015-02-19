@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper{
 	
 	// Version BD
-	private final static int DB_VERSION = 1;
+	private final static int DB_VERSION = 2;
 	
 	// Nom
 	private final static String DATABASE_NAME = "covoiturageexpress.sqlite";
@@ -38,7 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 				+ COL_PRENOM + " text,"
 				+ COL_NOTELEPHONE + " text,"
 				+ COL_ESTCONNECTE + " integer,"
-				+ COL_DERNIERCONNECTE + "integer)");
+				+ COL_DERNIERCONNECTE + " integer)");
 	}
 	
 	@Override

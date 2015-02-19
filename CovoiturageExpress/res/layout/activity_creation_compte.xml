@@ -41,13 +41,6 @@
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/lbl_nom"
-        android:inputType="textCapWords"
-        android:id="@+id/creation_compte_nom" />
-    
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
         android:hint="@string/lbl_prenom"
         android:inputType="textCapWords"
         android:id="@+id/creation_compte_prenom" />
@@ -55,14 +48,21 @@
     <EditText
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/lbl_nom"
+        android:inputType="textCapWords"
+        android:id="@+id/creation_compte_nom" />
+    
+    <EditText
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:hint="@string/lbl_no_de_telephone"
         android:inputType="phone"
-        android:id="@+id/creation_compte_" />
+        android:id="@+id/creation_compte_no_telephone" />
     
     <Button 
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/lbl_creer_le_compte"
-        android:onClick=""/>
+        android:onClick="CreerCompte"/>
 
 </LinearLayout>

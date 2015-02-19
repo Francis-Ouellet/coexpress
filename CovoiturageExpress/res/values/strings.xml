@@ -18,6 +18,13 @@
     <string name="lbl_prenom">Prénom</string>
     <string name="lbl_creer_le_compte">Créer le compte</string>
     
+    <string name="txt_courriel_different">Le courriel doit être identique</string>
+    <string name="txt_courriel_invalide">Le courriel doit être valide</string>
+    <string name="txt_mot_de_passe_different">Le mot de passe doit être identique</string>
+    <string name="txt_tous_les_champs">Tous les champs doivent être remplis</string>
+    <string name="txt_utilisateur_cree">Utilisateur créé avec succès</string>
+    <string name="txt_utilisateur_erreur_creation">Erreur lors de la création de l\'utilisateur</string>
+    
     
 
 </resources>
