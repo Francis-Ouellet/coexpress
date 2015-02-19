@@ -1,7 +1,9 @@
 package com.francisouellet.covoiturageexpress.classes;
 
-public class Utilisateur {
-	
+import java.io.Serializable;
+
+public class Utilisateur implements Serializable {
+	private static final long serialVersionUID = -1190535891613477350L;
 	private String m_Courriel;
 	private String m_EncodedPassword;
 	private String m_Nom;

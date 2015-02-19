@@ -27,23 +27,39 @@ public class UtilisateurDataSource extends BaseDataSource<Utilisateur, String> {
 	public boolean update(Utilisateur element) {
 		ContentValues row = toContentValues(element);
 		int rows_affected = m_Db.update(DatabaseHelper.TABLE_UTILISATEUR, 
-				row, DatabaseHelper.COL_COURRIEL + "=" + element.getCourriel(), null);
+				row, DatabaseHelper.COL_COURRIEL + "= '" + element.getCourriel() + "'", null);
 		return rows_affected > 0 ? true : false;
+	}
+	
+	/**
+	 * Met à jour le dernier utilisateur connecté
+	 * @param nouveau
+	 */
+	public void updateLastConnected(Utilisateur nouveau){
+		Utilisateur dernierConnecte = getLastConnected();
+		if(dernierConnecte != null){
+			dernierConnecte.setDernierConnecte(false);
+			update(dernierConnecte);
+		}
+		nouveau.setDernierConnecte(true);
+		update(nouveau);
 	}
 	
 	@Override
 	public Utilisateur get(String id) {
 		Utilisateur u = null;
-		Cursor c = m_Db.query(DatabaseHelper.TABLE_UTILISATEUR, null, DatabaseHelper.COL_COURRIEL + "=" + id,
+		Cursor c = m_Db.query(DatabaseHelper.TABLE_UTILISATEUR, null, DatabaseHelper.COL_COURRIEL + "= '" + id + "'",
 				null, null, null, null);
 		c.moveToFirst();
 		if(!c.isAfterLast()){
-			u = toElement(c);
+			// TODO RECUPERER SANS MOT DE PASSE LORSQUE LA CONNEXION AVEC LE SERVICE WEB EST IMPLANTEE
+			//u = toElement(c);
+			u = toElementWithPassword(c);
 		}
 		return u;	
 	}
 	
-	public Utilisateur getConnectedUtilisateur(){
+	public Utilisateur getConnectedUser(){
 		Utilisateur u = null;
 		Cursor c = m_Db.query(DatabaseHelper.TABLE_UTILISATEUR, null, DatabaseHelper.COL_ESTCONNECTE + "=1" ,
 				null, null, null, null);
@@ -54,7 +70,7 @@ public class UtilisateurDataSource extends BaseDataSource<Utilisateur, String> {
 		return u;
 	}
 	
-	public Utilisateur getDernierConnecte(){
+	public Utilisateur getLastConnected(){
 		Utilisateur u = null;
 		Cursor c = m_Db.query(DatabaseHelper.TABLE_UTILISATEUR, null, DatabaseHelper.COL_DERNIERCONNECTE + "=1",
 				null, null, null, null);
@@ -105,6 +121,19 @@ public class UtilisateurDataSource extends BaseDataSource<Utilisateur, String> {
 	protected Utilisateur toElement(Cursor c) {
 		Utilisateur u = new Utilisateur(
 				c.getString(c.getColumnIndex(DatabaseHelper.COL_COURRIEL)),
+				c.getString(c.getColumnIndex(DatabaseHelper.COL_NOM)),
+				c.getString(c.getColumnIndex(DatabaseHelper.COL_PRENOM)),
+				c.getString(c.getColumnIndex(DatabaseHelper.COL_NOTELEPHONE)), 
+				c.getInt(c.getColumnIndex(DatabaseHelper.COL_ESTCONNECTE)) == 1 ? true : false, 
+				c.getInt(c.getColumnIndex(DatabaseHelper.COL_DERNIERCONNECTE)) == 1 ? true : false );
+		return u;
+	}
+	
+	// TODO À SUPPRIMER LORSQUE LA CONNEXION AVEC LE SERVICE WEB SERA IMPLANTÉE
+	protected Utilisateur toElementWithPassword(Cursor c) {
+		Utilisateur u = new Utilisateur(
+				c.getString(c.getColumnIndex(DatabaseHelper.COL_COURRIEL)),
+				c.getString(c.getColumnIndex(DatabaseHelper.COL_MOTDEPASSE)),
 				c.getString(c.getColumnIndex(DatabaseHelper.COL_NOM)),
 				c.getString(c.getColumnIndex(DatabaseHelper.COL_PRENOM)),
 				c.getString(c.getColumnIndex(DatabaseHelper.COL_NOTELEPHONE)), 
