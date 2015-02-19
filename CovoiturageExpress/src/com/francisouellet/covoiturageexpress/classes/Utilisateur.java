@@ -4,24 +4,30 @@ public class Utilisateur {
 	
 	private String m_Courriel;
 	private String m_EncodedPassword;
+	private String m_Nom;
+	private String m_Prenom;
 	private String m_Telephone;
 	private boolean m_EstConnecte;
 	private boolean m_DernierConnecte;
 	
-	public Utilisateur(String p_Courriel, String p_EncodedPassword, String p_Telephone, boolean p_EstConnecte,
-			boolean p_DernierConnecte){
+	public Utilisateur(String p_Courriel, String p_EncodedPassword, String p_Nom, String p_Prenom,
+			String p_Telephone, boolean p_EstConnecte, boolean p_DernierConnecte){
 		this.m_Courriel = p_Courriel;
 		this.m_EncodedPassword = p_EncodedPassword;
 		this.m_Telephone = p_Telephone;
 		this.m_EstConnecte = p_EstConnecte;
 		this.m_DernierConnecte = p_DernierConnecte;
+		this.m_Nom = p_Nom;
+		this.m_Prenom = p_Prenom;
 	}
 	
-	public Utilisateur(String p_Courriel, String p_Telephone, boolean p_EstConnecte, boolean p_DernierConnecte){
+	public Utilisateur(String p_Courriel, String p_Nom, String p_Prenom, String p_Telephone, boolean p_EstConnecte, boolean p_DernierConnecte){
 		this.m_Courriel = p_Courriel;
 		this.m_Telephone = p_Telephone;
 		this.m_EstConnecte = p_EstConnecte;
 		this.m_DernierConnecte = p_DernierConnecte;
+		this.m_Nom = p_Nom;
+		this.m_Prenom = p_Prenom;
 	}
 
 	/**
@@ -92,5 +98,33 @@ public class Utilisateur {
 	 */
 	public void setDernierConnecte(boolean m_DernierConnecte) {
 		this.m_DernierConnecte = m_DernierConnecte;
+	}
+
+	/**
+	 * @return the m_Nom
+	 */
+	public String getNom() {
+		return m_Nom;
+	}
+
+	/**
+	 * @param m_Nom the m_Nom to set
+	 */
+	public void setNom(String m_Nom) {
+		this.m_Nom = m_Nom;
+	}
+
+	/**
+	 * @return the m_Prenom
+	 */
+	public String getPrenom() {
+		return m_Prenom;
+	}
+
+	/**
+	 * @param m_Prenom the m_Prenom to set
+	 */
+	public void setPrenom(String m_Prenom) {
+		this.m_Prenom = m_Prenom;
 	}
 }

@@ -1,9 +1,11 @@
 package com.francisouellet.covoiturageexpress;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 public class ConnexionActivity extends Activity {
 
@@ -30,5 +32,10 @@ public class ConnexionActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	public void creerCompte(View v){
+		Intent iCreationCompte = new Intent(this, CreationCompteActivity.class);
+		this.startActivity(iCreationCompte);
 	}
 }

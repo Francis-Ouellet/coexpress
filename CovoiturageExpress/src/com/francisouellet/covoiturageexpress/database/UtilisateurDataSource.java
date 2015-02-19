@@ -93,6 +93,8 @@ public class UtilisateurDataSource extends BaseDataSource<Utilisateur, String> {
 		ContentValues row = new ContentValues();
 		row.put(DatabaseHelper.COL_COURRIEL, element.getCourriel());
 		row.put(DatabaseHelper.COL_MOTDEPASSE, element.getEncodedPassword());
+		row.put(DatabaseHelper.COL_NOM, element.getNom());
+		row.put(DatabaseHelper.COL_PRENOM, element.getPrenom());
 		row.put(DatabaseHelper.COL_NOTELEPHONE, element.getTelephone());
 		row.put(DatabaseHelper.COL_ESTCONNECTE, element.getEstConnecte() ? 1:0);
 		row.put(DatabaseHelper.COL_DERNIERCONNECTE, element.getDernierConnecte() ? 1:0);
@@ -102,7 +104,9 @@ public class UtilisateurDataSource extends BaseDataSource<Utilisateur, String> {
 	@Override
 	protected Utilisateur toElement(Cursor c) {
 		Utilisateur u = new Utilisateur(
-				c.getString(c.getColumnIndex(DatabaseHelper.COL_COURRIEL)), 
+				c.getString(c.getColumnIndex(DatabaseHelper.COL_COURRIEL)),
+				c.getString(c.getColumnIndex(DatabaseHelper.COL_NOM)),
+				c.getString(c.getColumnIndex(DatabaseHelper.COL_PRENOM)),
 				c.getString(c.getColumnIndex(DatabaseHelper.COL_NOTELEPHONE)), 
 				c.getInt(c.getColumnIndex(DatabaseHelper.COL_ESTCONNECTE)) == 1 ? true : false, 
 				c.getInt(c.getColumnIndex(DatabaseHelper.COL_DERNIERCONNECTE)) == 1 ? true : false );

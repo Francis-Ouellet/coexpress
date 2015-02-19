@@ -18,6 +18,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	// Nom des colonnes
 	public final static String COL_COURRIEL = "courriel";
 	public final static String COL_MOTDEPASSE = "motdepasse";
+	public final static String COL_NOM = "nom";
+	public final static String COL_PRENOM = "prenom";
 	public final static String COL_NOTELEPHONE = "notelephone";
 	public final static String COL_ESTCONNECTE = "estconnecte";
 	public final static String COL_DERNIERCONNECTE = "dernierconnecte";
@@ -32,6 +34,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		db.execSQL("create table " + TABLE_UTILISATEUR + " ("
 				+ COL_COURRIEL + " text primary key,"
 				+ COL_MOTDEPASSE + " text,"
+				+ COL_NOM + " text,"
+				+ COL_PRENOM + " text,"
 				+ COL_NOTELEPHONE + " text,"
 				+ COL_ESTCONNECTE + " integer,"
 				+ COL_DERNIERCONNECTE + "integer)");

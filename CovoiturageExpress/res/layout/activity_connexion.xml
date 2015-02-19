@@ -7,40 +7,64 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.francisouellet.covoiturageexpress.ConnexionActivity" >
-
-    <EditText
+	
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/app_name" />
+    
+    <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:hint="@string/lbl_courriel"
-        android:id="@+id/connexion_courriel" />
+        android:layout_centerVertical="true"
+        android:orientation="vertical" >
     
-    <EditText
+	    <EditText
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:hint="@string/lbl_courriel"
+	        android:inputType="textEmailAddress"
+	        android:id="@+id/connexion_courriel" />
+	    
+	    <EditText
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:hint="@string/lbl_mot_de_passe"
+	        android:inputType="textPassword"
+	        android:id="@+id/connexion_mot_de_passe" />
+	    
+	    <Button
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/lbl_connexion"
+	        android:onClick="" />
+    
+    </LinearLayout>
+    
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/connexion_courriel"
-        android:hint="@string/lbl_mot_de_passe"
-        android:id="@+id/connexion_mot_de_passe" />
-    
-    <Button
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/connexion_mot_de_passe"
-        android:text="@string/lbl_connexion"
-        android:onClick="" />
-    
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="@string/lbl_creer_un_compte"
-        android:onClick="" />
-    
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="@string/lbl_mot_de_passe_oublie"
-        android:onClick="" />
-
+	    android:layout_height="wrap_content"
+	    android:gravity="center"
+	    android:layout_alignParentBottom="true"
+	    android:layout_centerHorizontal="true"
+	    android:orientation="vertical" >
+	    
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="10dp"
+	        android:text="@string/lbl_creer_un_compte"
+	        android:onClick="creerCompte" />
+	    
+	    <TextView
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="@string/lbl_mot_de_passe_oublie"
+	        android:enabled="false"
+	        android:onClick="" />
+	    
+	</LinearLayout>
+	
 </RelativeLayout>
