@@ -2,6 +2,8 @@ package com.francisouellet.covoiturageexpress.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.widget.Toast;
@@ -27,10 +29,36 @@ public class Util {
         return sb.toString();
     }
 	
+	/**
+	 * Génère un toast court avec la ressource spécifiée
+	 * @param context
+	 * @param resId
+	 */
 	public static void easyToast(Context context, int resId){
 		easyToast(context, resId, Toast.LENGTH_SHORT);
 	}
+	/**
+	 * Génère un toast avec la ressource et la durée spécifiée
+	 * @param context
+	 * @param resId
+	 * @param length
+	 */
 	public static void easyToast(Context context, int resId, int length){
 		Toast.makeText(context, context.getResources().getText(resId), length).show();
 	} 
+	
+	/**
+	 * Sépare une chaine de caractère généré par la méthode "toString" d'Arraylist en une liste de ses éléments
+	 * @param chaine
+	 * @param separateur
+	 * @return
+	 */
+	public static List<String> toList(String chaine){
+		String[] elements = chaine.replace("[", "").replace("]", "").split(" ,");
+		List<String> liste = new ArrayList<String>();
+		for (String string : elements) {
+			liste.add(string);
+		}
+		return liste;
+	}
 }

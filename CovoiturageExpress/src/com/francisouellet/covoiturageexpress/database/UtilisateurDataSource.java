@@ -94,7 +94,7 @@ public class UtilisateurDataSource extends BaseDataSource<Utilisateur, String> {
 	
 	@Override
 	public void remove(String id) {
-		m_Db.delete(DatabaseHelper.TABLE_UTILISATEUR, DatabaseHelper.COL_COURRIEL + "=" + id, null);
+		m_Db.delete(DatabaseHelper.TABLE_UTILISATEUR, DatabaseHelper.COL_COURRIEL + "= '" + id + "'", null);
 	}
 	
 	@Override
