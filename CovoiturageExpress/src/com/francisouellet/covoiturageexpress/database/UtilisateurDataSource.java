@@ -52,9 +52,7 @@ public class UtilisateurDataSource extends BaseDataSource<Utilisateur, String> {
 				null, null, null, null);
 		c.moveToFirst();
 		if(!c.isAfterLast()){
-			// TODO RECUPERER SANS MOT DE PASSE LORSQUE LA CONNEXION AVEC LE SERVICE WEB EST IMPLANTEE
-			//u = toElement(c);
-			u = toElementWithPassword(c);
+			u = toElement(c);
 		}
 		return u;	
 	}
@@ -121,18 +119,6 @@ public class UtilisateurDataSource extends BaseDataSource<Utilisateur, String> {
 	protected Utilisateur toElement(Cursor c) {
 		Utilisateur u = new Utilisateur(
 				c.getString(c.getColumnIndex(DatabaseHelper.COL_COURRIEL)),
-				c.getString(c.getColumnIndex(DatabaseHelper.COL_NOM)),
-				c.getString(c.getColumnIndex(DatabaseHelper.COL_PRENOM)),
-				c.getString(c.getColumnIndex(DatabaseHelper.COL_NOTELEPHONE)), 
-				c.getInt(c.getColumnIndex(DatabaseHelper.COL_ESTCONNECTE)) == 1 ? true : false, 
-				c.getInt(c.getColumnIndex(DatabaseHelper.COL_DERNIERCONNECTE)) == 1 ? true : false );
-		return u;
-	}
-	
-	// TODO À SUPPRIMER LORSQUE LA CONNEXION AVEC LE SERVICE WEB SERA IMPLANTÉE
-	protected Utilisateur toElementWithPassword(Cursor c) {
-		Utilisateur u = new Utilisateur(
-				c.getString(c.getColumnIndex(DatabaseHelper.COL_COURRIEL)),
 				c.getString(c.getColumnIndex(DatabaseHelper.COL_MOTDEPASSE)),
 				c.getString(c.getColumnIndex(DatabaseHelper.COL_NOM)),
 				c.getString(c.getColumnIndex(DatabaseHelper.COL_PRENOM)),
@@ -141,5 +127,4 @@ public class UtilisateurDataSource extends BaseDataSource<Utilisateur, String> {
 				c.getInt(c.getColumnIndex(DatabaseHelper.COL_DERNIERCONNECTE)) == 1 ? true : false );
 		return u;
 	}
-	
 }

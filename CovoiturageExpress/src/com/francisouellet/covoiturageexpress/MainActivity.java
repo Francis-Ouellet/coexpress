@@ -1,21 +1,34 @@
 package com.francisouellet.covoiturageexpress;
 
 import com.francisouellet.covoiturageexpress.R;
-import com.francisouellet.covoiturageexpress.R.id;
-import com.francisouellet.covoiturageexpress.R.layout;
-import com.francisouellet.covoiturageexpress.R.menu;
+import com.francisouellet.covoiturageexpress.classes.Utilisateur;
+import com.francisouellet.covoiturageexpress.database.UtilisateurDataSource;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends Activity {
 
+	private final String TAG = "MAIN";
+	
+	private UtilisateurDataSource uds;
+	private Utilisateur utilisateur;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		uds = new UtilisateurDataSource(this);
+		try{
+			uds.open();
+			this.utilisateur = uds.getConnectedUser();
+			uds.close();
+		}catch(Exception e){Log.i(TAG, e.toString());}
 	}
 
 	@Override
@@ -31,7 +44,18 @@ public class MainActivity extends Activity {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.action_deconnexion) {
+			try{
+			utilisateur.setEstConnecte(false);
+			uds.open();
+			uds.update(utilisateur);
+			uds.close();
+			
+			Intent i = new Intent(this, ConnexionActivity.class);
+			this.startActivity(i);
+			this.finish();
+			
+			} catch(Exception e){Log.i(TAG,e.toString());}
 			return true;
 		}
 		return super.onOptionsItemSelected(item);

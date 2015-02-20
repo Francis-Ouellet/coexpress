@@ -8,8 +8,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
@@ -22,13 +20,45 @@ public class ConnexionActivity extends Activity {
 	private String courriel;
 	private String motDePasse;
 	
+	private UtilisateurDataSource uds;
+	private Utilisateur utilisateur;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		uds = new UtilisateurDataSource(this);
+		utilisateur = null;
+		
+		//  Vérifier si quelqu'un est déjà connecté 
+		//	Si oui, on ouvre directement l'application
+		// 	Si non, on récupère le dernier connecté
+		try{
+			uds.open();
+			utilisateur = uds.getConnectedUser();
+			uds.close();
+			
+			if(utilisateur != null){
+				Intent i = new Intent(this, MainActivity.class);
+				this.startActivity(i);
+				this.finish();
+			}
+			else{
+				uds.open();
+				utilisateur = uds.getLastConnected();
+				uds.close();
+			}
+			
+		}catch(Exception e){Log.i(TAG, e.toString());}
+		
 		setContentView(R.layout.activity_connexion);
 		
 		lblCourriel = (EditText)this.findViewById(R.id.connexion_courriel);
 		lblMotDePasse = (EditText)this.findViewById(R.id.connexion_mot_de_passe);
+		
+		// Afficher le nom d'utilisateur de la dernière personne connectée
+		if(utilisateur != null){
+			lblCourriel.setText(utilisateur.getCourriel());
+		}
 	}
 	
 	public void creerCompte(View v){
@@ -43,24 +73,27 @@ public class ConnexionActivity extends Activity {
 			motDePasse = Util.sha1(lblMotDePasse.getText().toString().trim());
 			
 			// Obtient l'utilisateur qui tente de se connecter
-			UtilisateurDataSource uds = new UtilisateurDataSource(this);
 			uds.open();
-			Utilisateur u = uds.get(courriel);
+			utilisateur = uds.get(courriel);
 			uds.close();
 			
 			// Si l'utilisateur existe et que le mot de passe est valide
-			if(u != null && u.getEncodedPassword().equals(motDePasse)){
+			if(utilisateur != null && utilisateur.getEncodedPassword().equals(motDePasse)){
 				// Indique que l'utilisateur est connecté
-				u.setEstConnecte(true);
+				utilisateur.setEstConnecte(true);
 				uds.open();
 				// Indique que l'utilisateur est le dernier connecté et le met a jour
-				uds.updateLastConnected(u);
+				uds.updateLastConnected(utilisateur);
 				uds.close();
 				
 				// Ouvre l'activité principale
 				Intent i = new Intent(this, MainActivity.class);
 				this.startActivity(i);
 				this.finish();
+			}
+			else{
+				this.lblMotDePasse.setText("");
+				Util.easyToast(this, R.string.txt_erreur_connexion);
 			}
 			
 		} catch(Exception e){Log.i(TAG, e.toString());}
