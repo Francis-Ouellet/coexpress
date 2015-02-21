@@ -3,6 +3,7 @@ package com.francisouellet.covoiturageexpress;
 import com.francisouellet.covoiturageexpress.R;
 import com.francisouellet.covoiturageexpress.classes.Utilisateur;
 import com.francisouellet.covoiturageexpress.database.UtilisateurDataSource;
+import com.francisouellet.covoiturageexpress.util.Util;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 public class MainActivity extends Activity {
 
@@ -59,5 +61,10 @@ public class MainActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	public void ajouterParcours(View v){
+		Intent i = new Intent(this, CreationParcoursActivity.class);
+		this.startActivity(i);
 	}
 }

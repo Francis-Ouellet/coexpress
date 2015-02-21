@@ -16,13 +16,14 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name" >
-		</activity>
+        </activity>
         <activity
             android:name=".ConnexionActivity"
             android:label="@string/app_name"
-            android:theme="@style/NoActionBar">
+            android:theme="@style/NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -30,6 +31,14 @@
             android:name=".CreationCompteActivity"
             android:label="@string/title_activity_creation_compte"
             android:theme="@style/NoActionBar" >
+        </activity>
+        <activity
+            android:name=".CreationParcoursActivity"
+            android:label="@string/title_activity_creation_parcours"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.francisouellet.covoiturageexpress.MainActivity" />
         </activity>
     </application>
 

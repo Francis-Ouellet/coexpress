@@ -92,6 +92,7 @@ public class ParcoursDataSource extends BaseDataSource<Parcours, String> {
 		row.put(DatabaseHelper.COL_JOURSREPETES, ((ArrayList<String>)element.getJoursRepetes()).toString());
 		row.put(DatabaseHelper.COL_NBPLACES, element.getNbPlaces());
 		row.put(DatabaseHelper.COL_DISTANCESUPPLEMENTAIRE, element.getDistanceSupplementaire());
+		row.put(DatabaseHelper.COL_NOTES, element.getNotes());
 		return row;
 	}
 
@@ -106,7 +107,8 @@ public class ParcoursDataSource extends BaseDataSource<Parcours, String> {
 				c.getString(c.getColumnIndex(DatabaseHelper.COL_TIMESTAMPDEPART)),
 				Util.toList(c.getString(c.getColumnIndex(DatabaseHelper.COL_JOURSREPETES))),
 				c.getInt(c.getColumnIndex(DatabaseHelper.COL_NBPLACES)),
-				c.getDouble(c.getColumnIndex(DatabaseHelper.COL_DISTANCESUPPLEMENTAIRE)));
+				c.getDouble(c.getColumnIndex(DatabaseHelper.COL_DISTANCESUPPLEMENTAIRE)),
+				c.getString(c.getColumnIndex(DatabaseHelper.COL_NOTES)));
 		return parcours;
 	}
 

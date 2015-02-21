@@ -8,9 +8,19 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.francisouellet.covoiturageexpress.MainActivity" >
 
-    <TextView
+    <ListView 
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/liste_mes_parcours" />
+        
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-         />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+		android:src="@drawable/selector_bouton_ajouter"
+		android:clickable="true"
+		android:onClick="ajouterParcours"
+        android:contentDescription="@string/desc_bouton_ajouter" />
 
 </RelativeLayout>
