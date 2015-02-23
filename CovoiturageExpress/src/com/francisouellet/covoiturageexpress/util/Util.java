@@ -46,6 +46,14 @@ public class Util {
 	public static void easyToast(Context context, int resId, int length){
 		Toast.makeText(context, context.getResources().getText(resId), length).show();
 	} 
+	/**
+	 * Génère un toast court avec le texte spécifié
+	 * @param context
+	 * @param text
+	 */
+	public static void easyToast(Context context, String text){
+		Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+	}
 	
 	/**
 	 * Sépare une chaine de caractère généré par la méthode "toString" d'Arraylist en une liste de ses éléments

@@ -17,6 +17,7 @@
 	        android:layout_height="50dp"
 	        android:textOn="@string/lbl_conducteur"
 	        android:textOff="@string/lbl_passager"
+	        android:checked="false"
 	        android:layout_gravity="center"
 	        android:thumb="@drawable/apptheme_switch_inner_holo_light"
 	        android:id="@+id/creation_parcours_type_parcours" />
@@ -25,13 +26,15 @@
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:hint="@string/lbl_adresse_depart"
-	        android:id="@+id/creation_parcours_adresse_depart" />
+	        android:id="@+id/creation_parcours_adresse_depart"
+	        android:maxLines="1" />
 	    
 	    <EditText 
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:hint="@string/lbl_adresse_destination"
-	        android:id="@+id/creation_parcours_adresse_destination" />
+	        android:id="@+id/creation_parcours_adresse_destination"
+	        android:maxLines="1" />
 	    
 	    <EditText 
 	        android:layout_width="fill_parent"
@@ -43,7 +46,7 @@
 	    <EditText 
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
-	        android:hint="@string/lbl_nb_places_demandees"
+	        android:hint="@string/lbl_nb_places_disponibles"
 	        android:id="@+id/creation_parcours_nb_places"
 	        android:inputType="number" />
 	    
@@ -61,7 +64,8 @@
 	            android:gravity="center"
 	            android:text="@string/lbl_date_depart"
 	            android:id="@+id/creation_parcours_date_depart"
-	            android:clickable="true" />
+	            android:clickable="true"
+	            android:onClick="clickDate" />
 				            
 	        <TextView
 	            android:layout_width="0dp"
@@ -70,7 +74,8 @@
 	            android:gravity="center"
 	            android:text="@string/lbl_heure_depart"
 	            android:id="@+id/creation_parcours_heure_depart"
-	            android:clickable="true" />
+	            android:clickable="true"
+	            android:onClick="clickHeure" />
 	        
 	    </LinearLayout>
 	    
