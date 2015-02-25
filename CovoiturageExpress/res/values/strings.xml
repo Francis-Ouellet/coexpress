@@ -5,7 +5,7 @@
     <string name="app_name">CovoiturageExpress</string>
     <string name="title_activity_connexion">Connexion</string>
     <string name="title_activity_creation_compte">Création d\'un compte</string>
-    <string name="title_activity_creation_parcours">CreationParcoursActivity</string>
+    <string name="title_activity_creation_parcours">Ajout d\'un parcours</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
@@ -50,6 +50,14 @@
     <string name="txt_utilisateur_cree">Utilisateur créé avec succès</string>
     <string name="txt_utilisateur_erreur_creation">Erreur lors de la création de l\'utilisateur</string>
     <string name="txt_erreur_connexion">Erreur lors de la connexion</string>
+    <string name="txt_adresse_depart_invalide">Une adresse de départ doit être fournie</string>
+    <string name="txt_adresse_destination_invalide">Une adresse de destination doit être fournie</string>
+    <string name="txt_nb_places_invalide">Un nombre de place doit être fourni</string>
+    <string name="txt_distance_supp_invalide">Une distance supplémentaire à parcourir doit être fournie</string>
+    <string name="txt_date_heure_invalide">La date fournie est antérieure à la date actuelle</string>
+    <string name="txt_parcours_cree">Parcours créé avec succès</string>
+    <string name="txt_parcours_erreur_creation">Erreur lors de la création du parcours</string>
+    
 
     <!-- Items de menu -->
     <string name="action_deconnexion">Déconnexion</string>

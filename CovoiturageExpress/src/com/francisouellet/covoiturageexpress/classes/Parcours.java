@@ -21,6 +21,7 @@ public class Parcours implements Serializable {
 	private int m_NbPlaces;
 	private double m_DistanceSupplementaire;
 	private String m_Notes;
+	private Boolean m_Actif;
 	
 	/**
 	 * Constructeur pour conducteur, avec répétition
@@ -34,12 +35,14 @@ public class Parcours implements Serializable {
 	 * @param p_NbPlaces
 	 * @param p_DistanceSupplementaire
 	 * @param p_Notes
+	 * @param p_Actif
 	 */
 	public Parcours(
 			String p_Id, String p_Proprietaire, 
 			Boolean p_Conducteur, String p_AdresseDepart, 
 			String p_AdresseDestination, String p_TimestampDepart,
-			List<Integer> p_JoursRepetes, int p_NbPlaces, double p_DistanceSupplementaire, String p_Notes){
+			List<Integer> p_JoursRepetes, int p_NbPlaces, double p_DistanceSupplementaire, 
+			String p_Notes, Boolean p_Actif){
 		this.m_Id = p_Id;
 		this.m_Proprietaire = p_Proprietaire;
 		this.m_Conducteur = p_Conducteur;
@@ -50,6 +53,7 @@ public class Parcours implements Serializable {
 		this.m_NbPlaces = p_NbPlaces;
 		this.m_DistanceSupplementaire = p_DistanceSupplementaire;
 		this.m_Notes = p_Notes;
+		this.m_Actif = p_Actif;
 	}
 	
 	/**
@@ -63,12 +67,14 @@ public class Parcours implements Serializable {
 	 * @param p_NbPlaces
 	 * @param p_DistanceSupplementaire
 	 * @param p_Notes
+	 * @param p_Actif
 	 */
 	public Parcours(
 			String p_Id, String p_Proprietaire, 
 			Boolean p_Conducteur, String p_AdresseDepart, 
 			String p_AdresseDestination, String p_TimestampDepart,
-			int p_NbPlaces, double p_DistanceSupplementaire, String p_Notes){
+			int p_NbPlaces, double p_DistanceSupplementaire, 
+			String p_Notes, Boolean p_Actif){
 		this.m_Id = p_Id;
 		this.m_Proprietaire = p_Proprietaire;
 		this.m_Conducteur = p_Conducteur;
@@ -78,6 +84,7 @@ public class Parcours implements Serializable {
 		this.m_NbPlaces = p_NbPlaces;
 		this.m_DistanceSupplementaire = p_DistanceSupplementaire;
 		this.m_Notes = p_Notes;
+		this.m_Actif = p_Actif;
 	}
 	
 	/**
@@ -90,12 +97,13 @@ public class Parcours implements Serializable {
 	 * @param p_TimestampDepart
 	 * @param p_JoursRepetes			Liste des jours où il faut répéter la demande de parcours
 	 * @param p_Notes
+	 * @param p_Actif
 	 */
 	public Parcours(
 			String p_Id, String p_Proprietaire, 
 			Boolean p_Conducteur, String p_AdresseDepart, 
 			String p_AdresseDestination, String p_TimestampDepart,
-			List<Integer> p_JoursRepetes, String p_Notes){
+			List<Integer> p_JoursRepetes, String p_Notes, Boolean p_Actif){
 		this.m_Id = p_Id;
 		this.m_Proprietaire = p_Proprietaire;
 		this.m_Conducteur = p_Conducteur;
@@ -105,6 +113,7 @@ public class Parcours implements Serializable {
 		this.m_JoursRepetes = p_JoursRepetes;
 		this.m_NbPlaces = 1;
 		this.m_Notes = p_Notes;
+		this.m_Actif = p_Actif;
 	}
 	
 	/**
@@ -116,11 +125,13 @@ public class Parcours implements Serializable {
 	 * @param p_AdresseDestination
 	 * @param p_TimestampDepart
 	 * @param p_Notes
+	 * @param p_Actif
 	 */
 	public Parcours(
 			String p_Id, String p_Proprietaire, 
 			Boolean p_Conducteur, String p_AdresseDepart, 
-			String p_AdresseDestination, String p_TimestampDepart, String p_Notes){
+			String p_AdresseDestination, String p_TimestampDepart, 
+			String p_Notes, Boolean p_Actif){
 		this.m_Id = p_Id;
 		this.m_Proprietaire = p_Proprietaire;
 		this.m_Conducteur = p_Conducteur;
@@ -129,6 +140,7 @@ public class Parcours implements Serializable {
 		this.m_TimestampDepart = p_TimestampDepart;
 		this.m_NbPlaces = 1;
 		this.m_Notes = p_Notes;
+		this.m_Actif = p_Actif;
 	}
 
 	public String getId() {
@@ -209,5 +221,13 @@ public class Parcours implements Serializable {
 
 	public void setNotes(String m_Notes) {
 		this.m_Notes = m_Notes;
+	}
+
+	public Boolean getActif() {
+		return m_Actif;
+	}
+
+	public void setActif(Boolean m_Actif) {
+		this.m_Actif = m_Actif;
 	}
 }

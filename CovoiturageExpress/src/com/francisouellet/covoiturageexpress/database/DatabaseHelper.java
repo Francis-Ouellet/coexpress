@@ -34,6 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	public final static String COL_NBPLACES = "nbplaces";
 	public final static String COL_DISTANCESUPPLEMENTAIRE = "distancesupplementaire";
 	public final static String COL_NOTES = "notes";
+	public final static String COL_ACTIF = "actif";
 	
 	public DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DB_VERSION);
@@ -61,7 +62,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 				+ COL_JOURSREPETES + " text,"
 				+ COL_NBPLACES + " integer,"
 				+ COL_DISTANCESUPPLEMENTAIRE + " real,"
-				+ COL_NOTES + " text)");
+				+ COL_NOTES + " text,"
+				+ COL_ACTIF + " integer)");
 	}
 	
 	@Override

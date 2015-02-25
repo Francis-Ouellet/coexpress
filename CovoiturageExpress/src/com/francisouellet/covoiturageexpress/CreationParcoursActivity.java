@@ -7,16 +7,18 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
+import com.francisouellet.covoiturageexpress.classes.Parcours;
+import com.francisouellet.covoiturageexpress.classes.Utilisateur;
+import com.francisouellet.covoiturageexpress.database.ParcoursDataSource;
+import com.francisouellet.covoiturageexpress.database.UtilisateurDataSource;
 import com.francisouellet.covoiturageexpress.util.Util;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -42,7 +44,6 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 	private EditText lblNbPlaces;
 	private TextView lblDateDepart;
 	private TextView lblHeureDepart;
-	private CheckBox lblRepeter;
 	private EditText lblNotes;
 	
 	private Boolean typeParcours;
@@ -50,9 +51,8 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 	private String adresseDestination;
 	private Double distanceSupp;
 	private int nbPlaces;
-	private String dateDepart;
-	private String heureDepart;
-	private Boolean repeter;
+	private String timestampDepart;
+	private Boolean repeter = false;
 	private List<Integer> joursRepetes = null;
 	private String notes;
 	
@@ -60,10 +60,13 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 	private DateFormat dateFormat;
 	private DateFormat timeFormat;
 	
+	private Utilisateur utilisateur;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_creation_parcours);
+		getActionBar().setDisplayShowHomeEnabled(false);
 		
 		this.lblTypeParcours = (Switch)this.findViewById(R.id.creation_parcours_type_parcours);
 		this.lblAdresseDepart = (EditText)this.findViewById(R.id.creation_parcours_adresse_depart);
@@ -72,8 +75,14 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 		this.lblNbPlaces = (EditText)this.findViewById(R.id.creation_parcours_nb_places);
 		this.lblDateDepart = (TextView)this.findViewById(R.id.creation_parcours_date_depart);
 		this.lblHeureDepart = (TextView)this.findViewById(R.id.creation_parcours_heure_depart);
-		this.lblRepeter = (CheckBox)this.findViewById(R.id.creation_parcours_repeter);
 		this.lblNotes = (EditText)this.findViewById(R.id.creation_parcours_notes);
+		
+		try{
+			UtilisateurDataSource uds = new UtilisateurDataSource(this);
+			uds.open();
+			this.utilisateur = uds.getConnectedUser();
+			uds.close();
+		}catch(Exception e){Log.i(TAG, e.toString());}
 		
 		if(this.lblTypeParcours != null){
 			this.lblTypeParcours.setOnCheckedChangeListener(this);
@@ -103,15 +112,104 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.action_ajouter_parcours) {
+			sauvegarderParcours();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
 	
-	private void verifierTypeParcours(Boolean type){
-		this.typeParcours = type;
+	@Override
+	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+		verifierTypeParcours(isChecked);
+	}
+	
+	private void sauvegarderParcours(){
+		
+		if(this.verifierChamps()){
+			Parcours parcours = null;
+			
+			this.adresseDepart = this.lblAdresseDepart.getText().toString();
+			this.adresseDestination = this.lblAdresseDestination.getText().toString();
+			this.timestampDepart = this.calendrier.getTimeInMillis() + "";
+			this.notes = this.lblNotes.getText().toString();
+			
+			if(!this.repeter)
+				this.joursRepetes = null;
+			
+
+
+			if(this.typeParcours){	// True -> Conducteur	
+				this.nbPlaces = Integer.parseInt(this.lblNbPlaces.getText().toString());
+				this.distanceSupp = Double.parseDouble(this.lblDistanceSupp.getText().toString());
+				
+				parcours = new Parcours(
+						Calendar.getInstance().getTimeInMillis() + "", 
+						utilisateur.getCourriel(), this.typeParcours, 
+						this.adresseDepart, this.adresseDestination, this.timestampDepart,
+						this.joursRepetes, this.nbPlaces, this.distanceSupp, this.notes, false);
+			} else { // False -> Passager
+				parcours = new Parcours(
+						Calendar.getInstance().getTimeInMillis() + "",
+						utilisateur.getCourriel(), this.typeParcours,
+						this.adresseDepart, this.adresseDestination, this.timestampDepart,
+						this.joursRepetes, this.notes, false);
+			}
+			
+			if(enregistrementLocalParcours(parcours)){
+				Util.easyToast(this, R.string.txt_parcours_cree);
+				this.finish();
+			}
+			else
+				Util.easyToast(this, R.string.txt_parcours_erreur_creation);
+		}
+	}
+	
+	
+	private boolean enregistrementLocalParcours(Parcours p_Parcours){
+		ParcoursDataSource pds = new ParcoursDataSource(this);
+		try{
+			pds.open();
+			pds.insert(p_Parcours);
+			pds.close();
+			return true;
+		}catch(Exception e){
+			Log.i(TAG, e.toString());
+			return false;
+		}
+		
+	}
+	
+	private boolean verifierChamps(){
+		if(this.lblAdresseDepart.getText().toString().equals("")){
+			Util.easyToast(this, R.string.txt_adresse_depart_invalide);
+			return false;
+		}
+		if(this.lblAdresseDestination.getText().toString().equals("")){
+			Util.easyToast(this, R.string.txt_adresse_destination_invalide);
+			return false;
+		}
+		if(Calendar.getInstance().getTimeInMillis() > this.calendrier.getTimeInMillis()){
+			Util.easyToast(this, R.string.txt_date_heure_invalide);
+			return false;
+		}
+		// Conducteur
 		if(this.typeParcours){
+			if(	this.lblDistanceSupp.getText().toString().equals("") ||
+				this.lblDistanceSupp.getText().toString().equals(".")){
+				Util.easyToast(this, R.string.txt_distance_supp_invalide);
+				return false;
+			}
+			if(this.lblNbPlaces.getText().toString().equals("")){
+				Util.easyToast(this, R.string.txt_nb_places_invalide);
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private void verifierTypeParcours(Boolean type){
+		if(this.typeParcours = type){
 			// Conducteur
 			this.lblDistanceSupp.setVisibility(View.VISIBLE);
 			this.lblNbPlaces.setVisibility(View.VISIBLE);
@@ -122,13 +220,7 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 		}
 	}
 	
-	@Override
-	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-		verifierTypeParcours(isChecked);
-	}
-	
 	public void clickDate(View v){
-		
 		DialogFragment datePicker = new DatePickerFragment(this);
 		datePicker.show(getFragmentManager(), "datepicker");
 	}
@@ -136,11 +228,10 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 	public void clickHeure(View v){
 		DialogFragment timePicker = new TimePickerFragment(this);
 		timePicker.show(getFragmentManager(), "timepicker");
-		
 	}
 	
 	public void clickRepeter(View v){
-		if(((CheckBox)v).isChecked()){
+		if(this.repeter = ((CheckBox)v).isChecked()){
 			this.findViewById(R.id.creation_parcours_repetitions).setVisibility(View.VISIBLE);
 			if(this.joursRepetes == null){
 				this.joursRepetes = new ArrayList<Integer>();
@@ -166,7 +257,6 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 			v.setBackgroundResource(R.drawable.ic_panorama_fisheye_black_48dp);
 			this.joursRepetes.add(getSelectedDay(v.getId()));
 		}
-		Log.i(this.TAG, this.joursRepetes.toString());
 	}
 	
 	private int getSelectedDay(int viewId){
