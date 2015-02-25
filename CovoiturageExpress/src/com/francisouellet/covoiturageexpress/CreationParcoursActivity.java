@@ -1,17 +1,24 @@
 package com.francisouellet.covoiturageexpress;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
 
+import com.francisouellet.covoiturageexpress.util.Util;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,7 +32,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 public class CreationParcoursActivity extends Activity implements OnCheckedChangeListener{
-
+	
+	private final String TAG = "CREATION_PARCOURS";
+	
 	private Switch lblTypeParcours;
 	private EditText lblAdresseDepart;
 	private EditText lblAdresseDestination;
@@ -44,6 +53,7 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 	private String dateDepart;
 	private String heureDepart;
 	private Boolean repeter;
+	private List<Integer> joursRepetes = null;
 	private String notes;
 	
 	private GregorianCalendar calendrier;
@@ -123,6 +133,63 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 		datePicker.show(getFragmentManager(), "datepicker");
 	}
 	
+	public void clickHeure(View v){
+		DialogFragment timePicker = new TimePickerFragment(this);
+		timePicker.show(getFragmentManager(), "timepicker");
+		
+	}
+	
+	public void clickRepeter(View v){
+		if(((CheckBox)v).isChecked()){
+			this.findViewById(R.id.creation_parcours_repetitions).setVisibility(View.VISIBLE);
+			if(this.joursRepetes == null){
+				this.joursRepetes = new ArrayList<Integer>();
+				this.joursRepetes.add(Calendar.SUNDAY);
+				this.joursRepetes.add(Calendar.MONDAY);
+				this.joursRepetes.add(Calendar.TUESDAY);
+				this.joursRepetes.add(Calendar.WEDNESDAY);
+				this.joursRepetes.add(Calendar.THURSDAY);
+				this.joursRepetes.add(Calendar.FRIDAY);
+				this.joursRepetes.add(Calendar.SATURDAY);
+			}
+				
+		} else {
+			this.findViewById(R.id.creation_parcours_repetitions).setVisibility(View.GONE);
+		}
+	}
+	
+	public void clickJourRepetition(View v){
+		if(v.getBackground() != null){
+			v.setBackgroundResource(0);
+			this.joursRepetes.remove((Object)getSelectedDay(v.getId()));
+		} else{
+			v.setBackgroundResource(R.drawable.ic_panorama_fisheye_black_48dp);
+			this.joursRepetes.add(getSelectedDay(v.getId()));
+		}
+		Log.i(this.TAG, this.joursRepetes.toString());
+	}
+	
+	private int getSelectedDay(int viewId){
+		switch(viewId){
+		case R.id.creation_parcours_rep_dimanche:
+			return Calendar.SUNDAY;
+		case R.id.creation_parcours_rep_lundi:
+			return Calendar.MONDAY;
+		case R.id.creation_parcours_rep_mardi:
+			return Calendar.TUESDAY;
+		case R.id.creation_parcours_rep_mercredi:
+			return Calendar.WEDNESDAY;
+		case R.id.creation_parcours_rep_jeudi:
+			return Calendar.THURSDAY;
+		case R.id.creation_parcours_rep_vendredi:
+			return Calendar.FRIDAY;
+		case R.id.creation_parcours_rep_samedi:
+			return Calendar.SATURDAY;
+		default:
+			return -1;
+		}
+	}
+		
 	private class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
 		
 		private Context m_Context;
@@ -145,12 +212,6 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 			((CreationParcoursActivity)this.m_Context).calendrier.set(year, monthOfYear, dayOfMonth);
 			((CreationParcoursActivity)this.m_Context).lblDateDepart.setText(((CreationParcoursActivity)this.m_Context).dateFormat.format(calendrier.getTime()));
 		}
-		
-	}
-	
-	public void clickHeure(View v){
-		DialogFragment timePicker = new TimePickerFragment(this);
-		timePicker.show(getFragmentManager(), "timepicker");
 		
 	}
 	

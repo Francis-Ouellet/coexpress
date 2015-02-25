@@ -61,11 +61,11 @@ public class Util {
 	 * @param separateur
 	 * @return
 	 */
-	public static List<String> toList(String chaine){
+	public static List<Integer> toList(String chaine){
 		String[] elements = chaine.replace("[", "").replace("]", "").split(" ,");
-		List<String> liste = new ArrayList<String>();
+		List<Integer> liste = new ArrayList<Integer>();
 		for (String string : elements) {
-			liste.add(string);
+			liste.add(Integer.parseInt(string));
 		}
 		return liste;
 	}

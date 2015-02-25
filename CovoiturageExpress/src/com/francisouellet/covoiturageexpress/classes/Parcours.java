@@ -17,7 +17,7 @@ public class Parcours implements Serializable {
 	private String m_AdresseDepart;
 	private String m_AdresseDestination;
 	private String m_TimestampDepart;
-	private List<String> m_JoursRepetes;
+	private List<Integer> m_JoursRepetes;
 	private int m_NbPlaces;
 	private double m_DistanceSupplementaire;
 	private String m_Notes;
@@ -39,7 +39,7 @@ public class Parcours implements Serializable {
 			String p_Id, String p_Proprietaire, 
 			Boolean p_Conducteur, String p_AdresseDepart, 
 			String p_AdresseDestination, String p_TimestampDepart,
-			List<String> p_JoursRepetes, int p_NbPlaces, double p_DistanceSupplementaire, String p_Notes){
+			List<Integer> p_JoursRepetes, int p_NbPlaces, double p_DistanceSupplementaire, String p_Notes){
 		this.m_Id = p_Id;
 		this.m_Proprietaire = p_Proprietaire;
 		this.m_Conducteur = p_Conducteur;
@@ -95,7 +95,7 @@ public class Parcours implements Serializable {
 			String p_Id, String p_Proprietaire, 
 			Boolean p_Conducteur, String p_AdresseDepart, 
 			String p_AdresseDestination, String p_TimestampDepart,
-			List<String> p_JoursRepetes, String p_Notes){
+			List<Integer> p_JoursRepetes, String p_Notes){
 		this.m_Id = p_Id;
 		this.m_Proprietaire = p_Proprietaire;
 		this.m_Conducteur = p_Conducteur;
@@ -179,11 +179,11 @@ public class Parcours implements Serializable {
 		this.m_TimestampDepart = m_TimestampDepart;
 	}
 
-	public List<String> getJoursRepetes() {
+	public List<Integer> getJoursRepetes() {
 		return m_JoursRepetes;
 	}
 
-	public void setJoursRepetes(List<String> m_JoursRepetes) {
+	public void setJoursRepetes(List<Integer> m_JoursRepetes) {
 		this.m_JoursRepetes = m_JoursRepetes;
 	}
 

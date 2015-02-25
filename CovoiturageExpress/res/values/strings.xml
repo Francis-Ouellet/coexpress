@@ -34,6 +34,13 @@
     <string name="lbl_heure_depart">Heure de départ</string>
     <string name="lbl_repeter">Répéter</string>
     <string name="lbl_notes">Notes</string>
+    <string name="lbl_rep_dimanche">D</string>
+    <string name="lbl_rep_lundi">L</string>
+    <string name="lbl_rep_mardi">M</string>
+    <string name="lbl_rep_mercredi">M</string>
+    <string name="lbl_rep_jeudi">J</string>
+    <string name="lbl_rep_vendredi">V</string>
+    <string name="lbl_rep_samedi">S</string>
 
     <!-- Alertes et messages d'erreurs -->
     <string name="txt_courriel_different">Le courriel doit être identique</string>

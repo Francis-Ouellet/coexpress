@@ -83,7 +83,97 @@
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:id="@+id/creation_parcours_repeter"
-	        android:text="@string/lbl_repeter" />
+	        android:text="@string/lbl_repeter"
+	        android:onClick="clickRepeter" />
+	    
+	    <LinearLayout 
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:paddingTop="20dp"
+	        android:paddingBottom="20dp"
+	        android:paddingRight="@dimen/activity_horizontal_margin"
+	        android:visibility="gone"
+	        android:id="@+id/creation_parcours_repetitions" >
+	        
+	        <TextView
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:gravity="center"
+	            android:background="@drawable/ic_panorama_fisheye_black_48dp"
+	            android:text="@string/lbl_rep_dimanche"
+	            android:id="@+id/creation_parcours_rep_dimanche"
+	            android:clickable="true"
+	            android:onClick="clickJourRepetition" />
+	        
+	        <TextView
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:gravity="center"
+	            android:background="@drawable/ic_panorama_fisheye_black_48dp"
+	            android:text="@string/lbl_rep_lundi"
+	            android:id="@+id/creation_parcours_rep_lundi"
+	            android:clickable="true"
+	            android:onClick="clickJourRepetition" />
+	        
+	        <TextView
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:gravity="center"
+	            android:background="@drawable/ic_panorama_fisheye_black_48dp"
+	            android:text="@string/lbl_rep_mardi"
+	            android:id="@+id/creation_parcours_rep_mardi"
+	            android:clickable="true"
+	            android:onClick="clickJourRepetition" />
+	        
+	        <TextView
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:gravity="center"
+	            android:background="@drawable/ic_panorama_fisheye_black_48dp"
+	            android:text="@string/lbl_rep_mercredi"
+	            android:id="@+id/creation_parcours_rep_mercredi"
+	            android:clickable="true"
+	            android:onClick="clickJourRepetition" />
+	        
+	        <TextView
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:gravity="center"
+	            android:background="@drawable/ic_panorama_fisheye_black_48dp"
+	            android:text="@string/lbl_rep_jeudi"
+	            android:id="@+id/creation_parcours_rep_jeudi"
+	            android:clickable="true"
+	            android:onClick="clickJourRepetition" />
+	        
+	        <TextView
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:gravity="center"
+	            android:background="@drawable/ic_panorama_fisheye_black_48dp"
+	            android:text="@string/lbl_rep_vendredi"
+	            android:id="@+id/creation_parcours_rep_vendredi"
+	            android:clickable="true"
+	            android:onClick="clickJourRepetition" />
+	        
+	        <TextView
+	            android:layout_width="0dp"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1"
+	            android:gravity="center"
+	            android:background="@drawable/ic_panorama_fisheye_black_48dp"
+	            android:text="@string/lbl_rep_samedi"
+	            android:id="@+id/creation_parcours_rep_samedi"
+	            android:clickable="true"
+	            android:onClick="clickJourRepetition" />
+	        
+	    </LinearLayout>
 	    
 	    <EditText
 	        android:layout_width="fill_parent"
