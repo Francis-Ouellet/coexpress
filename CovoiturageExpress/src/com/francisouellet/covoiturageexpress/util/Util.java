@@ -2,14 +2,18 @@ package com.francisouellet.covoiturageexpress.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import android.content.Context;
 import android.widget.Toast;
 
 public class Util {
 	
+	public static final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, Locale.getDefault());
+	public static final DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
 	
 	/**
 	 * Génère un SHA1 à partir d'une chaîne de caractère
@@ -62,11 +66,16 @@ public class Util {
 	 * @return
 	 */
 	public static List<Integer> toList(String chaine){
-		String[] elements = chaine.replace("[", "").replace("]", "").split(" ,");
-		List<Integer> liste = new ArrayList<Integer>();
-		for (String string : elements) {
-			liste.add(Integer.parseInt(string));
+		if(chaine != null && !chaine.equals("") && !chaine.equals("[]")){
+			String[] elements = chaine.replace("[", "").replace("]", "").split(", ");
+			List<Integer> liste = new ArrayList<Integer>();
+			for (String string : elements) {
+				liste.add(Integer.parseInt(string));
+			}
+			return liste;
 		}
-		return liste;
+		return null;
 	}
+	
+	
 }

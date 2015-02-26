@@ -41,6 +41,13 @@
     <string name="lbl_rep_jeudi">J</string>
     <string name="lbl_rep_vendredi">V</string>
     <string name="lbl_rep_samedi">S</string>
+    
+    <!-- Liste des parcours -->
+    <string name="parcours_item_place_disponible">place disponible</string>
+    <string name="parcours_item_places_disponibles">places disponibles</string>
+    <string name="parcours_item_demande">Demande</string>
+    <string name="parcours_item_place">place</string>
+    <string name="parcours_item_places">places</string>
 
     <!-- Alertes et messages d'erreurs -->
     <string name="txt_courriel_different">Le courriel doit être identique</string>
@@ -64,6 +71,8 @@
 
     <!-- Description des images -->
     <string name="desc_bouton_ajouter">Bouton ajouter</string>
+    <string name="desc_bouton_modifier">Bouton modifier</string>
+    <string name="desc_bouton_supprimer">Bouton supprimer</string>
     
 
 </resources>

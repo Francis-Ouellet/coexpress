@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:baselineAligned="false" >
+        
+        <!-- Mettre une carte à la place des adresses -->
+        
+        <LinearLayout
+            android:layout_width="0dp"
+        	android:layout_height="wrap_content"
+        	android:layout_weight="3"
+        	android:orientation="vertical" >
+            
+            <TextView
+                android:layout_width="match_parent"
+        		android:layout_height="wrap_content"
+        		android:id="@+id/parcours_item_adresse_depart" />
+            
+            <TextView
+                android:layout_width="match_parent"
+        		android:layout_height="wrap_content"
+        		android:id="@+id/parcours_item_adresse_destination" />
+            
+        </LinearLayout>
+        
+        <LinearLayout 
+            android:layout_width="0dp"
+        	android:layout_height="wrap_content"
+        	android:layout_weight="1"
+        	android:orientation="vertical" >
+            
+            <Switch
+                android:layout_width="match_parent"
+        		android:layout_height="wrap_content"
+        		android:textOn=""
+        		android:textOff=""
+        		android:id="@+id/parcours_item_actif" />
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+        		android:layout_height="wrap_content"
+        		android:orientation="horizontal" >
+                
+                <ImageView 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_action_edit"
+                    android:clickable="true"
+                    android:onClick=""
+                    android:contentDescription="@string/desc_bouton_modifier"/>
+                
+                <ImageView 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_action_discard"
+                    android:clickable="true"
+                    android:onClick=""
+                    android:contentDescription="@string/desc_bouton_supprimer"/>
+                
+            </LinearLayout>
+            
+        </LinearLayout>
+        
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        
+        <TextView
+            android:layout_width="0dp"
+        	android:layout_height="wrap_content"
+        	android:layout_weight="1"
+        	android:id="@+id/parcours_item_date_depart" />
+        
+        <TextView
+            android:layout_width="0dp"
+        	android:layout_height="wrap_content"
+        	android:layout_weight="1"
+        	android:id="@+id/parcours_item_heure_depart" />
+        
+    </LinearLayout>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/parcours_item_nb_places" />
+
+</LinearLayout>

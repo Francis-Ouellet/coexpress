@@ -57,8 +57,6 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 	private String notes;
 	
 	private GregorianCalendar calendrier;
-	private DateFormat dateFormat;
-	private DateFormat timeFormat;
 	
 	private Utilisateur utilisateur;
 	
@@ -89,14 +87,10 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 			this.verifierTypeParcours(this.lblTypeParcours.isChecked());
 		}
 		
-		Locale locale = Locale.getDefault();
-		this.calendrier = (GregorianCalendar)GregorianCalendar.getInstance(locale);
+		this.calendrier = (GregorianCalendar)GregorianCalendar.getInstance(Locale.getDefault());
 		
-		this.dateFormat = DateFormat.getDateInstance(DateFormat.FULL, locale);
-		this.timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, locale);
-		
-		this.lblDateDepart.setText(this.dateFormat.format(calendrier.getTime()));
-		this.lblHeureDepart.setText(this.timeFormat.format(calendrier.getTime()));
+		this.lblDateDepart.setText(Util.dateFormat.format(calendrier.getTime()));
+		this.lblHeureDepart.setText(Util.timeFormat.format(calendrier.getTime()));
 	}
 
 	@Override
@@ -300,7 +294,7 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 		public void onDateSet(DatePicker view, int year, int monthOfYear,
 				int dayOfMonth) {
 			((CreationParcoursActivity)this.m_Context).calendrier.set(year, monthOfYear, dayOfMonth);
-			((CreationParcoursActivity)this.m_Context).lblDateDepart.setText(((CreationParcoursActivity)this.m_Context).dateFormat.format(calendrier.getTime()));
+			((CreationParcoursActivity)this.m_Context).lblDateDepart.setText(Util.dateFormat.format(calendrier.getTime()));
 		}
 		
 	}
@@ -328,7 +322,7 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 		public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 			((CreationParcoursActivity)this.m_Context).calendrier.set(Calendar.HOUR_OF_DAY, hourOfDay);
 			((CreationParcoursActivity)this.m_Context).calendrier.set(Calendar.MINUTE, minute);
-			((CreationParcoursActivity)this.m_Context).lblHeureDepart.setText(((CreationParcoursActivity)this.m_Context).timeFormat.format(calendrier.getTime()));
+			((CreationParcoursActivity)this.m_Context).lblHeureDepart.setText(Util.timeFormat.format(calendrier.getTime()));
 			
 		}
 	}
