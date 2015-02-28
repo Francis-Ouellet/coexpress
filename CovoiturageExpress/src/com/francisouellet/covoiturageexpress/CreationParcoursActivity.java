@@ -1,6 +1,5 @@
 package com.francisouellet.covoiturageexpress;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -36,6 +35,8 @@ import android.widget.TimePicker;
 public class CreationParcoursActivity extends Activity implements OnCheckedChangeListener{
 	
 	private final String TAG = "CREATION_PARCOURS";
+	private Bundle extras;
+	private Boolean modeModification;
 	
 	private Switch lblTypeParcours;
 	private EditText lblAdresseDepart;
@@ -44,6 +45,7 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 	private EditText lblNbPlaces;
 	private TextView lblDateDepart;
 	private TextView lblHeureDepart;
+	private CheckBox lblRepeter;
 	private EditText lblNotes;
 	
 	private Boolean typeParcours;
@@ -59,6 +61,7 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 	private GregorianCalendar calendrier;
 	
 	private Utilisateur utilisateur;
+	private Parcours parcours;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,21 +76,47 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 		this.lblNbPlaces = (EditText)this.findViewById(R.id.creation_parcours_nb_places);
 		this.lblDateDepart = (TextView)this.findViewById(R.id.creation_parcours_date_depart);
 		this.lblHeureDepart = (TextView)this.findViewById(R.id.creation_parcours_heure_depart);
+		this.lblRepeter = (CheckBox)this.findViewById(R.id.creation_parcours_repeter);
 		this.lblNotes = (EditText)this.findViewById(R.id.creation_parcours_notes);
 		
+		this.lblTypeParcours.setOnCheckedChangeListener(this);
+		
+		// Récupération de l'utilisateur courant
 		try{
 			UtilisateurDataSource uds = new UtilisateurDataSource(this);
 			uds.open();
 			this.utilisateur = uds.getConnectedUser();
 			uds.close();
 		}catch(Exception e){Log.i(TAG, e.toString());}
-		
-		if(this.lblTypeParcours != null){
-			this.lblTypeParcours.setOnCheckedChangeListener(this);
-			this.verifierTypeParcours(this.lblTypeParcours.isChecked());
+
+		// Récupération du parcours en cas de modification
+		extras = this.getIntent().getExtras();
+		if(extras != null){
+			parcours = (Parcours)extras.getSerializable(Util.EXTRA_PARCOURS);
 		}
+		else
+			modeModification = false;
 		
 		this.calendrier = (GregorianCalendar)GregorianCalendar.getInstance(Locale.getDefault());
+		
+		if(parcours != null){
+			this.modeModification = true;
+			this.lblTypeParcours.setChecked(parcours.getConducteur());
+			this.lblAdresseDepart.setText(parcours.getAdresseDepart());
+			this.lblAdresseDestination.setText(parcours.getAdresseDestination());
+			this.lblDistanceSupp.setText(parcours.getDistanceSupplementaire() + "");
+			this.lblNbPlaces.setText(parcours.getNbPlaces() + "");
+			if(parcours.getJoursRepetes() != null){
+				this.lblRepeter.setChecked(true);
+				this.joursRepetes = parcours.getJoursRepetes();
+				this.lblRepeter.callOnClick();
+				this.majAffichageJoursSelectionnes();
+			} 
+			this.lblNotes.setText(parcours.getNotes());
+			this.calendrier.setTimeInMillis(Long.parseLong(parcours.getTimestampDepart()));
+		} 
+		
+		this.verifierTypeParcours(this.lblTypeParcours.isChecked());
 		
 		this.lblDateDepart.setText(Util.dateFormat.format(calendrier.getTime()));
 		this.lblHeureDepart.setText(Util.timeFormat.format(calendrier.getTime()));
@@ -121,8 +150,6 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 	private void sauvegarderParcours(){
 		
 		if(this.verifierChamps()){
-			Parcours parcours = null;
-			
 			this.adresseDepart = this.lblAdresseDepart.getText().toString();
 			this.adresseDestination = this.lblAdresseDestination.getText().toString();
 			this.timestampDepart = this.calendrier.getTimeInMillis() + "";
@@ -131,31 +158,46 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 			if(!this.repeter)
 				this.joursRepetes = null;
 			
-
-
+			String id_Parcours;
+			if(this.modeModification)
+				id_Parcours = this.parcours.getId();
+			else
+				id_Parcours = Calendar.getInstance().getTimeInMillis() + "";
+			
 			if(this.typeParcours){	// True -> Conducteur	
 				this.nbPlaces = Integer.parseInt(this.lblNbPlaces.getText().toString());
 				this.distanceSupp = Double.parseDouble(this.lblDistanceSupp.getText().toString());
 				
-				parcours = new Parcours(
-						Calendar.getInstance().getTimeInMillis() + "", 
+				this.parcours = new Parcours(
+						id_Parcours, 
 						utilisateur.getCourriel(), this.typeParcours, 
 						this.adresseDepart, this.adresseDestination, this.timestampDepart,
 						this.joursRepetes, this.nbPlaces, this.distanceSupp, this.notes, false);
 			} else { // False -> Passager
-				parcours = new Parcours(
-						Calendar.getInstance().getTimeInMillis() + "",
+				this.parcours = new Parcours(
+						id_Parcours,
 						utilisateur.getCourriel(), this.typeParcours,
 						this.adresseDepart, this.adresseDestination, this.timestampDepart,
 						this.joursRepetes, this.notes, false);
 			}
 			
-			if(enregistrementLocalParcours(parcours)){
-				Util.easyToast(this, R.string.txt_parcours_cree);
-				this.finish();
+			if(this.modeModification){
+				if(miseAJourLocalParcours(this.parcours)){
+					Util.easyToast(this, R.string.txt_parcours_modifie);
+					this.finish();
+				}
+				else
+					Util.easyToast(this, R.string.txt_parcours_erreur_modification);
+			}else{
+				if(enregistrementLocalParcours(this.parcours)){
+					Util.easyToast(this, R.string.txt_parcours_cree);
+					this.finish();
+				}
+				else
+					Util.easyToast(this, R.string.txt_parcours_erreur_creation);
 			}
-			else
-				Util.easyToast(this, R.string.txt_parcours_erreur_creation);
+			
+			
 		}
 	}
 	
@@ -164,14 +206,26 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 		ParcoursDataSource pds = new ParcoursDataSource(this);
 		try{
 			pds.open();
-			pds.insert(p_Parcours);
+			Boolean valide = pds.insert(p_Parcours);
 			pds.close();
-			return true;
+			return valide;
 		}catch(Exception e){
-			Log.i(TAG, e.toString());
+			e.printStackTrace();
 			return false;
 		}
-		
+	}
+	
+	private boolean miseAJourLocalParcours(Parcours p_Parcours){
+		ParcoursDataSource pds = new ParcoursDataSource(this);
+		try{
+			pds.open();
+			boolean valide = pds.update(p_Parcours);
+			pds.close();
+			return valide;
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 	private boolean verifierChamps(){
@@ -229,14 +283,9 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 			this.findViewById(R.id.creation_parcours_repetitions).setVisibility(View.VISIBLE);
 			if(this.joursRepetes == null){
 				this.joursRepetes = new ArrayList<Integer>();
-				this.joursRepetes.add(Calendar.SUNDAY);
-				this.joursRepetes.add(Calendar.MONDAY);
-				this.joursRepetes.add(Calendar.TUESDAY);
-				this.joursRepetes.add(Calendar.WEDNESDAY);
-				this.joursRepetes.add(Calendar.THURSDAY);
-				this.joursRepetes.add(Calendar.FRIDAY);
-				this.joursRepetes.add(Calendar.SATURDAY);
 			}
+			
+			
 				
 		} else {
 			this.findViewById(R.id.creation_parcours_repetitions).setVisibility(View.GONE);
@@ -271,6 +320,39 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 			return Calendar.SATURDAY;
 		default:
 			return -1;
+		}
+	}
+	
+	private void majAffichageJoursSelectionnes(){
+		for (int id_jour : this.joursRepetes) {
+			int id_view;
+			switch(id_jour){
+			case Calendar.SUNDAY:
+				id_view = R.id.creation_parcours_rep_dimanche;
+				break;
+			case Calendar.MONDAY:
+				id_view = R.id.creation_parcours_rep_lundi;
+				break;
+			case Calendar.TUESDAY:
+				id_view = R.id.creation_parcours_rep_mardi;
+				break;
+			case Calendar.WEDNESDAY:
+				id_view = R.id.creation_parcours_rep_mercredi;
+				break;
+			case Calendar.THURSDAY:
+				id_view = R.id.creation_parcours_rep_jeudi;
+				break;
+			case Calendar.FRIDAY:
+				id_view = R.id.creation_parcours_rep_vendredi;
+				break;
+			case Calendar.SATURDAY:
+				id_view = R.id.creation_parcours_rep_samedi;
+				break;
+			default:
+				id_view = -1;
+			}
+			if(id_view != -1)
+				this.findViewById(id_view).setBackgroundResource(R.drawable.ic_panorama_fisheye_black_48dp);
 		}
 	}
 		

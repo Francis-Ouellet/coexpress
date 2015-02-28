@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.francisouellet.covoiturageexpress.R;
 import com.francisouellet.covoiturageexpress.classes.Parcours;
+import com.francisouellet.covoiturageexpress.database.ParcoursDataSource;
 import com.francisouellet.covoiturageexpress.util.Util;
 
 import android.app.Activity;
@@ -13,6 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -49,6 +53,9 @@ public class ParcoursAdapter extends ArrayAdapter<Parcours>{
 		else{
 			contenant = (ParcoursHolder)view.getTag();
 		}
+		
+		contenant.actif.setOnCheckedChangeListener(
+				new CustomOnCheckedChangeListener(view,this.m_ListeParcours.get(p_Position)));
 		
 		Parcours parcours = (Parcours)this.m_ListeParcours.get(p_Position);
 		
@@ -94,6 +101,37 @@ public class ParcoursAdapter extends ArrayAdapter<Parcours>{
 		contenant.actif.setChecked(parcours.getActif());
 		
 		return view;
+	}
+	
+	private class CustomOnCheckedChangeListener implements OnCheckedChangeListener{
+		
+		private View view;
+		private Parcours parcours;
+		
+		public CustomOnCheckedChangeListener(View p_view, Parcours p_parcours){
+			this.view = p_view;
+			this.parcours = p_parcours;
+		}
+		
+		@Override
+		public void onCheckedChanged(CompoundButton buttonView,
+				boolean isChecked) {
+			parcours.setActif(isChecked);
+			
+			try{
+				ParcoursDataSource psd = new ParcoursDataSource(view.getContext());
+				psd.open();
+				psd.update(parcours);
+				psd.close();
+			}catch(Exception e){}
+			
+			if(parcours.getActif()){
+				view.findViewById(R.id.parcours_item_conteneur_modifier_supprimer).setVisibility(View.INVISIBLE);
+			}
+			else{
+				view.findViewById(R.id.parcours_item_conteneur_modifier_supprimer).setVisibility(View.VISIBLE);
+			}
+		}
 	}
 	
 	private static class ParcoursHolder{

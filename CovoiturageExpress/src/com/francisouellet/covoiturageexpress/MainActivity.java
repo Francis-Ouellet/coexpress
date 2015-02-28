@@ -8,6 +8,7 @@ import com.francisouellet.covoiturageexpress.classes.Parcours;
 import com.francisouellet.covoiturageexpress.classes.Utilisateur;
 import com.francisouellet.covoiturageexpress.database.ParcoursDataSource;
 import com.francisouellet.covoiturageexpress.database.UtilisateurDataSource;
+import com.francisouellet.covoiturageexpress.util.Util;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -16,9 +17,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity{
 
 	private final String TAG = "MAIN";
 	
@@ -58,6 +61,7 @@ public class MainActivity extends Activity {
 			m_Adapter = new ParcoursAdapter(this, this.m_Parcours, R.layout.liste_parcours_item);
 			m_ListeParcours.setAdapter(m_Adapter);
 		}
+		
 	}
 
 	@Override
@@ -94,4 +98,28 @@ public class MainActivity extends Activity {
 		Intent i = new Intent(this, CreationParcoursActivity.class);
 		this.startActivity(i);
 	}
+	
+	public void modifierParcours(View v){
+		Parcours parcours = this.m_Parcours.get(m_ListeParcours.getPositionForView(v));
+		Intent i = new Intent(this, CreationParcoursActivity.class);
+		i.putExtra(Util.EXTRA_PARCOURS, parcours);
+		this.startActivity(i);
+	}
+	
+	public void supprimerParcours(View v){
+		try{
+			Parcours parcours = this.m_Parcours.get(m_ListeParcours.getPositionForView(v));
+			this.pds.open();
+			this.pds.remove(parcours.getId());
+			this.pds.close();
+			
+			this.m_Parcours.remove(m_ListeParcours.getPositionForView(v));
+			this.m_Adapter.remove(parcours);
+			this.m_Adapter.notifyDataSetChanged();
+			
+		}catch(Exception e){
+			Util.easyToast(this, R.string.txt_parcours_erreur_suppression);
+			e.printStackTrace();}
+	}
+	
 }

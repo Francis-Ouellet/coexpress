@@ -71,7 +71,7 @@ public class ParcoursDataSource extends BaseDataSource<Parcours, String> {
 
 	@Override
 	public void remove(String id) {
-		m_Db.delete(DatabaseHelper.TABLE_PARCOURS, DatabaseHelper.COL_ID + "= ." + id + "'", null);
+		m_Db.delete(DatabaseHelper.TABLE_PARCOURS, DatabaseHelper.COL_ID + "= '" + id + "'", null);
 		
 	}
 

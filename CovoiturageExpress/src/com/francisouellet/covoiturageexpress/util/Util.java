@@ -12,8 +12,14 @@ import android.widget.Toast;
 
 public class Util {
 	
+	/**
+	 * Formatage d'une date et d'une heure
+	 */
 	public static final DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.FULL, Locale.getDefault());
 	public static final DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
+	
+	public static final String EXTRA_PARCOURS = "parcours";
+	
 	
 	/**
 	 * Génère un SHA1 à partir d'une chaîne de caractère

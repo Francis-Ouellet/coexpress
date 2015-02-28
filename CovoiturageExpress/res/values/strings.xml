@@ -63,7 +63,10 @@
     <string name="txt_distance_supp_invalide">Une distance supplémentaire à parcourir doit être fournie</string>
     <string name="txt_date_heure_invalide">La date fournie est antérieure à la date actuelle</string>
     <string name="txt_parcours_cree">Parcours créé avec succès</string>
+    <string name="txt_parcours_modifie">Parcours modifié avec succès</string>
     <string name="txt_parcours_erreur_creation">Erreur lors de la création du parcours</string>
+    <string name="txt_parcours_erreur_suppression">Erreur lors de la suppression du parcours</string>
+    <string name="txt_parcours_erreur_modification">Erreur lors de la modification du parcours</string>
     
 
     <!-- Items de menu -->
