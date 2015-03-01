@@ -1,4 +1,4 @@
-package com.francisouellet.covoiturageexpress.arrayadapters;
+package com.francisouellet.covoiturageexpress.adapters;
 
 import java.util.GregorianCalendar;
 import java.util.List;

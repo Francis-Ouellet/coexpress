@@ -6,6 +6,8 @@
     <string name="title_activity_connexion">Connexion</string>
     <string name="title_activity_creation_compte">Création d\'un compte</string>
     <string name="title_activity_creation_parcours">Ajout d\'un parcours</string>
+    <string name="title_activity_modification_parcours">Modification d\'un parcours</string>
+    <string name="title_activity_parcours_detail">Détails du parcours</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
@@ -21,7 +23,7 @@
     <string name="lbl_nom">Nom</string>
     <string name="lbl_prenom">Prénom</string>
     <string name="lbl_creer_le_compte">Créer le compte</string>
-    
+
     <!-- Création d'un parcours -->
     <string name="lbl_conducteur">Conducteur</string>
     <string name="lbl_passager">Passager</string>
@@ -41,13 +43,15 @@
     <string name="lbl_rep_jeudi">J</string>
     <string name="lbl_rep_vendredi">V</string>
     <string name="lbl_rep_samedi">S</string>
-    
+
     <!-- Liste des parcours -->
     <string name="parcours_item_place_disponible">place disponible</string>
     <string name="parcours_item_places_disponibles">places disponibles</string>
     <string name="parcours_item_demande">Demande</string>
     <string name="parcours_item_place">place</string>
     <string name="parcours_item_places">places</string>
+    <string name="parcours_fragment_titre_parcours">Parcours</string>
+    <string name="parcours_fragment_titre_passagers">Passagers</string>
 
     <!-- Alertes et messages d'erreurs -->
     <string name="txt_courriel_different">Le courriel doit être identique</string>
@@ -67,7 +71,6 @@
     <string name="txt_parcours_erreur_creation">Erreur lors de la création du parcours</string>
     <string name="txt_parcours_erreur_suppression">Erreur lors de la suppression du parcours</string>
     <string name="txt_parcours_erreur_modification">Erreur lors de la modification du parcours</string>
-    
 
     <!-- Items de menu -->
     <string name="action_deconnexion">Déconnexion</string>
@@ -77,5 +80,5 @@
     <string name="desc_bouton_modifier">Bouton modifier</string>
     <string name="desc_bouton_supprimer">Bouton supprimer</string>
     
-
+    
 </resources>

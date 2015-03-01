@@ -27,14 +27,14 @@
 	        android:layout_height="wrap_content"
 	        android:hint="@string/lbl_adresse_depart"
 	        android:id="@+id/creation_parcours_adresse_depart"
-	        android:maxLines="1" />
+	        android:inputType="textPostalAddress" />
 	    
 	    <EditText 
 	        android:layout_width="fill_parent"
 	        android:layout_height="wrap_content"
 	        android:hint="@string/lbl_adresse_destination"
 	        android:id="@+id/creation_parcours_adresse_destination"
-	        android:maxLines="1" />
+	        android:inputType="textPostalAddress" />
 	    
 	    <EditText 
 	        android:layout_width="fill_parent"

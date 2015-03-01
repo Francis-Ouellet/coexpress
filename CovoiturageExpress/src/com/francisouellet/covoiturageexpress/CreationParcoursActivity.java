@@ -100,6 +100,7 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 		this.calendrier = (GregorianCalendar)GregorianCalendar.getInstance(Locale.getDefault());
 		
 		if(parcours != null){
+			getActionBar().setTitle(R.string.title_activity_modification_parcours);
 			this.modeModification = true;
 			this.lblTypeParcours.setChecked(parcours.getConducteur());
 			this.lblAdresseDepart.setText(parcours.getAdresseDepart());

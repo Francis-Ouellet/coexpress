@@ -3,7 +3,7 @@ package com.francisouellet.covoiturageexpress;
 import java.util.List;
 
 import com.francisouellet.covoiturageexpress.R;
-import com.francisouellet.covoiturageexpress.arrayadapters.ParcoursAdapter;
+import com.francisouellet.covoiturageexpress.adapters.ParcoursAdapter;
 import com.francisouellet.covoiturageexpress.classes.Parcours;
 import com.francisouellet.covoiturageexpress.classes.Utilisateur;
 import com.francisouellet.covoiturageexpress.database.ParcoursDataSource;
@@ -17,11 +17,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 
-public class MainActivity extends Activity{
+public class MainActivity extends Activity implements OnItemClickListener{
 
 	private final String TAG = "MAIN";
 	
@@ -39,6 +41,8 @@ public class MainActivity extends Activity{
 		setContentView(R.layout.activity_main);
 		
 		m_ListeParcours = (ListView)this.findViewById(R.id.liste_mes_parcours);
+		m_ListeParcours.setOnItemClickListener(this);
+		
 	}
 	
 	@Override
@@ -120,6 +124,14 @@ public class MainActivity extends Activity{
 		}catch(Exception e){
 			Util.easyToast(this, R.string.txt_parcours_erreur_suppression);
 			e.printStackTrace();}
+	}
+	
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		Intent i = new Intent(this, ParcoursDetailActivity.class);
+		i.putExtra(Util.EXTRA_PARCOURS, this.m_Parcours.get(position));
+		this.startActivity(i);
 	}
 	
 }
