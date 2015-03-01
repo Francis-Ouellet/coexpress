@@ -1,68 +1,73 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
+    
     tools:context="com.francisouellet.covoiturageexpress.CreationCompteActivity" >
-
-    <EditText
-        android:layout_width="fill_parent"
+	
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/lbl_courriel"
-        android:inputType="textEmailAddress"
-        android:id="@+id/creation_compte_courriel" />
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_gravity="center"
+        android:orientation="vertical" >
+        
+        <EditText
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:hint="@string/lbl_courriel"
+	        android:inputType="textEmailAddress"
+	        android:id="@+id/creation_compte_courriel" />
     
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/lbl_confirmer_le_courriel"
-        android:inputType="textEmailAddress"
-        android:id="@+id/creation_compte_confirmation_courriel" />
+	    <EditText
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:hint="@string/lbl_confirmer_le_courriel"
+	        android:inputType="textEmailAddress"
+	        android:id="@+id/creation_compte_confirmation_courriel" />
+	    
+	    <EditText
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:hint="@string/lbl_mot_de_passe"
+	        android:inputType="textPassword"
+	        android:id="@+id/creation_compte_mot_de_passe" />
+	    
+	    <EditText
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:hint="@string/lbl_confirmer_le_mot_de_passe"
+	        android:inputType="textPassword"
+	        android:id="@+id/creation_compte_confirmation_mot_de_passe" />
+	    
+	    <EditText
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:hint="@string/lbl_prenom"
+	        android:inputType="textCapWords"
+	        android:id="@+id/creation_compte_prenom" />
+	    
+	    <EditText
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:hint="@string/lbl_nom"
+	        android:inputType="textCapWords"
+	        android:id="@+id/creation_compte_nom" />
+	    
+	    <EditText
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:hint="@string/lbl_no_de_telephone"
+	        android:inputType="phone"
+	        android:id="@+id/creation_compte_no_telephone" />
+	    
+	    <Button 
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:text="@string/lbl_creer_le_compte"
+	        android:onClick="CreerCompte"/>
+	    
+    </LinearLayout>
     
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/lbl_mot_de_passe"
-        android:inputType="textPassword"
-        android:id="@+id/creation_compte_mot_de_passe" />
-    
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/lbl_confirmer_le_mot_de_passe"
-        android:inputType="textPassword"
-        android:id="@+id/creation_compte_confirmation_mot_de_passe" />
-    
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/lbl_prenom"
-        android:inputType="textCapWords"
-        android:id="@+id/creation_compte_prenom" />
-    
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/lbl_nom"
-        android:inputType="textCapWords"
-        android:id="@+id/creation_compte_nom" />
-    
-    <EditText
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/lbl_no_de_telephone"
-        android:inputType="phone"
-        android:id="@+id/creation_compte_no_telephone" />
-    
-    <Button 
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/lbl_creer_le_compte"
-        android:onClick="CreerCompte"/>
-
-</LinearLayout>
+</ScrollView>

@@ -35,6 +35,10 @@ import android.widget.TimePicker;
 public class CreationParcoursActivity extends Activity implements OnCheckedChangeListener{
 	
 	private final String TAG = "CREATION_PARCOURS";
+	private final String JOURS_REPETES = "jours_repetes";
+	private final String TIMESTAMP_DEPART = "timestamp_depart";
+	private final String REPETER = "repeter";
+	private final String MODIFICATION = "modification";
 	private Bundle extras;
 	private Boolean modeModification;
 	
@@ -93,13 +97,26 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 		extras = this.getIntent().getExtras();
 		if(extras != null){
 			parcours = (Parcours)extras.getSerializable(Util.EXTRA_PARCOURS);
+			modeModification = true;
 		}
 		else
 			modeModification = false;
 		
 		this.calendrier = (GregorianCalendar)GregorianCalendar.getInstance(Locale.getDefault());
 		
-		if(parcours != null){
+		if(savedInstanceState != null){
+			// Répétitions
+			this.joursRepetes = savedInstanceState.getIntegerArrayList(JOURS_REPETES);
+			if(savedInstanceState.getBoolean(REPETER)){
+				this.lblRepeter.setChecked(true);
+				this.lblRepeter.callOnClick();
+			}
+			// Date
+			this.calendrier.setTimeInMillis(savedInstanceState.getLong(TIMESTAMP_DEPART));
+			// ModeModification
+			this.modeModification = savedInstanceState.getBoolean(MODIFICATION);
+		}
+		else if(parcours != null){
 			getActionBar().setTitle(R.string.title_activity_modification_parcours);
 			this.modeModification = true;
 			this.lblTypeParcours.setChecked(parcours.getConducteur());
@@ -111,7 +128,6 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 				this.lblRepeter.setChecked(true);
 				this.joursRepetes = parcours.getJoursRepetes();
 				this.lblRepeter.callOnClick();
-				this.majAffichageJoursSelectionnes();
 			} 
 			this.lblNotes.setText(parcours.getNotes());
 			this.calendrier.setTimeInMillis(Long.parseLong(parcours.getTimestampDepart()));
@@ -141,6 +157,15 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		outState.putIntegerArrayList(this.JOURS_REPETES, (ArrayList<Integer>)this.joursRepetes);
+		outState.putLong(TIMESTAMP_DEPART, this.calendrier.getTimeInMillis());
+		outState.putBoolean(REPETER, this.repeter);
+		outState.putBoolean(MODIFICATION, this.modeModification);
 	}
 	
 	@Override
@@ -201,7 +226,6 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 			
 		}
 	}
-	
 	
 	private boolean enregistrementLocalParcours(Parcours p_Parcours){
 		ParcoursDataSource pds = new ParcoursDataSource(this);
@@ -285,12 +309,12 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 			if(this.joursRepetes == null){
 				this.joursRepetes = new ArrayList<Integer>();
 			}
+			else
+				majAffichageJoursSelectionnes();
 			
-			
-				
-		} else {
+		} else 
 			this.findViewById(R.id.creation_parcours_repetitions).setVisibility(View.GONE);
-		}
+		
 	}
 	
 	public void clickJourRepetition(View v){
