@@ -23,15 +23,17 @@ class UtilisateurHandler(webapp2.RequestHandler):
                 query = Utilisateur.query().order(Utilisateur.key)
                 
                 for u in query:
-                    resultat.append(u.to_dict(exclude='password'))
-            
+                    dictUtilisateur = u.to_dict(exclude=['password'])
+                    dictUtilisateur['courriel'] = u.key.id()
+                    resultat.append(dictUtilisateur)
             else:
                 utilisateur = ndb.Key('Utilisateur', username).get()
                 # L'utilisateur n'existe pas
                 if(utilisateur is None):
-                    self.response.set_status(404)
+                    self.error(404)
                     return
-                resultat = utilisateur.to_dict(exclude='password')
+                resultat = utilisateur.to_dict()
+                resultat['courriel'] = utilisateur.key.id()
             
             self.response.headers['Content-Type'] = 'application/json'
             self.response.out.write(json.dumps(resultat))
@@ -46,7 +48,32 @@ class UtilisateurHandler(webapp2.RequestHandler):
             
     def put(self, username):
         try:
-            resultat = None
+            cle = ndb.Key('Utilisateur', username)
+            utilisateur = cle.get()
+            jsonObj = json.loads(self.request.body)
+            status = 204
+            # Ajout de l'utilisateur
+            if(utilisateur is None):
+                utilisateur = Utilisateur(key=cle)
+                utilisateur.nom = jsonObj['nom']
+                utilisateur.prenom = jsonObj['prenom']
+                utilisateur.password = jsonObj['password']
+                utilisateur.telephone = jsonObj['telephone']
+                utilisateur.put()
+                status = 201
+            elif(jsonObj['previousPassword'] is not None and utilisateur.password == jsonObj['previousPassword']):
+                if(jsonObj['nom'] is not None):
+                    utilisateur.nom = jsonObj['nom']
+                if(jsonObj['prenom'] is not None):
+                    utilisateur.prenom = jsonObj['prenom']
+                if(jsonObj['password'] is not None):
+                    utilisateur.password = jsonObj['password']
+                if(jsonObj['telephone'] is not None):
+                    utilisateur.telephone = jsonObj['telephone']
+                utilisateur.put()
+                status = 201
+            self.response.set_status(status)
+            
         except (ValueError, db.BadValueError), ex:
             logging.info(ex)
             self.error(400)
@@ -57,7 +84,21 @@ class UtilisateurHandler(webapp2.RequestHandler):
         
     def delete(self, username = None):
         try:
-            resultat = None
+            if(username is None):
+                ndb.delete_multi(Utilisateur.query().fetch(keys_only=True))
+                status = 204
+            else:
+                cle = ndb.Key('Utilisateur', username)
+                if(cle.get() is not None):
+                    jsonObj = json.loads(self.request.body)
+                    if(cle.get().password == jsonObj['password']):
+                        cle.delete()
+                        status = 204
+                else:
+                    status = 404
+            
+            self.response.set_status(status)
+                    
         except (ValueError, db.BadValueError), ex:
             logging.info(ex)
             self.error(400)

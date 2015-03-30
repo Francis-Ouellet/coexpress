@@ -20,6 +20,10 @@ public class Util {
 	
 	public static final String EXTRA_PARCOURS = "parcours";
 	
+	//public static final String WEB_SERVICE = "localhost:11080";
+	public static final String WEB_SERVICE = "coexpress624fx.appspot.com";
+	public static final String REST_UTILISATEURS = "/utilisateurs";
+	
 	
 	/**
 	 * Génère un SHA1 à partir d'une chaîne de caractère

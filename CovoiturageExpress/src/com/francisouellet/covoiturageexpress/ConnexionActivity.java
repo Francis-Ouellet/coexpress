@@ -1,11 +1,21 @@
 package com.francisouellet.covoiturageexpress;
 
+import java.net.URI;
+
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import com.francisouellet.covoiturageexpress.classes.Utilisateur;
 import com.francisouellet.covoiturageexpress.database.UtilisateurDataSource;
+import com.francisouellet.covoiturageexpress.util.JsonParser;
 import com.francisouellet.covoiturageexpress.util.Util;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -22,6 +32,8 @@ public class ConnexionActivity extends Activity {
 	
 	private UtilisateurDataSource uds;
 	private Utilisateur utilisateur;
+	
+	private HttpClient m_ClientHttp = new DefaultHttpClient();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,35 +79,85 @@ public class ConnexionActivity extends Activity {
 	}
 	
 	public void connexion(View v){
-		// TODO Connexion via le Web Service
 		try{
 			courriel = lblCourriel.getText().toString().trim();
 			motDePasse = Util.sha1(lblMotDePasse.getText().toString().trim());
 			
-			// Obtient l'utilisateur qui tente de se connecter
-			uds.open();
-			utilisateur = uds.get(courriel);
-			uds.close();
+			new AsyncConnexion(this).execute(courriel, motDePasse);
+		}
+		catch(Exception e){e.printStackTrace();}
+	}
+	
+	/**
+	 * Classe permettant de vérifier la validité de la personne tentant de se connecter à l'application
+	 * @author Francis Ouellet
+	 */
+	private class AsyncConnexion extends AsyncTask<String, Void, Utilisateur>{
+		
+		private Context m_Context;
+		private Exception m_Exception;
+		
+		public AsyncConnexion(Context p_Context){
+			this.m_Context = p_Context;
+		}
+		
+		@Override
+		protected Utilisateur doInBackground(String... params) {
 			
-			// Si l'utilisateur existe et que le mot de passe est valide
-			if(utilisateur != null && utilisateur.getEncodedPassword().equals(motDePasse)){
-				// Indique que l'utilisateur est connecté
-				utilisateur.setEstConnecte(true);
-				uds.open();
-				// Indique que l'utilisateur est le dernier connecté et le met a jour
-				uds.updateLastConnected(utilisateur);
-				uds.close();
+			Utilisateur u = null;
+			try{
 				
-				// Ouvre l'activité principale
-				Intent i = new Intent(this, MainActivity.class);
-				this.startActivity(i);
-				this.finish();
+				String courriel = params[0];
+				String motDePasse = params[1];
+				
+				// Récupère l'utilisateur tentant de se connecter et le transforme en utilisateur existant				
+				URI uri = new URI("http",Util.WEB_SERVICE,Util.REST_UTILISATEURS + "/" + courriel, null, null);
+				HttpGet get = new HttpGet(uri);
+				String body = m_ClientHttp.execute(get, new BasicResponseHandler());
+				u = JsonParser.ToUtilisateur(body);
+				
+				// Si le mot de passe de l'utilisateur reçu est différent du mot de passe inscrit,
+				// on invalide le traitement
+				if(!u.getEncodedPassword().equals(motDePasse))
+					u = null;
+				
+			}catch(Exception e){
+				this.m_Exception = e; 
+				e.printStackTrace();
 			}
+			return u;
+		}
+		
+		@Override
+		protected void onPostExecute(Utilisateur u) {
+			// Pas d'erreur, le service Web renvoie un utilisateur
+			if(this.m_Exception == null && u != null){
+				try{
+					UtilisateurDataSource uds = new UtilisateurDataSource(m_Context);
+					uds.open();
+					
+					// L'utilisateur n'existe pas en local. On le crée
+					if(uds.get(u.getCourriel()) == null){
+						uds.insert(u);
+					}
+					// Connexion de l'utilisateur
+					u.setEstConnecte(true);
+					uds.updateLastConnected(u);
+					
+					uds.close();
+					
+					// Ouvre l'activité principale
+					Intent i = new Intent(m_Context, MainActivity.class);
+					startActivity(i);
+					finish();
+				}
+				catch(Exception e){e.printStackTrace();}
+			}
+			// Erreur du traitement, utilisateur invalide ou inconnu
 			else{
-				this.lblMotDePasse.setText("");
-				Util.easyToast(this, R.string.txt_erreur_connexion);
+				lblMotDePasse.setText("");
+				Util.easyToast(m_Context, R.string.txt_erreur_connexion);
 			}
-			
-		} catch(Exception e){Log.i(TAG, e.toString());}
+		}
 	}
 }
