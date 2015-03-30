@@ -7,6 +7,7 @@ class Utilisateur(ndb.Model):
     telephone = ndb.StringProperty()
     
 class Parcours(ndb.Model):
+    proprietaire = ndb.StringProperty()
     typeParcours = ndb.BooleanProperty()
     departLatitude = ndb.StringProperty()
     departLongitude = ndb.StringProperty()
