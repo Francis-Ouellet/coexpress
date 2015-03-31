@@ -3,6 +3,8 @@ package com.francisouellet.covoiturageexpress.classes;
 import java.io.Serializable;
 import java.util.List;
 
+import android.location.Geocoder;
+
 /**
  * 
  * @author 	Francis Ouellet
@@ -15,7 +17,11 @@ public class Parcours implements Serializable {
 	private String m_Proprietaire;
 	private Boolean m_Conducteur;
 	private String m_AdresseDepart;
+	private Double m_DepartLatitude;
+	private Double m_DepartLongitude;
 	private String m_AdresseDestination;
+	private Double m_DestinationLatitude;
+	private Double m_DestinationLongitude;
 	private String m_TimestampDepart;
 	private List<Integer> m_JoursRepetes;
 	private int m_NbPlaces;
@@ -29,7 +35,11 @@ public class Parcours implements Serializable {
 	 * @param p_Proprietaire
 	 * @param p_Conducteur				Indique si le parcours est en tant que conducteur (true) ou passager (false)
 	 * @param p_AdresseDepart
+	 * @param p_DepartLatitude
+	 * @param p_DepartLongitude
 	 * @param p_AdresseDestination
+	 * @param p_DestinationLatitude
+	 * @param p_DestinationLongitude
 	 * @param p_TimestampDepart
 	 * @param p_JoursRepetes			Liste des jours où il faut répéter la demande de parcours
 	 * @param p_NbPlaces
@@ -38,16 +48,20 @@ public class Parcours implements Serializable {
 	 * @param p_Actif
 	 */
 	public Parcours(
-			String p_Id, String p_Proprietaire, 
-			Boolean p_Conducteur, String p_AdresseDepart, 
-			String p_AdresseDestination, String p_TimestampDepart,
-			List<Integer> p_JoursRepetes, int p_NbPlaces, double p_DistanceSupplementaire, 
-			String p_Notes, Boolean p_Actif){
+			String p_Id, String p_Proprietaire, Boolean p_Conducteur, 
+			String p_AdresseDepart, Double p_DepartLatitude, Double p_DepartLongitude, 
+			String p_AdresseDestination, Double p_DestinationLatitude, Double p_DestinationLongitude, 
+			String p_TimestampDepart, List<Integer> p_JoursRepetes, int p_NbPlaces, 
+			double p_DistanceSupplementaire, String p_Notes, Boolean p_Actif){
 		this.m_Id = p_Id;
 		this.m_Proprietaire = p_Proprietaire;
 		this.m_Conducteur = p_Conducteur;
 		this.m_AdresseDepart = p_AdresseDepart;
+		this.m_DepartLatitude = p_DepartLatitude;
+		this.m_DepartLongitude = p_DepartLongitude;
 		this.m_AdresseDestination = p_AdresseDestination;
+		this.m_DestinationLatitude = p_DestinationLatitude;
+		this.m_DestinationLongitude = p_DestinationLongitude;
 		this.m_TimestampDepart = p_TimestampDepart;
 		this.m_JoursRepetes = p_JoursRepetes;
 		this.m_NbPlaces = p_NbPlaces;
@@ -62,7 +76,11 @@ public class Parcours implements Serializable {
 	 * @param p_Proprietaire
 	 * @param p_Conducteur				Indique si le parcours est en tant que conducteur (true) ou passager (false)
 	 * @param p_AdresseDepart
+	 * @param p_DepartLatitude
+	 * @param p_DepartLongitude
 	 * @param p_AdresseDestination
+	 * @param p_DestinationLatitude
+	 * @param p_DestinationLongitude
 	 * @param p_TimestampDepart
 	 * @param p_NbPlaces
 	 * @param p_DistanceSupplementaire
@@ -70,16 +88,20 @@ public class Parcours implements Serializable {
 	 * @param p_Actif
 	 */
 	public Parcours(
-			String p_Id, String p_Proprietaire, 
-			Boolean p_Conducteur, String p_AdresseDepart, 
-			String p_AdresseDestination, String p_TimestampDepart,
-			int p_NbPlaces, double p_DistanceSupplementaire, 
+			String p_Id, String p_Proprietaire, Boolean p_Conducteur, 
+			String p_AdresseDepart, Double p_DepartLatitude, Double p_DepartLongitude, 
+			String p_AdresseDestination, Double p_DestinationLatitude, Double p_DestinationLongitude, 
+			String p_TimestampDepart, int p_NbPlaces, double p_DistanceSupplementaire, 
 			String p_Notes, Boolean p_Actif){
 		this.m_Id = p_Id;
 		this.m_Proprietaire = p_Proprietaire;
 		this.m_Conducteur = p_Conducteur;
 		this.m_AdresseDepart = p_AdresseDepart;
+		this.m_DepartLatitude = p_DepartLatitude;
+		this.m_DepartLongitude = p_DepartLongitude;
 		this.m_AdresseDestination = p_AdresseDestination;
+		this.m_DestinationLatitude = p_DestinationLatitude;
+		this.m_DestinationLongitude = p_DestinationLongitude;
 		this.m_TimestampDepart = p_TimestampDepart;
 		this.m_NbPlaces = p_NbPlaces;
 		this.m_DistanceSupplementaire = p_DistanceSupplementaire;
@@ -93,22 +115,30 @@ public class Parcours implements Serializable {
 	 * @param p_Proprietaire
 	 * @param p_Conducteur				Indique si le parcours est en tant que conducteur (true) ou passager (false)
 	 * @param p_AdresseDepart
+	 * @param p_DepartLatitude
+	 * @param p_DepartLongitude
 	 * @param p_AdresseDestination
+	 * @param p_DestinationLatitude
+	 * @param p_DestinationLongitude
 	 * @param p_TimestampDepart
 	 * @param p_JoursRepetes			Liste des jours où il faut répéter la demande de parcours
 	 * @param p_Notes
 	 * @param p_Actif
 	 */
 	public Parcours(
-			String p_Id, String p_Proprietaire, 
-			Boolean p_Conducteur, String p_AdresseDepart, 
-			String p_AdresseDestination, String p_TimestampDepart,
-			List<Integer> p_JoursRepetes, String p_Notes, Boolean p_Actif){
+			String p_Id, String p_Proprietaire, Boolean p_Conducteur, 
+			String p_AdresseDepart, Double p_DepartLatitude, Double p_DepartLongitude, 
+			String p_AdresseDestination, Double p_DestinationLatitude, Double p_DestinationLongitude, 
+			String p_TimestampDepart, List<Integer> p_JoursRepetes, String p_Notes, Boolean p_Actif){
 		this.m_Id = p_Id;
 		this.m_Proprietaire = p_Proprietaire;
 		this.m_Conducteur = p_Conducteur;
 		this.m_AdresseDepart = p_AdresseDepart;
+		this.m_DepartLatitude = p_DepartLatitude;
+		this.m_DepartLongitude = p_DepartLongitude;
 		this.m_AdresseDestination = p_AdresseDestination;
+		this.m_DestinationLatitude = p_DestinationLatitude;
+		this.m_DestinationLongitude = p_DestinationLongitude;
 		this.m_TimestampDepart = p_TimestampDepart;
 		this.m_JoursRepetes = p_JoursRepetes;
 		this.m_NbPlaces = 1;
@@ -120,23 +150,31 @@ public class Parcours implements Serializable {
 	 * Constructeur pour passager, sans répétitions
 	 * @param p_Id
 	 * @param p_Proprietaire
-	 * @param p_Conducteur				Indique si le parcours est en tant que conducteur (true) ou passager (false)
+	 * @param p_Conducteur					Indique si le parcours est en tant que conducteur (true) ou passager (false)
 	 * @param p_AdresseDepart
+	 * @param p_DepartLatitude
+	 * @param p_DepartLongitude
 	 * @param p_AdresseDestination
+	 * @param p_DestinationLatitude
+	 * @param p_DestinationLongitude
 	 * @param p_TimestampDepart
 	 * @param p_Notes
 	 * @param p_Actif
 	 */
 	public Parcours(
-			String p_Id, String p_Proprietaire, 
-			Boolean p_Conducteur, String p_AdresseDepart, 
-			String p_AdresseDestination, String p_TimestampDepart, 
-			String p_Notes, Boolean p_Actif){
+			String p_Id, String p_Proprietaire, Boolean p_Conducteur, 
+			String p_AdresseDepart, Double p_DepartLatitude, Double p_DepartLongitude, 
+			String p_AdresseDestination, Double p_DestinationLatitude, Double p_DestinationLongitude, 
+			String p_TimestampDepart, String p_Notes, Boolean p_Actif){
 		this.m_Id = p_Id;
 		this.m_Proprietaire = p_Proprietaire;
 		this.m_Conducteur = p_Conducteur;
 		this.m_AdresseDepart = p_AdresseDepart;
+		this.m_DepartLatitude = p_DepartLatitude;
+		this.m_DepartLongitude = p_DepartLongitude;
 		this.m_AdresseDestination = p_AdresseDestination;
+		this.m_DestinationLatitude = p_DestinationLatitude;
+		this.m_DestinationLongitude = p_DestinationLongitude;
 		this.m_TimestampDepart = p_TimestampDepart;
 		this.m_NbPlaces = 1;
 		this.m_Notes = p_Notes;
@@ -175,12 +213,44 @@ public class Parcours implements Serializable {
 		this.m_AdresseDepart = m_AdresseDepart;
 	}
 
+	public Double getDepartLatitude() {
+		return m_DepartLatitude;
+	}
+
+	public void setDepartLatitude(Double m_DepartLatitude) {
+		this.m_DepartLatitude = m_DepartLatitude;
+	}
+
+	public Double getDepartLongitude() {
+		return m_DepartLongitude;
+	}
+
+	public void setDepartLongitude(Double m_DepartLongitude) {
+		this.m_DepartLongitude = m_DepartLongitude;
+	}
+
 	public String getAdresseDestination() {
 		return m_AdresseDestination;
 	}
 
 	public void setAdresseDestination(String m_AdresseDestination) {
 		this.m_AdresseDestination = m_AdresseDestination;
+	}
+
+	public Double getDestinationLatitude() {
+		return m_DestinationLatitude;
+	}
+
+	public void setDestinationLatitude(Double m_DestinationLatitude) {
+		this.m_DestinationLatitude = m_DestinationLatitude;
+	}
+
+	public Double getDestinationLongitude() {
+		return m_DestinationLongitude;
+	}
+
+	public void setDestinationLongitude(Double m_DestinationLongitude) {
+		this.m_DestinationLongitude = m_DestinationLongitude;
 	}
 
 	public String getTimestampDepart() {

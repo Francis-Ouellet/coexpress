@@ -10,6 +10,8 @@ import com.francisouellet.covoiturageexpress.util.Util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,9 +63,15 @@ public class ParcoursAdapter extends ArrayAdapter<Parcours>{
 		
 		if(parcours.getAdresseDepart() != null)
 			contenant.adresseDepart.setText(parcours.getAdresseDepart());
+		else if(parcours.getDepartLatitude() != null && parcours.getDepartLongitude() != null)
+			contenant.adresseDepart.setText(Util.obtenirAdresse(parcours.getDepartLatitude(),
+					parcours.getDepartLongitude(), m_Context));
 		
 		if(parcours.getAdresseDestination() != null)
 			contenant.adresseDestination.setText(parcours.getAdresseDestination());
+		else if(parcours.getDestinationLatitude() != null && parcours.getDestinationLongitude() != null)
+			contenant.adresseDestination.setText(Util.obtenirAdresse(parcours.getDestinationLatitude(), 
+					parcours.getDestinationLongitude(), m_Context));
 		
 		if(parcours.getTimestampDepart() != null){
 			GregorianCalendar calendrier = new GregorianCalendar();

@@ -22,7 +22,7 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 	public ParcoursDetailPagerAdapter(FragmentManager fm, Parcours p_Parcours) {
 		super(fm);
 		this.m_Parcours = p_Parcours;
-		}
+	}
 
 	@Override
 	public Fragment getItem(int arg0) {
@@ -38,7 +38,6 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 
 	@Override
 	public int getCount() {
-		// TODO Auto-generated method stub
 		return 2;
 	}
 
@@ -86,10 +85,22 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 							getString(R.string.parcours_item_place));
 			}
 			
-			((TextView)racine.findViewById(R.id.fragment_parcours_detail_adresse_depart)).setText(
-					parcours.getAdresseDepart());
-			((TextView)racine.findViewById(R.id.fragment_parcours_detail_adresse_destination)).setText(
-					parcours.getAdresseDestination());
+			if(parcours.getAdresseDepart() != null)
+				((TextView)racine.findViewById(R.id.fragment_parcours_detail_adresse_depart)).setText(
+						parcours.getAdresseDepart());
+			else
+				((TextView)racine.findViewById(R.id.fragment_parcours_detail_adresse_depart)).setText(
+					Util.obtenirAdresse(parcours.getDepartLatitude(), 
+							parcours.getDepartLongitude(), getActivity()));
+			
+			if(parcours.getAdresseDestination() != null)
+				((TextView)racine.findViewById(R.id.fragment_parcours_detail_adresse_destination)).setText(
+						parcours.getAdresseDestination());
+			else
+				((TextView)racine.findViewById(R.id.fragment_parcours_detail_adresse_destination)).setText(
+					Util.obtenirAdresse(parcours.getDestinationLatitude(),
+							parcours.getDestinationLongitude(), getActivity()));
+			
 			((TextView)racine.findViewById(R.id.fragment_parcours_detail_notes)).setText(
 					parcours.getNotes());
 			

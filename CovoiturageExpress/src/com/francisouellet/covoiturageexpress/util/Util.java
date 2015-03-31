@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Locale;
 
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.widget.Toast;
 
 public class Util {
@@ -23,6 +25,7 @@ public class Util {
 	//public static final String WEB_SERVICE = "localhost:11080";
 	public static final String WEB_SERVICE = "coexpress624fx.appspot.com";
 	public static final String REST_UTILISATEURS = "/utilisateurs";
+	public static final String REST_PARCOURS = "/parcours";
 	
 	
 	/**
@@ -87,5 +90,19 @@ public class Util {
 		return null;
 	}
 	
-	
+	public static String obtenirAdresse(double latitude, double longitude, Context context){
+		String adresse = null;
+		if(Geocoder.isPresent()){
+			Geocoder geocoder = new Geocoder(context);
+			try{
+				List<Address> depart = geocoder.getFromLocation(latitude,longitude, 1);
+				if(depart.size() > 0){
+					adresse = depart.get(0).getAddressLine(0);
+				}
+				
+			} catch(Exception e){e.printStackTrace();}
+		}
+		
+		return adresse;
+	}
 }

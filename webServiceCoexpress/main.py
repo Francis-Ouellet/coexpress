@@ -115,7 +115,7 @@ class ParcoursHandler(webapp2.RequestHandler):
     def get(self, username = None, idParcours = None):
         try:
             resultat = None
-            utilisateur = ndb.key('Utilisateur', username).get()
+            utilisateur = ndb.Key('Utilisateur', username).get()
             if(utilisateur is not None):
                 # Identifiant non fourni, retourne tous les parcours
                 if(idParcours is None):
@@ -145,31 +145,42 @@ class ParcoursHandler(webapp2.RequestHandler):
             self.error(500)
     def put(self, username, idParcours):
         try:
-            if(idParcours is None):
-                self.error(500)
+            utilisateur = ndb.Key('Utilisateur', username).get()
+            if(utilisateur is None):
+                self.error(400)
                 return
             else:
-                cle = ndb.key('Parcours', idParcours)
-                parcours = cle.get()
-                jsonObj = json.loads(self.request.body)
-                status = 204
-                # Ajout ou modification du parcours
-                parcours = Utilisateur(key=cle)
-                parcours.proprietaire = jsonObj['proprietaire']
-                parcours.typeParcours = jsonObj['typeParcours']
-                parcours.departLatitude = jsonObj['departLatitude']
-                parcours.departLongitude = jsonObj['departLongitude']
-                parcours.destinationLatitude = jsonObj['destinationLatitude']
-                parcours.destinationLongitude = jsonObj['destinationLongitude']
-                parcours.departTimestamp = jsonObj['departTimestamp']
-                parcours.joursRepetes = jsonObj['joursRepetes']
-                parcours.nbPlaces = jsonObj['nbPlaces']
-                parcours.distanceSupplementaire = jsonObj['distanceSupplementaire']
-                parcours.notes = jsonObj['notes']
-                parcours.actif = jsonObj['actif']
-                parcours.put()
-                status = 201
-                
+                if(idParcours is None):
+                    self.error(400)
+                    return
+                else:
+                    cle = ndb.Key('Parcours', idParcours)
+                    parcours = cle.get()
+                    jsonObj = json.loads(self.request.body)
+                    status = 204
+                    if(utilisateur.password == jsonObj['password']):
+                        # Ajout ou modification du parcours
+                        parcours = Parcours(key=cle)
+                        parcours.proprietaire = jsonObj['proprietaire']
+                        parcours.typeParcours = jsonObj['typeParcours']
+                        parcours.adresseDepart = jsonObj['adresseDepart']
+                        parcours.departLatitude = jsonObj['departLatitude']
+                        parcours.departLongitude = jsonObj['departLongitude']
+                        parcours.adresseDestination = jsonObj['adresseDestination']
+                        parcours.destinationLatitude = jsonObj['destinationLatitude']
+                        parcours.destinationLongitude = jsonObj['destinationLongitude']
+                        parcours.departTimestamp = jsonObj['departTimestamp']
+                        if(jsonObj.get('joursRepetes') is not None):
+                            parcours.joursRepetes = map(int,jsonObj['joursRepetes'].replace("[","").replace("]","").split(", "))
+                        parcours.nbPlaces = jsonObj['nbPlaces']
+                        parcours.distanceSupplementaire = jsonObj['distanceSupplementaire']
+                        parcours.notes = jsonObj['notes']
+                        parcours.actif = jsonObj['actif']
+                        parcours.put()
+                        status = 201
+                    else:
+                        self.error(401)
+                        return
             self.response.set_status(status)
                 
         except (ValueError, db.BadValueError), ex:
@@ -181,7 +192,7 @@ class ParcoursHandler(webapp2.RequestHandler):
             self.error(500)
     def delete(self, username = None, idParcours = None):            
         try:
-            utilisateur = ndb.key('Utilisateur', username).get()
+            utilisateur = ndb.Key('Utilisateur', username).get()
             if(utilisateur is None):
                 self.error(404)
                 return

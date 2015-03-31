@@ -5,7 +5,6 @@ import com.francisouellet.covoiturageexpress.classes.Parcours;
 import com.francisouellet.covoiturageexpress.util.Util;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.app.ActionBar.Tab;
 import android.os.Bundle;
@@ -14,6 +13,11 @@ import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
+/**
+ * Classe pour l'affichage détaillé d'un parcours et de ses participants sous la forme d'une vue avec des onglets
+ * @author Francis Ouellet
+ *
+ */
 public class ParcoursDetailActivity extends FragmentActivity {
 	
 	private Bundle mExtras;
@@ -31,10 +35,12 @@ public class ParcoursDetailActivity extends FragmentActivity {
 		getActionBar().setDisplayShowHomeEnabled(false);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
+		// Récupération du parcours dans les extras
 		mExtras = getIntent().getExtras();
 		if(mExtras != null)
 			mParcours = (Parcours)mExtras.getSerializable(Util.EXTRA_PARCOURS);
 		
+		// Définition des vues des onglets
 		if(mParcours != null){
 			mAdapter = new ParcoursDetailPagerAdapter(getSupportFragmentManager(), mParcours);
 			
@@ -52,22 +58,15 @@ public class ParcoursDetailActivity extends FragmentActivity {
 			ActionBar.TabListener tabListener = new ActionBar.TabListener() {
 				
 				@Override
-				public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-					// TODO Auto-generated method stub
-					
-				}
+				public void onTabUnselected(Tab tab, FragmentTransaction ft) {}
 				
 				@Override
 				public void onTabSelected(Tab tab, FragmentTransaction ft) {
 					mViewPager.setCurrentItem(tab.getPosition());
-					
 				}
 				
 				@Override
-				public void onTabReselected(Tab tab, FragmentTransaction ft) {
-					// TODO Auto-generated method stub
-					
-				}
+				public void onTabReselected(Tab tab, FragmentTransaction ft) {}
 			};
 			
 			actionBar.addTab(actionBar.newTab()

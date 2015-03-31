@@ -1,15 +1,23 @@
 package com.francisouellet.covoiturageexpress;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import com.francisouellet.covoiturageexpress.classes.Parcours;
 import com.francisouellet.covoiturageexpress.classes.Utilisateur;
 import com.francisouellet.covoiturageexpress.database.ParcoursDataSource;
 import com.francisouellet.covoiturageexpress.database.UtilisateurDataSource;
+import com.francisouellet.covoiturageexpress.util.JsonParser;
 import com.francisouellet.covoiturageexpress.util.Util;
 
 import android.app.Activity;
@@ -18,6 +26,9 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -55,6 +66,10 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 	private Boolean typeParcours;
 	private String adresseDepart;
 	private String adresseDestination;
+	private Double departLatitude;
+	private Double departLongitude;
+	private Double destinationLatitude;
+	private Double destinationLongitude;
 	private Double distanceSupp;
 	private int nbPlaces;
 	private String timestampDepart;
@@ -66,6 +81,8 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 	
 	private Utilisateur utilisateur;
 	private Parcours parcours;
+	
+	private HttpClient m_ClientHttp = new DefaultHttpClient();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -188,42 +205,45 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 			if(this.modeModification)
 				id_Parcours = this.parcours.getId();
 			else
-				id_Parcours = Calendar.getInstance().getTimeInMillis() + "";
+				id_Parcours = Calendar.getInstance().getTimeInMillis() + this.utilisateur.getCourriel();
+			
+			if(Geocoder.isPresent()){
+				try{
+					Geocoder geocoder = new Geocoder(this);
+					List<Address> depart = geocoder.getFromLocationName(this.adresseDepart, 1);
+					List<Address> destination = geocoder.getFromLocationName(this.adresseDestination, 1);
+					
+					if(depart.size() > 0){
+						this.departLatitude = depart.get(0).getLatitude();
+						this.departLongitude = depart.get(0).getLongitude();
+					}
+					if(destination.size() > 0){
+						this.destinationLatitude = destination.get(0).getLatitude();
+						this.destinationLongitude = destination.get(0).getLongitude();
+					}
+					
+				}catch(Exception e){e.printStackTrace();}
+			}
 			
 			if(this.typeParcours){	// True -> Conducteur	
 				this.nbPlaces = Integer.parseInt(this.lblNbPlaces.getText().toString());
 				this.distanceSupp = Double.parseDouble(this.lblDistanceSupp.getText().toString());
 				
 				this.parcours = new Parcours(
-						id_Parcours, 
-						utilisateur.getCourriel(), this.typeParcours, 
-						this.adresseDepart, this.adresseDestination, this.timestampDepart,
-						this.joursRepetes, this.nbPlaces, this.distanceSupp, this.notes, false);
+						id_Parcours, utilisateur.getCourriel(), this.typeParcours,
+						this.adresseDepart, this.departLatitude, this.departLongitude, 
+						this.adresseDestination, this.destinationLatitude, this.destinationLongitude, 
+						this.timestampDepart, this.joursRepetes, 
+						this.nbPlaces, this.distanceSupp, this.notes, false); 
 			} else { // False -> Passager
 				this.parcours = new Parcours(
-						id_Parcours,
-						utilisateur.getCourriel(), this.typeParcours,
-						this.adresseDepart, this.adresseDestination, this.timestampDepart,
-						this.joursRepetes, this.notes, false);
+						id_Parcours, utilisateur.getCourriel(), this.typeParcours,
+						this.adresseDepart, this.departLatitude, this.departLongitude, 
+						this.adresseDestination, this.destinationLatitude, this.destinationLongitude, 
+						this.timestampDepart, this.joursRepetes, this.notes, false);
 			}
 			
-			if(this.modeModification){
-				if(miseAJourLocalParcours(this.parcours)){
-					Util.easyToast(this, R.string.txt_parcours_modifie);
-					this.finish();
-				}
-				else
-					Util.easyToast(this, R.string.txt_parcours_erreur_modification);
-			}else{
-				if(enregistrementLocalParcours(this.parcours)){
-					Util.easyToast(this, R.string.txt_parcours_cree);
-					this.finish();
-				}
-				else
-					Util.easyToast(this, R.string.txt_parcours_erreur_creation);
-			}
-			
-			
+			new AsyncEnregistrementParcours(this).execute();
 		}
 	}
 	
@@ -431,6 +451,64 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 			((CreationParcoursActivity)this.m_Context).calendrier.set(Calendar.MINUTE, minute);
 			((CreationParcoursActivity)this.m_Context).lblHeureDepart.setText(Util.timeFormat.format(calendrier.getTime()));
 			
+		}
+	}
+	
+	private class AsyncEnregistrementParcours extends AsyncTask<Void, Void, Void>{
+		
+		private Context m_Context;
+		private Exception m_Exception;
+		
+		public AsyncEnregistrementParcours(Context p_Context){
+			this.m_Context = p_Context;
+		}
+		
+		@Override
+		protected Void doInBackground(Void... params) {
+			try{
+				
+				URI uri = new URI("http", Util.WEB_SERVICE, Util.REST_UTILISATEURS + "/" + utilisateur.getCourriel()
+						+ Util.REST_PARCOURS + "/" + parcours.getId(), null, null);
+				
+				HttpPut put = new HttpPut(uri);
+				put.setEntity(new StringEntity(JsonParser.ToJsonObject(parcours)
+						.put("password", utilisateur.getEncodedPassword()).toString()));
+				Log.i(TAG, JsonParser.ToJsonObject(parcours).put("password", utilisateur.getEncodedPassword()).toString());
+				put.addHeader("Content-Type","application/json");
+				
+				m_ClientHttp.execute(put, new BasicResponseHandler());
+				
+			}catch(Exception e){m_Exception = e; e.printStackTrace();}
+			
+			return null;
+		}
+		@Override
+		protected void onPostExecute(Void result) {
+			// Tout s'est bien déroulé au niveau du service Web
+			if(m_Exception == null){
+				// Si on est en modification
+				if(modeModification){
+					if(miseAJourLocalParcours(parcours)){
+						Util.easyToast(this.m_Context, R.string.txt_parcours_modifie);
+						finish();
+					}
+					else
+						Util.easyToast(this.m_Context, R.string.txt_parcours_erreur_modification);
+				}
+				// Si on est en ajout
+				else{
+					if(enregistrementLocalParcours(parcours)){
+						Util.easyToast(this.m_Context, R.string.txt_parcours_cree);
+						finish();
+					}
+					else
+						Util.easyToast(this.m_Context, R.string.txt_parcours_erreur_creation);
+				}
+			}
+			else
+			{
+				Util.easyToast(this.m_Context, R.string.txt_parcours_erreur_creation);
+			}
 		}
 	}
 }

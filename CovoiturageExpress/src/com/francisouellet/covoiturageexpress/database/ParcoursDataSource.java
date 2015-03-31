@@ -87,7 +87,11 @@ public class ParcoursDataSource extends BaseDataSource<Parcours, String> {
 		row.put(DatabaseHelper.COL_COURRIEL, element.getProprietaire());
 		row.put(DatabaseHelper.COL_CONDUCTEUR, element.getConducteur() ? 1:0);
 		row.put(DatabaseHelper.COL_ADRESSEDEPART, element.getAdresseDepart());
+		row.put(DatabaseHelper.COL_DEPARTLATITUDE, element.getDepartLatitude());
+		row.put(DatabaseHelper.COL_DEPARTLONGITUDE, element.getDepartLongitude());
 		row.put(DatabaseHelper.COL_ADRESSEDESTINATION, element.getAdresseDestination());
+		row.put(DatabaseHelper.COL_DESTINATIONLATITUDE, element.getDestinationLatitude());
+		row.put(DatabaseHelper.COL_DESTINATIONLONGITUDE, element.getDestinationLongitude());
 		row.put(DatabaseHelper.COL_TIMESTAMPDEPART, element.getTimestampDepart());
 		if(element.getJoursRepetes() != null)
 			row.put(DatabaseHelper.COL_JOURSREPETES, ((ArrayList<Integer>)element.getJoursRepetes()).toString());
@@ -107,7 +111,11 @@ public class ParcoursDataSource extends BaseDataSource<Parcours, String> {
 				c.getString(c.getColumnIndex(DatabaseHelper.COL_COURRIEL)),
 				c.getInt(c.getColumnIndex(DatabaseHelper.COL_CONDUCTEUR)) == 1 ? true:false,
 				c.getString(c.getColumnIndex(DatabaseHelper.COL_ADRESSEDEPART)),
+				c.getDouble(c.getColumnIndex(DatabaseHelper.COL_DEPARTLATITUDE)),
+				c.getDouble(c.getColumnIndex(DatabaseHelper.COL_DEPARTLONGITUDE)),
 				c.getString(c.getColumnIndex(DatabaseHelper.COL_ADRESSEDESTINATION)),
+				c.getDouble(c.getColumnIndex(DatabaseHelper.COL_DESTINATIONLATITUDE)),
+				c.getDouble(c.getColumnIndex(DatabaseHelper.COL_DESTINATIONLONGITUDE)),
 				c.getString(c.getColumnIndex(DatabaseHelper.COL_TIMESTAMPDEPART)),
 				Util.toList(c.getString(c.getColumnIndex(DatabaseHelper.COL_JOURSREPETES))),
 				c.getInt(c.getColumnIndex(DatabaseHelper.COL_NBPLACES)),
