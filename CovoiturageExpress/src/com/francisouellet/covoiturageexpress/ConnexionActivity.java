@@ -6,6 +6,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONObject;
 
 import com.francisouellet.covoiturageexpress.classes.Utilisateur;
 import com.francisouellet.covoiturageexpress.database.UtilisateurDataSource;
@@ -114,7 +115,7 @@ public class ConnexionActivity extends Activity {
 				URI uri = new URI("http",Util.WEB_SERVICE,Util.REST_UTILISATEURS + "/" + courriel, null, null);
 				HttpGet get = new HttpGet(uri);
 				String body = m_ClientHttp.execute(get, new BasicResponseHandler());
-				u = JsonParser.ToUtilisateur(body);
+				u = JsonParser.ToUtilisateur(new JSONObject(body));
 				
 				// Si le mot de passe de l'utilisateur reçu est différent du mot de passe inscrit,
 				// on invalide le traitement

@@ -63,9 +63,8 @@ public class JsonParser {
 	 * @return Une instance d'Utilisateur correspondant à la chaîne
 	 * @throws JSONException
 	 */
-	public static Utilisateur ToUtilisateur(String strJson) throws JSONException{
+	public static Utilisateur ToUtilisateur(JSONObject jsonU) throws JSONException{
 		Utilisateur u;
-		JSONObject jsonU = new JSONObject(strJson);
 		u = new Utilisateur(
 				jsonU.getString("courriel"),
 				jsonU.getString("password"),
@@ -81,15 +80,16 @@ public class JsonParser {
 	 * @return Une instance de Parcours correspondant à la chaîne
 	 * @throws JSONException
 	 */
-	public static Parcours ToParcours(String strJson) throws JSONException{
+	public static Parcours ToParcours(JSONObject jsonP) throws JSONException{
 		Parcours p = null;
-		JSONObject jsonP = new JSONObject(strJson);
-		List<Integer> joursRepetes = new ArrayList<Integer>();
+		List<Integer> joursRepetes = null;
 		JSONArray joursRepetesJSON = jsonP.getJSONArray("joursRepetes");
-		for(int i = 0; i < joursRepetesJSON.length(); i++){
-			joursRepetes.add(joursRepetesJSON.getInt(i));
+		if(joursRepetesJSON.length() > 0){
+			joursRepetes = new ArrayList<Integer>();
+			for(int i = 0; i < joursRepetesJSON.length(); i++){
+				joursRepetes.add(joursRepetesJSON.getInt(i));
+			}
 		}
-		
 		// Conducteur
 		if(jsonP.getBoolean("typeParcours")){ 
 			p = new Parcours(
@@ -102,7 +102,7 @@ public class JsonParser {
 					jsonP.getString("adresseDestination"), 
 					jsonP.getDouble("destinationLatitude"), 
 					jsonP.getDouble("destinationLongitude"), 
-					jsonP.getString("timestampDepart"), 
+					jsonP.getString("departTimestamp"), 
 					joursRepetes, 
 					jsonP.getInt("nbPlaces"),
 					jsonP.getDouble("distanceSupplementaire"),
@@ -121,7 +121,7 @@ public class JsonParser {
 					jsonP.getString("adresseDestination"), 
 					jsonP.getDouble("destinationLatitude"), 
 					jsonP.getDouble("destinationLongitude"), 
-					jsonP.getString("timestampDepart"), 
+					jsonP.getString("departTimestamp"), 
 					joursRepetes, 
 					jsonP.getString("notes"),
 					jsonP.getBoolean("actif"));

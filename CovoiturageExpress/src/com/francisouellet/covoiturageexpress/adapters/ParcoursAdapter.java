@@ -1,17 +1,28 @@
 package com.francisouellet.covoiturageexpress.adapters;
 
+import java.net.URI;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import com.francisouellet.covoiturageexpress.R;
 import com.francisouellet.covoiturageexpress.classes.Parcours;
+import com.francisouellet.covoiturageexpress.classes.Utilisateur;
 import com.francisouellet.covoiturageexpress.database.ParcoursDataSource;
+import com.francisouellet.covoiturageexpress.database.UtilisateurDataSource;
+import com.francisouellet.covoiturageexpress.util.JsonParser;
 import com.francisouellet.covoiturageexpress.util.Util;
 
 import android.app.Activity;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,11 +39,20 @@ public class ParcoursAdapter extends ArrayAdapter<Parcours>{
 	private List<Parcours> m_ListeParcours;
 	private int m_LayoutResId;
 	
+	private Utilisateur utilisateur;
+	
+	private HttpClient m_ClientHttp = new DefaultHttpClient();
+	
 	public ParcoursAdapter(Context p_Context, List<Parcours> p_ListeParcours, int p_LayoutResId) {
 		super(p_Context, p_LayoutResId, p_ListeParcours);
 		this.m_Context = p_Context;
 		this.m_ListeParcours = p_ListeParcours;
 		this.m_LayoutResId = p_LayoutResId;
+		
+		UtilisateurDataSource uds = new UtilisateurDataSource(m_Context);
+		uds.open();
+		utilisateur = uds.getConnectedUser();
+		uds.close();
 	}
 	
 	@Override
@@ -108,6 +128,13 @@ public class ParcoursAdapter extends ArrayAdapter<Parcours>{
 		
 		contenant.actif.setChecked(parcours.getActif());
 		
+		if(parcours.getActif()){
+			view.findViewById(R.id.parcours_item_conteneur_modifier_supprimer).setVisibility(View.INVISIBLE);
+		}
+		else{
+			view.findViewById(R.id.parcours_item_conteneur_modifier_supprimer).setVisibility(View.VISIBLE);
+		}
+		
 		return view;
 	}
 	
@@ -125,20 +152,8 @@ public class ParcoursAdapter extends ArrayAdapter<Parcours>{
 		public void onCheckedChanged(CompoundButton buttonView,
 				boolean isChecked) {
 			parcours.setActif(isChecked);
-			
-			try{
-				ParcoursDataSource psd = new ParcoursDataSource(view.getContext());
-				psd.open();
-				psd.update(parcours);
-				psd.close();
-			}catch(Exception e){}
-			
-			if(parcours.getActif()){
-				view.findViewById(R.id.parcours_item_conteneur_modifier_supprimer).setVisibility(View.INVISIBLE);
-			}
-			else{
-				view.findViewById(R.id.parcours_item_conteneur_modifier_supprimer).setVisibility(View.VISIBLE);
-			}
+			new AsyncStatutActif(parcours, view).execute();
+		
 		}
 	}
 	
@@ -149,6 +164,60 @@ public class ParcoursAdapter extends ArrayAdapter<Parcours>{
 		TextView dateDepart;
 		TextView heureDepart;
 		TextView nbPlaces;
+	}
+	
+	/**
+	 * Classe permettant de faire la mise à jour du statut "actif" d'un parcours
+	 * @author Francis Ouellet
+	 */
+	private class AsyncStatutActif extends AsyncTask<Void, Void, Void>{
+		
+		private Exception m_Exception;
+		private Parcours m_Parcours;
+		private View m_View;
+		
+		public AsyncStatutActif(Parcours p_Parcours, View p_View) {
+			this.m_Parcours = p_Parcours;
+			this.m_View = p_View;
+		}
+		
+		@Override
+		protected Void doInBackground(Void... params) {
+			try{
+				URI uri = new URI("http", Util.WEB_SERVICE, Util.REST_UTILISATEURS + "/" + 
+						this.m_Parcours.getProprietaire() + Util.REST_PARCOURS + "/" + this.m_Parcours.getId(), null, null);
+				
+				// Transforme le parcours en JSON et y ajoute le mot de passe de l'utilisateur
+				HttpPut put = new HttpPut(uri);
+				put.setEntity(new StringEntity(JsonParser.ToJsonObject(this.m_Parcours)
+						.put("password", utilisateur.getEncodedPassword()).toString()));
+				put.addHeader("Content-Type","application/json");
+				
+				m_ClientHttp.execute(put, new BasicResponseHandler());
+				
+				// Mise à jour en local du statut
+				ParcoursDataSource pds = new ParcoursDataSource(m_View.getContext());
+				pds.open();
+				pds.update(m_Parcours);
+				pds.close();
+				
+			}catch(Exception e){m_Exception = e; e.printStackTrace();}
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			// S'il n'y a pas eu de problèmes au niveau du service web
+			if(m_Exception == null){
+				// Active ou désactive les boutons de modification et de suppression selon l'état
+				if(m_Parcours.getActif()){
+					m_View.findViewById(R.id.parcours_item_conteneur_modifier_supprimer).setVisibility(View.INVISIBLE);
+				}
+				else{
+					m_View.findViewById(R.id.parcours_item_conteneur_modifier_supprimer).setVisibility(View.VISIBLE);
+				}
+			}
+		}
 	}
 	
 }

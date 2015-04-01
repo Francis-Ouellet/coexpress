@@ -94,8 +94,7 @@ class UtilisateurHandler(webapp2.RequestHandler):
             else:
                 cle = ndb.Key('Utilisateur', username)
                 if(cle.get() is not None):
-                    jsonObj = json.loads(self.request.body)
-                    if(cle.get().password == jsonObj['password']):
+                    if(cle.get().password == self.request.get('password')):
                         cle.delete()
                         status = 204
                 else:
@@ -123,10 +122,12 @@ class ParcoursHandler(webapp2.RequestHandler):
                     query = Parcours.query(Parcours.proprietaire == username)
                     
                     for p in query:
-                        resultat.append(p.to_dict())
+                        dictParcours = p.to_dict()
+                        dictParcours['idParcours'] = p.key.id()
+                        resultat.append(dictParcours)
                 # Retourne le parcours identifié
                 else:
-                    parcours = ndb.key('Parcours', idParcours).get()
+                    parcours = ndb.Key('Parcours', idParcours).get()
                     if(parcours is not None):
                         resultat = parcours.to_dict()
                     
@@ -158,7 +159,7 @@ class ParcoursHandler(webapp2.RequestHandler):
                     parcours = cle.get()
                     jsonObj = json.loads(self.request.body)
                     status = 204
-                    if(utilisateur.password == jsonObj['password']):
+                    if(utilisateur.password == jsonObj.get('password')):
                         # Ajout ou modification du parcours
                         parcours = Parcours(key=cle)
                         parcours.proprietaire = jsonObj['proprietaire']
@@ -197,8 +198,7 @@ class ParcoursHandler(webapp2.RequestHandler):
                 self.error(404)
                 return
             else:
-                jsonObj = json.loads(self.request.body)
-                if(utilisateur.password == jsonObj['password']):
+                if(utilisateur.password == self.request.get('password')):
                     if(idParcours is None):
                         ndb.delete_multi(Parcours.query().fetch(keys_only=True))
                         status = 204
