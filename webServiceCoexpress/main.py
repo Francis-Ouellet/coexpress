@@ -3,10 +3,12 @@
 from google.appengine.ext import ndb
 from google.appengine.ext import db
 from modeles import Utilisateur, Parcours
-from math import hypot
+from math import hypot, fabs
+from datetime import datetime, date
 import webapp2
 import logging
 import json
+
 
 def verifier_compatibilite_parcours(conducteur, passager):
     # Si le conducteur est actif
@@ -14,7 +16,55 @@ def verifier_compatibilite_parcours(conducteur, passager):
     # Si le nombre de places disponibles du conducteur est supérieur au nombre de places demandées du passager
     # TODO : VÉRIFIER LA DATE AUSSI !
     if(conducteur.actif and passager.actif and conducteur.nbPlaces > passager.nbPlaces):
-        return True
+        
+        departConducteur = datetime.fromtimestamp(float(conducteur.departTimestamp) / 1e3)
+        departPassager = datetime.fromtimestamp(float(passager.departTimestamp) / 1e3)
+        logging.debug(departConducteur)
+        logging.debug(departPassager)
+        # Vérification de la correspondance au niveau de la date de départ
+        # Jour correspondant entre le conducteur et le passager
+        found = False
+        # Si les dates de départ du conducteur et du passager ont au maximum 24h d'écart
+        # et qu'elles sont dans le futur
+        if(departConducteur > datetime.today() and 
+           departPassager > datetime.today() and 
+           fabs((departConducteur - departPassager).total_seconds()) < 24*60*60):
+            logging.debug(fabs((departConducteur - departPassager).total_seconds()))
+            found = True
+        else:   
+            i = 0
+            # Tant que l'itérateur est plus petit que le nombre de répétitions et qu'un match n'est pas trouvé
+            while (i < len(conducteur.joursRepetes) and not found):
+                j = 0
+                while(j < len(passager.joursRepetes) and not found):
+                    # Si deux jours sont identiques dans les jours répétés
+                    if(conducteur.joursRepetes[i] == conducteur.joursRepetes[j]):
+                        found = True
+                    else:
+                        j = j + 1
+                i = i + 1
+        
+        # Si les dates de départ correspondent, on vérifie si la différence 
+        # entre les heures dedépart est inférieure à 2h
+        if(found):
+            logging.debug(departConducteur.time())
+            logging.debug(departPassager.time())
+            # Python ne permet pas de soustraire directement deux objets "time",
+            # Il faut donc former un objet "datetime" complet en ajoutant la date du jour aux deux valeurs de temps
+            # fabs calcule l'absolu de la soustraction
+            
+            delta = (datetime.combine(date.today(), departConducteur.time()) - 
+                        datetime.combine(date.today(), departPassager.time())).total_seconds()
+            if(delta < 0):
+                delta = delta + 24*60*60
+            # Si la différence entre le départ du conducteur et du passager est inférieure à 2h
+            if(delta < 2*60*60):
+                logging.debug(delta)
+                return True
+            else:
+                return False
+        else:
+            return False
     else:
         return False
     
