@@ -190,7 +190,7 @@ public class ParcoursAdapter extends ArrayAdapter<Parcours>{
 				// Transforme le parcours en JSON et y ajoute le mot de passe de l'utilisateur
 				HttpPut put = new HttpPut(uri);
 				put.setEntity(new StringEntity(JsonParser.ToJsonObject(this.m_Parcours)
-						.put("password", utilisateur.getEncodedPassword()).toString()));
+						.put("password", utilisateur.getEncodedPassword()).toString(), "UTF-8"));
 				put.addHeader("Content-Type","application/json");
 				
 				m_ClientHttp.execute(put, new BasicResponseHandler());

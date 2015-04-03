@@ -3,10 +3,21 @@
 from google.appengine.ext import ndb
 from google.appengine.ext import db
 from modeles import Utilisateur, Parcours
+from math import hypot
 import webapp2
 import logging
 import json
 
+def verifier_compatibilite_parcours(conducteur, passager):
+    # Si le conducteur est actif
+    # Si le passager est actif
+    # Si le nombre de places disponibles du conducteur est supérieur au nombre de places demandées du passager
+    # TODO : VÉRIFIER LA DATE AUSSI !
+    if(conducteur.actif and passager.actif and conducteur.nbPlaces > passager.nbPlaces):
+        return True
+    else:
+        return False
+    
 class MainPageHandler(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'text/html; charset=utf-8'
@@ -221,13 +232,94 @@ class ParcoursHandler(webapp2.RequestHandler):
             logging.exception(ex)
             self.error(500)
             
+class ChercherParcoursHandler(webapp2.RequestHandler):
+    def get(self, username, idParcours):
+        try:
+            resultat = []
+            utilisateur = ndb.Key('Utilisateur', username).get()
+            if(utilisateur is not None):
+                parcoursDemandeur = ndb.Key('Parcours', idParcours).get()
+                if(parcoursDemandeur is not None):
+                    # Obtient la liste des parcours de type opposé au parcours demandeur
+                    query = Parcours.query(Parcours.typeParcours != parcoursDemandeur.typeParcours)
+                    
+                    # Le demandeur est un conducteur
+                    if(parcoursDemandeur.typeParcours):
+                        
+                        distanceConducteur = hypot(
+                            parcoursDemandeur.destinationLatitude - parcoursDemandeur.departLatitude,
+                            parcoursDemandeur.destinationLongitude - parcoursDemandeur.departLongitude)
+                        
+                        # Pour tous les passagers potentiels
+                        for parcoursPassager in query:
+                            
+                            if(verifier_compatibilite_parcours(parcoursDemandeur, parcoursPassager)):
+                            
+                                distanceOrigines = hypot(
+                                    parcoursPassager.departLatitude - parcoursDemandeur.departLatitude,
+                                    parcoursPassager.departLongitude - parcoursDemandeur.departLongitude)
+                                distanceDestinations = hypot(
+                                    parcoursPassager.destinationLatitude - parcoursDemandeur.destinationLatitude,
+                                    parcoursPassager.destinationLongitude - parcoursDemandeur.destinationLongitude)
+                                
+                                if(distanceConducteur + distanceOrigines + distanceDestinations 
+                                    < distanceConducteur * parcoursDemandeur.distanceSupplementaire):
+                                    dictParcours = parcoursPassager.to_dict()
+                                    dictParcours['idParcours'] = parcoursPassager.key.id()
+                                    resultat.append(dictParcours)
+                                    
+                    # Le demandeur est un passager
+                    else:
+                        # Pour tous les conducteurs potentiels
+                        for parcoursConducteur in query:
+                            
+                            if(verifier_compatibilite_parcours(parcoursConducteur, parcoursDemandeur)):
+                                
+                                distanceConducteur = hypot(
+                                    parcoursConducteur.destinationLatitude - parcoursConducteur.departLatitude,
+                                    parcoursConducteur.destinationLongitude - parcoursConducteur.departLongitude)
+                                
+                                distanceOrigines = hypot(
+                                    parcoursDemandeur.departLatitude - parcoursConducteur.departLatitude,
+                                    parcoursDemandeur.departLongitude - parcoursConducteur.departLongitude)
+                                
+                                distanceDestinations = hypot(
+                                    parcoursDemandeur.destinationLatitude - parcoursConducteur.destinationLatitude,
+                                    parcoursDemandeur.destinationLongitude - parcoursConducteur.destinationLongitude)
+                                
+                                if(distanceConducteur + distanceOrigines + distanceDestinations
+                                   < distanceConducteur * parcoursConducteur.distanceSupplementaire):
+                                    dictParcours = parcoursConducteur.to_dict()
+                                    dictParcours['idParcours'] = parcoursConducteur.key.id()
+                                    resultat.append(dictParcours)
+                    
+                else:
+                    self.error(404)
+                    return
+            else:
+                self.error(404)
+                return
+            
+            self.response.headers['Content-Type'] = 'application/json'
+            self.response.out.write(json.dumps(resultat))
+            
+        except (ValueError, db.BadValueError), ex:
+            logging.info(ex)
+            self.error(400)
+        
+        except Exception, ex:
+            logging.exception(ex)
+            self.error(500)  
+        
+            
 application = webapp2.WSGIApplication(
     [
         ('/',   MainPageHandler),
         webapp2.Route(r'/utilisateurs',handler=UtilisateurHandler, methods=['GET', 'DELETE']),
         webapp2.Route(r'/utilisateurs/<username>',handler=UtilisateurHandler, methods=['GET','PUT', 'DELETE']),
         webapp2.Route(r'/utilisateurs/<username>/parcours',handler=ParcoursHandler, methods=['GET', 'DELETE']),
-        webapp2.Route(r'/utilisateurs/<username>/parcours/<idParcours>',handler=ParcoursHandler, methods=['GET', 'PUT', 'DELETE'])
+        webapp2.Route(r'/utilisateurs/<username>/parcours/<idParcours>',handler=ParcoursHandler, methods=['GET', 'PUT', 'DELETE']),
+        webapp2.Route(r'/utilisateurs/<username>/parcours/<idParcours>/chercher',handler=ChercherParcoursHandler, methods=['GET'])
         
     ],
     debug=True)            

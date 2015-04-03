@@ -139,7 +139,7 @@ public class CreationCompteActivity extends Activity {
 				URI uri = new URI("http",Util.WEB_SERVICE, Util.REST_UTILISATEURS + "/" + utilisateur.getCourriel(), null, null);
 				HttpPut put = new HttpPut(uri);
 				// Ajout des données de l'utilisateur sous forme JSON 
-				put.setEntity(new StringEntity(JsonParser.ToJsonObject(utilisateur).toString()));
+				put.setEntity(new StringEntity(JsonParser.ToJsonObject(utilisateur).toString(), "UTF-8"));
 				put.addHeader("Content-Type","application/json");
 				
 				m_ClientHttp.execute(put, new BasicResponseHandler());
