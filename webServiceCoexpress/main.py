@@ -17,28 +17,30 @@ def verifier_compatibilite_parcours(conducteur, passager):
     # TODO : VÉRIFIER LA DATE AUSSI !
     if(conducteur.actif and passager.actif and conducteur.nbPlaces > passager.nbPlaces):
         
+        # Transforme le timestamp en objet Datetime
         departConducteur = datetime.fromtimestamp(float(conducteur.departTimestamp) / 1e3)
         departPassager = datetime.fromtimestamp(float(passager.departTimestamp) / 1e3)
-        logging.debug(departConducteur)
-        logging.debug(departPassager)
-        # Vérification de la correspondance au niveau de la date de départ
-        # Jour correspondant entre le conducteur et le passager
+        
+        # Indicateur de jour correspondant entre le conducteur et le passager
         found = False
         # Si les dates de départ du conducteur et du passager ont au maximum 24h d'écart
         # et qu'elles sont dans le futur
         if(departConducteur > datetime.today() and 
            departPassager > datetime.today() and 
            fabs((departConducteur - departPassager).total_seconds()) < 24*60*60):
-            logging.debug(fabs((departConducteur - departPassager).total_seconds()))
             found = True
         else:   
             i = 0
             # Tant que l'itérateur est plus petit que le nombre de répétitions et qu'un match n'est pas trouvé
             while (i < len(conducteur.joursRepetes) and not found):
                 j = 0
+                # Si un des jours répétés du conducteur est le jour de départ du passager
+                found = comparer_jours_semaine(conducteur.joursRepetes[i], departPassager.weekday())
                 while(j < len(passager.joursRepetes) and not found):
                     # Si deux jours sont identiques dans les jours répétés
-                    if(conducteur.joursRepetes[i] == conducteur.joursRepetes[j]):
+                    # Ou si un des jours répétés du passager est le jour du départ du conducteur
+                    if(conducteur.joursRepetes[i] == passager.joursRepetes[j] or
+                       comparer_jours_semaine(passager.joursRepetes[j], departConducteur.weekday())):
                         found = True
                     else:
                         j = j + 1
@@ -47,24 +49,31 @@ def verifier_compatibilite_parcours(conducteur, passager):
         # Si les dates de départ correspondent, on vérifie si la différence 
         # entre les heures dedépart est inférieure à 2h
         if(found):
-            logging.debug(departConducteur.time())
-            logging.debug(departPassager.time())
             # Python ne permet pas de soustraire directement deux objets "time",
             # Il faut donc former un objet "datetime" complet en ajoutant la date du jour aux deux valeurs de temps
-            # fabs calcule l'absolu de la soustraction
-            
             delta = (datetime.combine(date.today(), departConducteur.time()) - 
                         datetime.combine(date.today(), departPassager.time())).total_seconds()
             if(delta < 0):
                 delta = delta + 24*60*60
             # Si la différence entre le départ du conducteur et du passager est inférieure à 2h
             if(delta < 2*60*60):
-                logging.debug(delta)
                 return True
             else:
                 return False
         else:
             return False
+    else:
+        return False
+
+# Permet de comparer la notation numérique des jours de la semaine selon la conversion suivante :
+#    Dimanche    Lundi    Mardi    Mercredi    Jeudi    Vendredi    Samedi
+#a:  1           2        3        4           5        6           7
+#b:  6           0        1        2           3        4           5
+def comparer_jours_semaine(a,b):
+    if(a-2 == b):
+        return True
+    elif(a+5 == b):
+        return True
     else:
         return False
     

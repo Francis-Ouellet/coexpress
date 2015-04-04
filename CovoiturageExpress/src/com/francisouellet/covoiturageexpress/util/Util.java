@@ -21,11 +21,13 @@ public class Util {
 	public static final DateFormat timeFormat = DateFormat.getTimeInstance(DateFormat.SHORT, Locale.getDefault());
 	
 	public static final String EXTRA_PARCOURS = "parcours";
+	public static final String EXTRA_UTILISATEUR = "utilisateur";
 	
 	//public static final String WEB_SERVICE = "localhost:11080";
 	public static final String WEB_SERVICE = "coexpress624fx.appspot.com";
 	public static final String REST_UTILISATEURS = "/utilisateurs";
 	public static final String REST_PARCOURS = "/parcours";
+	public static final String REST_CHERCHER = "/chercher";
 	
 	
 	/**

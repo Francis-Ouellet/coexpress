@@ -126,6 +126,7 @@ public class MainActivity extends Activity implements OnItemClickListener{
 			long id) {
 		Intent i = new Intent(this, ParcoursDetailActivity.class);
 		i.putExtra(Util.EXTRA_PARCOURS, this.m_Parcours.get(position));
+		i.putExtra(Util.EXTRA_UTILISATEUR, this.utilisateur);
 		this.startActivity(i);
 	}
 	

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        
+        <ImageView 
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_action_accept_dark"
+            android:clickable="true"
+            android:onClick="ajouterParticipant"
+            android:contentDescription="@string/desc_bouton_ajouter"/>
+        
+        <ImageView 
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/ic_action_cancel_dark"
+            android:clickable="true"
+            android:onClick="enleverParticipant"
+            android:contentDescription="@string/desc_bouton_annuler"/>
+        
+    </LinearLayout>
+    
+    <!-- Mettre une carte à la place des adresses -->
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/participant_potentiel_adresse_depart" />
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/participant_potentiel_adresse_destination" />
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        
+        <TextView
+            android:layout_width="0dp"
+        	android:layout_height="wrap_content"
+        	android:layout_weight="2"
+        	android:gravity="center"
+        	android:id="@+id/participant_potentiel_date_depart" />
+        
+        <TextView
+            android:layout_width="0dp"
+        	android:layout_height="wrap_content"
+        	android:layout_weight="1"
+        	android:gravity="center"
+        	android:id="@+id/participant_potentiel_heure_depart" />
+        
+    </LinearLayout>
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:id="@+id/participant_potentiel_nb_places" />
+
+</LinearLayout>
