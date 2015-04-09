@@ -2,7 +2,7 @@
 
 from google.appengine.ext import ndb
 from google.appengine.ext import db
-from modeles import Utilisateur, Parcours
+from modeles import Utilisateur, Parcours, Covoiturage
 from math import hypot, fabs
 from datetime import datetime, date
 import webapp2
@@ -25,8 +25,7 @@ def verifier_compatibilite_parcours(conducteur, passager):
         found = False
         # Si les dates de départ du conducteur et du passager ont au maximum 24h d'écart
         # et qu'elles sont dans le futur
-        if(departConducteur > datetime.today() and 
-           departPassager > datetime.today() and 
+        if(departConducteur > datetime.today() and departPassager > datetime.today() and 
            fabs((departConducteur - departPassager).total_seconds()) < 24*60*60):
             found = True
         else:   
@@ -76,6 +75,13 @@ def comparer_jours_semaine(a,b):
         return True
     else:
         return False
+    
+def serialiser_parcours_covoiturage(idParcours):
+    parcours = ndb.Key('Parcours', idParcours).get()
+    parcoursJSON = parcours.to_dict()
+    parcoursJSON['nom'] = ndb.Key('Utilisateur', parcours.proprietaire).get().nom
+    parcoursJSON['prenom'] = ndb.Key('Utilisateur', parcours.proprietaire).get().prenom
+    return parcoursJSON
     
 class MainPageHandler(webapp2.RequestHandler):
     def get(self):
@@ -370,15 +376,120 @@ class ChercherParcoursHandler(webapp2.RequestHandler):
             logging.exception(ex)
             self.error(500)  
         
+class CovoiturageHandler(webapp2.RequestHandler):
+    def get(self, username, idParcours):
+        try:
+            resultat = []
+            utilisateur = ndb.Key('Utilisateur', username).get()
+            if(utilisateur is not None):
+                parcoursDemandeur = ndb.Key('Parcours', idParcours).get()
+                if(parcoursDemandeur is not None):
+                    if (len(parcoursDemandeur.joursRepetes) > 0):
+                        # Pour chacun des jours répétés du demandeur
+                        for jour in parcoursDemandeur.joursRepetes:
+                            covoiturage = ndb.Key('Covoiturage', idParcours + str(jour)).get()
+                            if(covoiturage is not None):
+                                sousResultat = []
+                                sousResultat.append(serialiser_parcours_covoiturage(covoiturage.conducteur))
+                                for passager in covoiturage.passagers:
+                                    sousResultat.append(serialiser_parcours_covoiturage(passager))
+                                resultat.append(sousResultat)
+                    
+                    covoiturage = ndb.Key('Covoiturage', idParcours).get()
+                    if(covoiturage is not None):
+                        sousResultat = []
+                        sousResultat.append(serialiser_parcours_covoiturage(covoiturage.conducteur))
+                        for passager in covoiturage.passagers:
+                            sousResultat.append(serialiser_parcours_covoiturage(passager))
+                        resultat.append(sousResultat)
+                else:
+                    self.error(404)
+                    return
+            else:
+                self.error(404)
+                return
+            
+            self.response.headers['Content-Type'] = 'application/json'
+            self.response.out.write(json.dumps(resultat))
+            
+        except (ValueError, db.BadValueError), ex:
+            logging.info(ex)
+            self.error(400)
+            
+        except Exception, ex:
+            logging.exception(ex)
+            self.error(500)  
+            
+    def put(self, username, idParcours, idParcoursAjoute):
+        try:
+            utilisateur = ndb.Key('Utilisateur', username).get()
+            if(utilisateur is not None):
+                parcoursDemandeur = ndb.Key('Parcours', idParcours).get()
+                if(parcoursDemandeur is not None):
+                    parcoursDesire = ndb.Key('Parcours', idParcoursAjoute).get()
+                    if(parcoursDesire is not None):
+                        jsonObj = json.loads(self.request.body)
+                        cle = ndb.Key('Covoiturage', idParcours + jsonObj['jour'])
+                        if(utilisateur.password == jsonObj.get('password')):
+                            covoiturage = Covoiturage(key=cle)
+                            
+                            # Demandeur conducteur
+                            if(parcoursDemandeur.typeParcours):
+                                covoiturage.conducteur = idParcours
+                                covoiturage.passagers.append(idParcoursAjoute)
+                                # Réduction du nombre de places disponibles du conducteur
+                                parcours = Parcours(key=parcoursDemandeur.key)
+                                parcours.nbPlaces = parcoursDemandeur.nbPlaces - parcoursDesire.nbPlaces
+                                parcours.put()
+                            # Demandeur passager et désiré conducteur
+                            elif(parcoursDesire.typeParcours):
+                                covoiturage.conducteur = idParcoursAjoute
+                                covoiturage.passagers.append(idParcours)
+                                # Réduction du nombre de places disponibles du conducteur
+                                parcours = Parcours(key=parcoursDesire.key)
+                                parcours.nbPlaces = parcoursDesire.nbPlaces - parcoursDemandeur.nbPlaces
+                                parcours.put()
+                                
+                            covoiturage.put()
+                        else:
+                            self.error(401)
+                            return
+                    else:
+                        self.error(404)
+                        return
+                else:
+                    self.error(404)
+                    return
+            else:
+                self.error(404)
+                return
+            
+        except (ValueError, db.BadValueError), ex:
+            logging.info(ex)
+            self.error(400)
+            
+        except Exception, ex:
+            logging.exception(ex)
+            self.error(500)      
             
 application = webapp2.WSGIApplication(
     [
         ('/',   MainPageHandler),
-        webapp2.Route(r'/utilisateurs',handler=UtilisateurHandler, methods=['GET', 'DELETE']),
-        webapp2.Route(r'/utilisateurs/<username>',handler=UtilisateurHandler, methods=['GET','PUT', 'DELETE']),
-        webapp2.Route(r'/utilisateurs/<username>/parcours',handler=ParcoursHandler, methods=['GET', 'DELETE']),
-        webapp2.Route(r'/utilisateurs/<username>/parcours/<idParcours>',handler=ParcoursHandler, methods=['GET', 'PUT', 'DELETE']),
-        webapp2.Route(r'/utilisateurs/<username>/parcours/<idParcours>/chercher',handler=ChercherParcoursHandler, methods=['GET'])
+        
+        webapp2.Route(r'/utilisateurs',
+                      handler=UtilisateurHandler, methods=['GET', 'DELETE']),
+        webapp2.Route(r'/utilisateurs/<username>',
+                      handler=UtilisateurHandler, methods=['GET','PUT', 'DELETE']),
+        webapp2.Route(r'/utilisateurs/<username>/parcours',
+                      handler=ParcoursHandler, methods=['GET', 'DELETE']),
+        webapp2.Route(r'/utilisateurs/<username>/parcours/<idParcours>',
+                      handler=ParcoursHandler, methods=['GET', 'PUT', 'DELETE']),
+        webapp2.Route(r'/utilisateurs/<username>/parcours/<idParcours>/chercher',
+                      handler=ChercherParcoursHandler, methods=['GET']),
+        webapp2.Route(r'/utilisateurs/<username>/parcours/<idParcours>/ajouter/<idParcoursAjoute>',
+                      handler=CovoiturageHandler, methods=['PUT']),
+        webapp2.Route(r'/utilisateurs/<username>/parcours/<idParcours>/participants',
+                      handler=CovoiturageHandler, methods=['GET'])
         
     ],
     debug=True)            

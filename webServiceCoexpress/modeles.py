@@ -22,3 +22,7 @@ class Parcours(ndb.Model):
     notes = ndb.StringProperty()
     actif = ndb.BooleanProperty()
     
+class Covoiturage(ndb.Model):
+    conducteur = ndb.StringProperty()
+    passagers = ndb.StringProperty(repeated=True)
+    

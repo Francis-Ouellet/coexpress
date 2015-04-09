@@ -28,6 +28,8 @@ public class Util {
 	public static final String REST_UTILISATEURS = "/utilisateurs";
 	public static final String REST_PARCOURS = "/parcours";
 	public static final String REST_CHERCHER = "/chercher";
+	public static final String REST_AJOUTER = "/ajouter";
+	public static final String REST_PARTICIPANTS = "/participants";
 	
 	
 	/**

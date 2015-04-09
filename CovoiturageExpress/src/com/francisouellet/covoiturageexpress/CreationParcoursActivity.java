@@ -473,7 +473,6 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 				put.setEntity(new StringEntity(JsonParser.ToJsonObject(parcours)
 						.put("password", utilisateur.getEncodedPassword()).toString(), "UTF-8"));
 				put.addHeader("Content-Type","application/json");
-				
 				m_ClientHttp.execute(put, new BasicResponseHandler());
 				
 			}catch(Exception e){m_Exception = e; e.printStackTrace();}

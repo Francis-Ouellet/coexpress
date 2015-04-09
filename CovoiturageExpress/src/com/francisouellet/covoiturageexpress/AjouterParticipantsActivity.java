@@ -6,9 +6,12 @@ import java.util.List;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.francisouellet.covoiturageexpress.adapters.PassagersPotentielsAdapter;
 import com.francisouellet.covoiturageexpress.classes.Parcours;
@@ -63,7 +66,9 @@ public class AjouterParticipantsActivity extends Activity {
 		new AsyncChercherParticipantsPotentiels(this).execute();
 	}
 	
-	public void ajouterParticipant(View v){}
+	public void ajouterParticipant(View v){
+		new AsyncAjouterParticipant(this,m_Parcours.get(m_ListeParcoursPotentiels.getPositionForView(v))).execute();
+	}
 	
 	public void enleverParticipant(View v){
 		m_Adapter.remove(m_Parcours.get(m_ListeParcoursPotentiels.getPositionForView(v)));
@@ -108,6 +113,52 @@ public class AjouterParticipantsActivity extends Activity {
 			if(m_Parcours != null){
 				m_Adapter = new PassagersPotentielsAdapter(this.m_Context, m_Parcours, R.layout.liste_participants_potentiels_item);
 				m_ListeParcoursPotentiels.setAdapter(m_Adapter);
+			}
+		}
+	}
+	
+	private class AsyncAjouterParticipant extends AsyncTask<Void, Void, Void>{
+		
+		private Context m_Context;
+		private Exception m_Exception;
+		private Parcours m_Parcours;
+		
+		public AsyncAjouterParticipant(Context p_Context, Parcours p_Parcours) {
+			this.m_Context = p_Context;
+			this.m_Parcours = p_Parcours;
+		}
+		
+		@Override
+		protected Void doInBackground(Void... params) {
+			try{
+				URI uri = new URI("http", Util.WEB_SERVICE, 
+						Util.REST_UTILISATEURS + "/" + mUtilisateur.getCourriel() +
+						Util.REST_PARCOURS + "/" + mParcoursDemandeur.getId() + 
+						Util.REST_AJOUTER + "/" + this.m_Parcours.getId(), null, null);
+				
+				HttpPut put = new HttpPut(uri);
+				put.setEntity(new StringEntity(
+						new JSONObject()
+							.put("jour", "")
+							.put("password", mUtilisateur.getEncodedPassword()
+									).toString(), "UTF-8"));
+				
+				put.addHeader("Content-Type","application/json");
+				m_ClientHttp.execute(put, new BasicResponseHandler());
+				
+			}catch(Exception e){m_Exception = e; e.printStackTrace();}
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			if(m_Exception != null)
+				Util.easyToast(m_Context, R.string.txt_ajout_participant_erreur);
+			else
+			{
+				Util.easyToast(m_Context, R.string.txt_ajout_participant_succes);
+				m_Adapter.remove(this.m_Parcours);
+				m_Adapter.notifyDataSetChanged();
 			}
 		}
 	}
