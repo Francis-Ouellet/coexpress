@@ -46,6 +46,7 @@ public class ParcoursDetailActivity extends FragmentActivity {
 		
 		// Définition des vues des onglets
 		if(mParcours != null){
+			
 			mAdapter = new ParcoursDetailPagerAdapter(getSupportFragmentManager(), mParcours);
 			
 			mViewPager = (ViewPager)findViewById(R.id.pager_parcours_detail);
@@ -85,7 +86,11 @@ public class ParcoursDetailActivity extends FragmentActivity {
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.parcours_detail, menu);
+		if(mParcours != null)
+			if(mParcours.getActif())
+				getMenuInflater().inflate(R.menu.parcours_detail, menu);
+			else
+				getMenuInflater().inflate(R.menu.menu_vide, menu);
 		return true;
 	}
 

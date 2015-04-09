@@ -42,6 +42,8 @@ public class AjouterParticipantsActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_ajouter_participants);
+		getActionBar().setDisplayShowHomeEnabled(false);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 		
 		mExtras = getIntent().getExtras();
 		if(mExtras != null){
@@ -49,33 +51,24 @@ public class AjouterParticipantsActivity extends Activity {
 			mUtilisateur = (Utilisateur)mExtras.getSerializable(Util.EXTRA_UTILISATEUR);
 		}
 		
+		// Conducteur cherche passagers
+		if(mParcoursDemandeur.getConducteur())
+			getActionBar().setTitle(R.string.title_activity_trouver_passagers);
+		// Passager cherche conducteur
+		else
+			getActionBar().setTitle(R.string.title_activity_trouver_conducteur);
+		
 		m_ListeParcoursPotentiels = (ListView)this.findViewById(R.id.liste_participants_potentiels);
 		
 		new AsyncChercherParticipantsPotentiels(this).execute();
 	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.ajouter_participants, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
 	
 	public void ajouterParticipant(View v){}
 	
-	public void enleverParticipant(View v){}
+	public void enleverParticipant(View v){
+		m_Adapter.remove(m_Parcours.get(m_ListeParcoursPotentiels.getPositionForView(v)));
+		m_Adapter.notifyDataSetChanged();
+	}
 	
 	private class AsyncChercherParticipantsPotentiels extends AsyncTask<Void, Void, List<Parcours>>{
 		

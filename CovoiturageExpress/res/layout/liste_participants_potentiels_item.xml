@@ -2,54 +2,46 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
     android:orientation="vertical" >
-    
-    <LinearLayout 
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        
-        <ImageView 
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_action_accept_dark"
-            android:clickable="true"
-            android:onClick="ajouterParticipant"
-            android:contentDescription="@string/desc_bouton_ajouter"/>
-        
-        <ImageView 
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/ic_action_cancel_dark"
-            android:clickable="true"
-            android:onClick="enleverParticipant"
-            android:contentDescription="@string/desc_bouton_annuler"/>
-        
-    </LinearLayout>
     
     <!-- Mettre une carte à la place des adresses -->
     
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/participant_potentiel_adresse_depart" />
-    
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/participant_potentiel_adresse_destination" />
-    
     <LinearLayout 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:paddingTop="5dp" >
+	        
+	    <TextView
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:id="@+id/participant_potentiel_adresse_depart"
+	        android:gravity="center" />
+	    
+	    <TextView
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:id="@+id/participant_potentiel_adresse_destination"
+	        android:gravity="center" />
+	
+	</LinearLayout>
+	    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="5dp" >
         
         <TextView
             android:layout_width="0dp"
         	android:layout_height="wrap_content"
-        	android:layout_weight="2"
+        	android:layout_weight="1"
         	android:gravity="center"
         	android:id="@+id/participant_potentiel_date_depart" />
         
@@ -66,6 +58,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:id="@+id/participant_potentiel_nb_places" />
+        android:id="@+id/participant_potentiel_nb_places"
+        android:paddingTop="5dp" />
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="5dp" >
+        
+        <ImageView 
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/selector_bouton_ajouter_participant"
+            android:clickable="true"
+            android:onClick="ajouterParticipant"
+            android:contentDescription="@string/desc_bouton_ajouter"/>
+        
+        <ImageView 
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/selector_bouton_supprimer_participant"
+            android:clickable="true"
+            android:onClick="enleverParticipant"
+            android:contentDescription="@string/desc_bouton_annuler"/>
+        
+    </LinearLayout>
 
 </LinearLayout>

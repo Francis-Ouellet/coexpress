@@ -8,6 +8,8 @@
     <string name="title_activity_creation_parcours">Ajout d\'un parcours</string>
     <string name="title_activity_modification_parcours">Modification d\'un parcours</string>
     <string name="title_activity_parcours_detail">Détails du parcours</string>
+    <string name="title_activity_trouver_passagers">Trouver des passagers</string>
+    <string name="title_activity_trouver_conducteur">Trouver un conducteur</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
