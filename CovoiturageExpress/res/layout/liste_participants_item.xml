@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical" >
+    
+    <!-- Mettre une carte à la place des adresses -->
+    
+    <LinearLayout
+       	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:orientation="horizontal" >
+       
+       <TextView
+       		android:layout_width="0dp"
+    		android:layout_height="wrap_content"
+    		android:layout_weight="1"
+    		android:id="@+id/participant_nom" />
+       
+       <TextView
+       		android:layout_width="0dp"
+    		android:layout_height="wrap_content"
+    		android:layout_weight="1"
+    		android:id="@+id/participant_type" />
+       
+   </LinearLayout>
+   
+   <LinearLayout
+       	android:layout_width="match_parent"
+    	android:layout_height="wrap_content"
+    	android:orientation="horizontal" >
+       
+       <TextView
+       		android:layout_width="0dp"
+    		android:layout_height="wrap_content"
+    		android:layout_weight="1"
+    		android:id="@+id/participant_notes" />
+       
+       <LinearLayout
+	       	android:layout_width="0dp"
+	    	android:layout_height="wrap_content"
+	    	android:layout_weight="1"
+	    	android:orientation="vertical" >
+	       
+	       <TextView
+	       		android:layout_width="match_parent"
+	    		android:layout_height="wrap_content"
+	    		android:id="@+id/participant_adresse_depart" />
+	       
+	       <TextView
+	       		android:layout_width="match_parent"
+	    		android:layout_height="wrap_content"
+	    		android:id="@+id/participant_adresse_destination" />
+	       
+	   </LinearLayout>
+       
+   </LinearLayout>
+    
+</LinearLayout>

@@ -15,7 +15,7 @@ def verifier_compatibilite_parcours(conducteur, passager):
     # Si le passager est actif
     # Si le nombre de places disponibles du conducteur est supérieur au nombre de places demandées du passager
     # TODO : VÉRIFIER LA DATE AUSSI !
-    if(conducteur.actif and passager.actif and conducteur.nbPlaces > passager.nbPlaces):
+    if(conducteur.actif and passager.actif and conducteur.nbPlaces >= passager.nbPlaces):
         
         # Transforme le timestamp en objet Datetime
         departConducteur = datetime.fromtimestamp(float(conducteur.departTimestamp) / 1e3)
@@ -35,11 +35,12 @@ def verifier_compatibilite_parcours(conducteur, passager):
                 j = 0
                 # Si un des jours répétés du conducteur est le jour de départ du passager
                 found = comparer_jours_semaine(conducteur.joursRepetes[i], departPassager.weekday())
+                
                 while(j < len(passager.joursRepetes) and not found):
                     # Si deux jours sont identiques dans les jours répétés
                     # Ou si un des jours répétés du passager est le jour du départ du conducteur
-                    if(conducteur.joursRepetes[i] == passager.joursRepetes[j] or
-                       comparer_jours_semaine(passager.joursRepetes[j], departConducteur.weekday())):
+                    if((conducteur.joursRepetes[i] == passager.joursRepetes[j] or
+                       comparer_jours_semaine(passager.joursRepetes[j], departConducteur.weekday()))):
                         found = True
                     else:
                         j = j + 1
@@ -79,9 +80,26 @@ def comparer_jours_semaine(a,b):
 def serialiser_parcours_covoiturage(idParcours):
     parcours = ndb.Key('Parcours', idParcours).get()
     parcoursJSON = parcours.to_dict()
+    parcoursJSON['idParcours'] = parcours.key.id()
     parcoursJSON['nom'] = ndb.Key('Utilisateur', parcours.proprietaire).get().nom
     parcoursJSON['prenom'] = ndb.Key('Utilisateur', parcours.proprietaire).get().prenom
     return parcoursJSON
+
+# Permet de vérifier si un covoiturage existe déjà pour ce conducteur et ce passager au jour spécifié
+# TODO Revérifier cet algorithme
+def verifier_covoiturage_existant(idConducteur, idPassager, jour):
+    covoiturage = ndb.Key('Covoiturage', idConducteur + str(jour)).get()
+    logging.info(covoiturage)
+    logging.info(idConducteur + str(jour))
+    logging.info(idPassager)
+    if(covoiturage is not None):
+        found = False
+        for passager in covoiturage.passagers:
+            if(passager == idPassager):
+                found = True
+        return found
+    else:
+        return False
     
 class MainPageHandler(webapp2.RequestHandler):
     def get(self):

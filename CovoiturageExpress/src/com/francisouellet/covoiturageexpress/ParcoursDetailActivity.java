@@ -47,7 +47,7 @@ public class ParcoursDetailActivity extends FragmentActivity {
 		// Définition des vues des onglets
 		if(mParcours != null){
 			
-			mAdapter = new ParcoursDetailPagerAdapter(getSupportFragmentManager(), mParcours);
+			mAdapter = new ParcoursDetailPagerAdapter(getSupportFragmentManager(), mParcours, mUtilisateur);
 			
 			mViewPager = (ViewPager)findViewById(R.id.pager_parcours_detail);
 			mViewPager.setAdapter(mAdapter);
