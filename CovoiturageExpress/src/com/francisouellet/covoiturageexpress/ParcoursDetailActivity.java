@@ -78,7 +78,7 @@ public class ParcoursDetailActivity extends FragmentActivity {
 					.setText(getString(R.string.parcours_fragment_titre_parcours))
 					.setTabListener(tabListener));
 			actionBar.addTab(actionBar.newTab()
-					.setText(getString(R.string.parcours_fragment_titre_passagers))
+					.setText(getString(R.string.parcours_fragment_titre_participants))
 					.setTabListener(tabListener));
 		}
 	}

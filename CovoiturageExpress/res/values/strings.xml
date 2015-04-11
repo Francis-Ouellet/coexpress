@@ -53,7 +53,7 @@
     <string name="parcours_item_place">place</string>
     <string name="parcours_item_places">places</string>
     <string name="parcours_fragment_titre_parcours">Parcours</string>
-    <string name="parcours_fragment_titre_passagers">Passagers</string>
+    <string name="parcours_fragment_titre_participants">Participants</string>
 
     <!-- Alertes et messages d'erreurs -->
     <string name="txt_courriel_different">Le courriel doit être identique</string>
