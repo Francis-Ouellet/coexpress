@@ -31,6 +31,10 @@ public class Util {
 	public static final String REST_AJOUTER = "/ajouter";
 	public static final String REST_PARTICIPANTS = "/participants";
 	
+	public static final String STATIC_MAPS_API = "maps.googleapis.com";
+	public static final String STATIC_MAPS_PATH = "/maps/api/staticmap";
+	public static final String STATIC_MAPS_SIZE = "size";
+	public static final String STATIC_MAPS_MARKERS = "markers";
 	
 	/**
 	 * Génère un SHA1 à partir d'une chaîne de caractère

@@ -1,5 +1,6 @@
 package com.francisouellet.covoiturageexpress;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ import org.json.JSONObject;
 import com.francisouellet.covoiturageexpress.R;
 import com.francisouellet.covoiturageexpress.adapters.ParcoursAdapter;
 import com.francisouellet.covoiturageexpress.classes.Parcours;
+import com.francisouellet.covoiturageexpress.classes.ParcoursEtCarte;
 import com.francisouellet.covoiturageexpress.classes.Utilisateur;
 import com.francisouellet.covoiturageexpress.database.ParcoursDataSource;
 import com.francisouellet.covoiturageexpress.database.UtilisateurDataSource;
@@ -24,12 +26,17 @@ import com.francisouellet.covoiturageexpress.util.Util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AbsListView.LayoutParams;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.AdapterView;
@@ -57,7 +64,6 @@ public class MainActivity extends Activity implements OnItemClickListener{
 		
 		m_ListeParcours = (ListView)this.findViewById(R.id.liste_mes_parcours);
 		m_ListeParcours.setOnItemClickListener(this);
-		
 	}
 	
 	@Override
@@ -130,7 +136,7 @@ public class MainActivity extends Activity implements OnItemClickListener{
 		this.startActivity(i);
 	}
 	
-	private class AsyncObtenirParcours extends AsyncTask<Void, Void, List<Parcours>>{
+	private class AsyncObtenirParcours extends AsyncTask<Void, Void, List<ParcoursEtCarte>>{
 			
 		private Context m_Context;
 		private Exception m_Exception;
@@ -140,10 +146,10 @@ public class MainActivity extends Activity implements OnItemClickListener{
 		}
 		
 		@Override
-		protected List<Parcours> doInBackground(Void... params) {
+		protected List<ParcoursEtCarte> doInBackground(Void... params) {
 			
-			List<Parcours> parcours = new ArrayList<Parcours>();
-			
+			List<ParcoursEtCarte> resultat = new ArrayList<ParcoursEtCarte>();
+			InputStream is = null;
 			try{
 				
 				URI uri = new URI("http", Util.WEB_SERVICE, Util.REST_UTILISATEURS + "/" + utilisateur.getCourriel() + 
@@ -154,30 +160,59 @@ public class MainActivity extends Activity implements OnItemClickListener{
 				
 				JSONArray parcoursJSON = new JSONArray(body);
 				for(int i = 0; i < parcoursJSON.length(); i++){
-					parcours.add(JsonParser.ToParcours((JSONObject)parcoursJSON.get(i)));
+					
+					// Récupère l'objet parcours à partir du JSON
+					Parcours parcours = JsonParser.ToParcours((JSONObject)parcoursJSON.get(i));
+					
+					// Récupère une image Google Map du parcours
+					String markerDepart = "color:blue|" + parcours.getDepartLatitude() + "," + 
+											parcours.getDepartLongitude();
+					String markerDestination = "color:red|" + parcours.getDestinationLatitude() + "," + 
+											parcours.getDestinationLongitude();
+					Point screenSize = new Point();
+					getWindowManager().getDefaultDisplay().getSize(screenSize);
+					String size = screenSize.x + "x400";
+					
+					URI uriCarte = new URI("https",Util.STATIC_MAPS_API, Util.STATIC_MAPS_PATH,
+							Util.STATIC_MAPS_MARKERS + "=" + markerDepart + "&" +
+							Util.STATIC_MAPS_MARKERS + "=" + markerDestination + "&" +
+							Util.STATIC_MAPS_SIZE + "=" + size, null); 
+					
+					Log.i("URL",uriCarte.toString());
+					
+					is = uriCarte.toURL().openStream();
+					Bitmap image = BitmapFactory.decodeStream(is);
+					
+					resultat.add(new ParcoursEtCarte(parcours, image));
 				}
 				
 				// Met à jour les données locales si elles ne sont pas synchronisées avec les données du service web
 				pds.open();
-				for (Parcours item : parcours) {
-					if(pds.get(item.getId()) == null)
-						pds.insert(item);
+				for (ParcoursEtCarte item : resultat) {
+					if(pds.get(item.getParcours().getId()) == null)
+						pds.insert(item.getParcours());
 					else
-						pds.update(item);
+						pds.update(item.getParcours());
 				}
 				pds.close();
 				
 				
 			}catch(Exception e){ m_Exception = e; e.printStackTrace();}
 			
-			return parcours;
+			return resultat;
 		}
 
 		@Override
-		protected void onPostExecute(List<Parcours> result) {
+		protected void onPostExecute(List<ParcoursEtCarte> result) {
 			// Si la requête a fonctionné et que la liste retournée contient des items, on les affiche
-			if(m_Exception == null && result.size() > 0){
-				m_Parcours = result;
+			if(m_Exception == null && result != null && result.size() > 0){
+				if(m_Parcours != null)
+					m_Parcours.clear();
+				else
+					m_Parcours = new ArrayList<Parcours>();
+				for (ParcoursEtCarte item : result){
+					m_Parcours.add(item.getParcours());
+				}
 			}
 			// Si la requête n'a pas fonctionné, on vérifie s'il existe des parcours en local à afficher
 			else{
@@ -185,12 +220,15 @@ public class MainActivity extends Activity implements OnItemClickListener{
 					pds.open();
 					m_Parcours = pds.getAllByOwner(utilisateur.getCourriel());
 					pds.close();
+					
+					for(Parcours parcours : m_Parcours)
+						result.add(new ParcoursEtCarte(parcours));
 				}
 				catch(Exception e){e.printStackTrace();}
 			}
 			
 			if(m_Parcours != null){
-				m_Adapter = new ParcoursAdapter(this.m_Context, m_Parcours, R.layout.liste_parcours_item);
+				m_Adapter = new ParcoursAdapter(this.m_Context, result, R.layout.liste_parcours_item);
 				m_ListeParcours.setAdapter(m_Adapter);
 			}
 		}
@@ -231,7 +269,7 @@ public class MainActivity extends Activity implements OnItemClickListener{
 			// Pas d'exception : on supprime le parcours de la liste affichée
 			if(m_Exception == null){
 				m_Parcours.remove(parcours);
-				m_Adapter.remove(parcours);
+				m_Adapter.remove(new ParcoursEtCarte(parcours));
 				m_Adapter.notifyDataSetChanged();
 			}
 			else{
@@ -239,4 +277,5 @@ public class MainActivity extends Activity implements OnItemClickListener{
 			}
 		}
 	}
+	
 }
