@@ -15,6 +15,15 @@ import com.francisouellet.covoiturageexpress.classes.Parcours;
 import com.francisouellet.covoiturageexpress.classes.Utilisateur;
 import com.francisouellet.covoiturageexpress.util.JsonParser;
 import com.francisouellet.covoiturageexpress.util.Util;
+import com.google.android.gms.internal.pa;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.ExpandableListActivity;
 import android.content.Context;
@@ -28,7 +37,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
@@ -61,15 +69,20 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 			args.putSerializable(ParcoursDetailPagerAdapter.ARG_UTILISATEUR, m_Utilisateur);
 			fragment.setArguments(args);
 		}
+		else if(arg0 == 2){
+			fragment = new ParcoursDetailCarteFragment(m_Parcours);
+		}
 		return fragment;
 	}
 
 	@Override
 	public int getCount() {
-		return 2;
+		return 3;
 	}
 
-	public static class ParcoursDetailFragment extends Fragment{
+	public static class ParcoursDetailFragment extends Fragment {
+		
+		private Parcours parcours;
 		
 		@Override
 		public View onCreateView(LayoutInflater inflater,
@@ -77,7 +90,7 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 			
 			View racine = inflater.inflate(R.layout.fragment_parcours_detail, container, false);
 					
-			Parcours parcours = (Parcours)getArguments().getSerializable(ParcoursDetailPagerAdapter.ARG_PARCOURS);
+			parcours = (Parcours)getArguments().getSerializable(ParcoursDetailPagerAdapter.ARG_PARCOURS);
 			GregorianCalendar calendrier = new GregorianCalendar();
 			calendrier.setTimeInMillis(Long.parseLong(parcours.getTimestampDepart()));
 			
@@ -130,8 +143,14 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 			((TextView)racine.findViewById(R.id.fragment_parcours_detail_notes)).setText(
 					parcours.getNotes());
 			
+			if(parcours.getDestinationLatitude() != null && parcours.getDestinationLongitude() != null &&
+					parcours.getDepartLatitude() != null && parcours.getDestinationLongitude() != null){
+				
+			}
+			
 			return racine;
 		}
+				
 	}
 	
 	public static class ParcoursDetailParticipantsFragment extends Fragment{
@@ -153,6 +172,38 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 			
 			return racine;
 		}
+		
+	}
+	
+	public static class ParcoursDetailCarteFragment extends Fragment implements OnMapReadyCallback{
+		
+		private Parcours mParcours;
+		
+		public ParcoursDetailCarteFragment(Parcours pParcours) {
+			this.mParcours = pParcours;
+		}
+		
+		@Override
+		public View onCreateView(LayoutInflater inflater,
+				ViewGroup container, Bundle savedInstanceState) {
+			
+			View racine = inflater.inflate(R.layout.fragment_parcours_carte, container, false);
+			
+			SupportMapFragment carte = (SupportMapFragment)getFragmentManager().findFragmentById(R.id.parcours_item_carte);
+			
+			if(carte != null ){
+				carte.onCreate(savedInstanceState);
+				carte.getMapAsync(this);
+			}
+			return racine;
+		}
+		
+		@Override
+		public void onMapReady(GoogleMap map) {
+			map.addMarker(new MarkerOptions()
+					.position(new LatLng(mParcours.getDepartLatitude(),mParcours.getDepartLongitude())));
+		}
+		
 	}
 	
 	private static class AsyncObtenirParticipants extends AsyncTask<Void, Void, List<List<Parcours>>>{

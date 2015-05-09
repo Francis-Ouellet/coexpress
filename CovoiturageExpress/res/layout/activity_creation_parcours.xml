@@ -84,6 +84,7 @@
 	        android:layout_height="wrap_content"
 	        android:id="@+id/creation_parcours_repeter"
 	        android:text="@string/lbl_repeter"
+	        android:enabled="false"
 	        android:onClick="clickRepeter" />
 	    
 	    <LinearLayout 

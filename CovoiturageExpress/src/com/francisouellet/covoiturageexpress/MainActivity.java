@@ -24,6 +24,7 @@ import com.francisouellet.covoiturageexpress.util.JsonParser;
 import com.francisouellet.covoiturageexpress.util.Util;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -136,13 +137,25 @@ public class MainActivity extends Activity implements OnItemClickListener{
 		this.startActivity(i);
 	}
 	
-	private class AsyncObtenirParcours extends AsyncTask<Void, Void, List<ParcoursEtCarte>>{
+	private class AsyncObtenirParcours extends AsyncTask<Void, String, List<ParcoursEtCarte>>{
 			
 		private Context m_Context;
 		private Exception m_Exception;
+		private ProgressDialog loading;
 		
 		public AsyncObtenirParcours(Context p_Context) {
 			this.m_Context = p_Context;
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			loading = new ProgressDialog(m_Context);
+			loading.setMessage(m_Context.getText(R.string.txt_chargement_des_parcours));
+			loading.setIndeterminate(true);
+			loading.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+			loading.setCancelable(false);
+			loading.show();
 		}
 		
 		@Override
@@ -177,8 +190,6 @@ public class MainActivity extends Activity implements OnItemClickListener{
 							Util.STATIC_MAPS_MARKERS + "=" + markerDepart + "&" +
 							Util.STATIC_MAPS_MARKERS + "=" + markerDestination + "&" +
 							Util.STATIC_MAPS_SIZE + "=" + size, null); 
-					
-					Log.i("URL",uriCarte.toString());
 					
 					is = uriCarte.toURL().openStream();
 					Bitmap image = BitmapFactory.decodeStream(is);
@@ -231,6 +242,9 @@ public class MainActivity extends Activity implements OnItemClickListener{
 				m_Adapter = new ParcoursAdapter(this.m_Context, result, R.layout.liste_parcours_item);
 				m_ListeParcours.setAdapter(m_Adapter);
 			}
+			
+			if(loading != null && loading.isShowing())
+				loading.dismiss();
 		}
 	}
 	
@@ -268,8 +282,9 @@ public class MainActivity extends Activity implements OnItemClickListener{
 		protected void onPostExecute(Void result) {
 			// Pas d'exception : on supprime le parcours de la liste affichée
 			if(m_Exception == null){
-				m_Parcours.remove(parcours);
-				m_Adapter.remove(new ParcoursEtCarte(parcours));
+				int index = m_Parcours.indexOf(parcours);
+				m_Parcours.remove(index);
+				m_Adapter.remove(m_Adapter.getItem(index));
 				m_Adapter.notifyDataSetChanged();
 			}
 			else{

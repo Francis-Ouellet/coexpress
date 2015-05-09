@@ -54,6 +54,7 @@
     <string name="parcours_item_places">places</string>
     <string name="parcours_fragment_titre_parcours">Parcours</string>
     <string name="parcours_fragment_titre_participants">Participants</string>
+    <string name="parcours_fragment_titre_carte">Carte</string>
 
     <!-- Alertes et messages d'erreurs -->
     <string name="txt_courriel_different">Le courriel doit être identique</string>
@@ -75,6 +76,7 @@
     <string name="txt_parcours_erreur_modification">Erreur lors de la modification du parcours</string>
     <string name="txt_ajout_participant_erreur">Erreur lors de l\'ajout du participant</string>
     <string name="txt_ajout_participant_succes">Participant ajouté avec succès</string>
+    <string name="txt_chargement_des_parcours">Chargement des parcours&#8230;</string>
 
     <!-- Items de menu -->
     <string name="action_deconnexion">Déconnexion</string>

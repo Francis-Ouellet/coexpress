@@ -63,7 +63,9 @@ public class ParcoursDetailActivity extends FragmentActivity {
 			ActionBar.TabListener tabListener = new ActionBar.TabListener() {
 				
 				@Override
-				public void onTabUnselected(Tab tab, FragmentTransaction ft) {}
+				public void onTabUnselected(Tab tab, FragmentTransaction ft) {
+					
+				}
 				
 				@Override
 				public void onTabSelected(Tab tab, FragmentTransaction ft) {
@@ -79,6 +81,9 @@ public class ParcoursDetailActivity extends FragmentActivity {
 					.setTabListener(tabListener));
 			actionBar.addTab(actionBar.newTab()
 					.setText(getString(R.string.parcours_fragment_titre_participants))
+					.setTabListener(tabListener));
+			actionBar.addTab(actionBar.newTab()
+					.setText(getString(R.string.parcours_fragment_titre_carte))
 					.setTabListener(tabListener));
 		}
 	}
