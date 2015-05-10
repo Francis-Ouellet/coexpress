@@ -15,6 +15,7 @@ import com.francisouellet.covoiturageexpress.classes.Parcours;
 import com.francisouellet.covoiturageexpress.classes.Utilisateur;
 import com.francisouellet.covoiturageexpress.util.JsonParser;
 import com.francisouellet.covoiturageexpress.util.Util;
+import com.google.android.gms.internal.op;
 import com.google.android.gms.internal.pa;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -33,6 +35,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.util.LogWriter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +48,8 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 	
 	private Parcours m_Parcours;
 	private Utilisateur m_Utilisateur;
+	
+	private static List<List<Parcours>> m_ParcoursParticipants;
 	
 	public static final String ARG_PARCOURS = "parcours";
 	public static final String ARG_UTILISATEUR = "utilisateur";
@@ -70,7 +77,10 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 			fragment.setArguments(args);
 		}
 		else if(arg0 == 2){
-			fragment = new ParcoursDetailCarteFragment(m_Parcours);
+			fragment = new ParcoursDetailCarteFragment();
+			Bundle args = new Bundle();
+			args.putSerializable(ParcoursDetailPagerAdapter.ARG_PARCOURS, m_Parcours);
+			fragment.setArguments(args);
 		}
 		return fragment;
 	}
@@ -143,11 +153,6 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 			((TextView)racine.findViewById(R.id.fragment_parcours_detail_notes)).setText(
 					parcours.getNotes());
 			
-			if(parcours.getDestinationLatitude() != null && parcours.getDestinationLongitude() != null &&
-					parcours.getDepartLatitude() != null && parcours.getDestinationLongitude() != null){
-				
-			}
-			
 			return racine;
 		}
 				
@@ -168,7 +173,7 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 			View racine = inflater.inflate(R.layout.fragment_parcours_participants, container, false);
 			m_ListeParcours = (ExpandableListView)racine.findViewById(R.id.liste_groupes_participants);
 			
-			new AsyncObtenirParticipants(getActivity(),utilisateur ,parcours, m_ListeParcours).execute();
+			new AsyncObtenirParticipants(getActivity(), utilisateur, parcours, m_ListeParcours).execute();
 			
 			return racine;
 		}
@@ -179,29 +184,76 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 		
 		private Parcours mParcours;
 		
-		public ParcoursDetailCarteFragment(Parcours pParcours) {
-			this.mParcours = pParcours;
-		}
-		
 		@Override
 		public View onCreateView(LayoutInflater inflater,
 				ViewGroup container, Bundle savedInstanceState) {
 			
+			mParcours = (Parcours)getArguments().getSerializable(ParcoursDetailPagerAdapter.ARG_PARCOURS);
 			View racine = inflater.inflate(R.layout.fragment_parcours_carte, container, false);
 			
-			SupportMapFragment carte = (SupportMapFragment)getFragmentManager().findFragmentById(R.id.parcours_item_carte);
+			// Cherche la carte dans le fragment manager
+			/*SupportMapFragment carte = (SupportMapFragment)getFragmentManager().findFragmentById(R.id.fragment_parcours_detail_carte);
 			
-			if(carte != null ){
-				carte.onCreate(savedInstanceState);
+			if(carte == null){
+				FragmentManager fm = getFragmentManager();
+				FragmentTransaction ft = fm.beginTransaction();
+				carte = SupportMapFragment.newInstance();
+				ft.replace(R.id.fragment_parcours_detail_carte, carte).commit();
+			}
+			*/
+			
+			SupportMapFragment carte = SupportMapFragment.newInstance();
+			FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+			ft.add(R.id.fragment_parcours_detail_carte, carte).commit();
+			
+			if(carte != null){
 				carte.getMapAsync(this);
 			}
+			
 			return racine;
 		}
 		
 		@Override
+		public void onDestroyView() {
+			super.onDestroyView();
+			
+		}
+		
+		@Override
 		public void onMapReady(GoogleMap map) {
-			map.addMarker(new MarkerOptions()
-					.position(new LatLng(mParcours.getDepartLatitude(),mParcours.getDepartLongitude())));
+			
+			if(m_ParcoursParticipants != null){
+				
+				double sumLat = 0;
+				double sumLong = 0;
+				int i = 0;
+				for (Parcours item : m_ParcoursParticipants.get(0)) {
+					// Conducteur
+					MarkerOptions depart = new MarkerOptions();
+					MarkerOptions destination = new MarkerOptions();
+					depart.position(new LatLng(item.getDepartLatitude(), item.getDepartLongitude()));
+					destination.position(new LatLng(item.getDestinationLatitude(), item.getDestinationLongitude()));
+					if(item.getConducteur()){
+						depart.icon(BitmapDescriptorFactory.fromResource(R.drawable.letter_c_blue));
+						destination.icon(BitmapDescriptorFactory.fromResource(R.drawable.letter_c_red));
+					}
+					// Passagers
+					else{
+						depart.icon(BitmapDescriptorFactory.fromResource(R.drawable.letter_p_blue));
+						destination.icon(BitmapDescriptorFactory.fromResource(R.drawable.letter_p_red));
+					}
+					
+					map.addMarker(depart);
+					map.addMarker(destination);
+					
+					i+=2;
+					sumLat += item.getDepartLatitude();
+					sumLat += item.getDestinationLatitude();
+					sumLong += item.getDepartLongitude();
+					sumLong += item.getDestinationLongitude();
+				}
+				map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(sumLat / i, sumLong / i),9));
+			}
 		}
 		
 	}
@@ -254,7 +306,7 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 		@Override
 		protected void onPostExecute(List<List<Parcours>> result) {
 			if(m_Exception == null && result != null && result.size() > 0){
-				
+				m_ParcoursParticipants = result;
 				List<String> entetes = new ArrayList<String>();
 				for(int i = 0; i < result.size(); i++)
 					entetes.add("Covoiturage " + (i + 1));

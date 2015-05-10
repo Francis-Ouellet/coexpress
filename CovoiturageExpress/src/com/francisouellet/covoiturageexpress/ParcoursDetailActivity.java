@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -63,9 +64,7 @@ public class ParcoursDetailActivity extends FragmentActivity {
 			ActionBar.TabListener tabListener = new ActionBar.TabListener() {
 				
 				@Override
-				public void onTabUnselected(Tab tab, FragmentTransaction ft) {
-					
-				}
+				public void onTabUnselected(Tab tab, FragmentTransaction ft) {}
 				
 				@Override
 				public void onTabSelected(Tab tab, FragmentTransaction ft) {

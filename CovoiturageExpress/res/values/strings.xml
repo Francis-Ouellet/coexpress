@@ -88,5 +88,8 @@
     <string name="desc_bouton_annuler">Bouton annuler</string>
     <string name="title_activity_ajouter_participants">AjouterParticipantsActivity</string>
     <string name="desc_image_google_map">Carte montrant le départ et la destination</string>
+    
+    <string name="lbl_map_marker_conducteur">C</string>
+    <string name="lbl_map_marker_passager">P</string>
 
 </resources>
