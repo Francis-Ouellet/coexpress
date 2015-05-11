@@ -5,5 +5,9 @@
     <item
         android:id="@+id/action_deconnexion"
         android:title="@string/action_deconnexion"/>
+    
+    <item 
+        android:id="@+id/action_mon_profil"
+        android:title="@string/action_mon_profil"/>
 
 </menu>

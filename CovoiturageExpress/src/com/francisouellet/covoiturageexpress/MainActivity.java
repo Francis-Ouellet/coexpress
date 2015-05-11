@@ -109,6 +109,13 @@ public class MainActivity extends Activity implements OnItemClickListener{
 			} catch(Exception e){Log.i(TAG,e.toString());}
 			return true;
 		}
+		else if(id == R.id.action_mon_profil){
+			Intent i = new Intent(this, ProfilUtilisateurActivity.class);
+			i.putExtra(Util.EXTRA_TYPE_PROFIL, true);
+			i.putExtra(Util.EXTRA_UTILISATEUR, this.utilisateur);
+			this.startActivity(i);
+			return true;
+		}
 		return super.onOptionsItemSelected(item);
 	}
 	

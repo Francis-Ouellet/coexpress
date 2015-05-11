@@ -182,13 +182,10 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 	
 	public static class ParcoursDetailCarteFragment extends Fragment implements OnMapReadyCallback{
 		
-		private Parcours mParcours;
-		
 		@Override
 		public View onCreateView(LayoutInflater inflater,
 				ViewGroup container, Bundle savedInstanceState) {
-			
-			mParcours = (Parcours)getArguments().getSerializable(ParcoursDetailPagerAdapter.ARG_PARCOURS);
+
 			View racine = inflater.inflate(R.layout.fragment_parcours_carte, container, false);
 			
 			// Cherche la carte dans le fragment manager
@@ -313,11 +310,7 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 				
 				ParticipantsExpendableListAdapter m_Adapter = new ParticipantsExpendableListAdapter(this.m_Context, entetes, result);
 				m_ListeParcours.setAdapter(m_Adapter);
-			}else{
-				
 			}
-				
 		}
 	}
-	
 }

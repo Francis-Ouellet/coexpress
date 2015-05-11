@@ -22,6 +22,7 @@ public class Util {
 	
 	public static final String EXTRA_PARCOURS = "parcours";
 	public static final String EXTRA_UTILISATEUR = "utilisateur";
+	public static final String EXTRA_TYPE_PROFIL = "type_profil";
 	
 	//public static final String WEB_SERVICE = "localhost:11080";
 	public static final String WEB_SERVICE = "coexpress624fx.appspot.com";

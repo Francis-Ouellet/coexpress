@@ -73,6 +73,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.francisouellet.covoiturageexpress.MainActivity" />
         </activity>
+        <activity
+            android:name=".ProfilUtilisateurActivity"
+            android:label="@string/title_activity_profil_utilisateur"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.francisouellet.covoiturageexpress.MainActivity" />
+        </activity>
     </application>
 
 </manifest>
