@@ -1,7 +1,12 @@
 package com.francisouellet.covoiturageexpress.classes;
 
 import java.io.Serializable;
+import java.util.List;
 
+/**
+ * Classe représentant un utilisateur de l'application
+ * @author Francis Ouellet
+ */
 public class Utilisateur implements Serializable {
 	private static final long serialVersionUID = -1190535891613477350L;
 	private String m_Courriel;
@@ -11,6 +16,7 @@ public class Utilisateur implements Serializable {
 	private String m_Telephone;
 	private boolean m_EstConnecte;
 	private boolean m_DernierConnecte;
+	private List<Commentaire> m_ListeCommentaires;
 	
 	public Utilisateur(String p_Courriel, String p_EncodedPassword, String p_Nom, String p_Prenom,
 			String p_Telephone, boolean p_EstConnecte, boolean p_DernierConnecte){
@@ -21,6 +27,7 @@ public class Utilisateur implements Serializable {
 		this.m_DernierConnecte = p_DernierConnecte;
 		this.m_Nom = p_Nom;
 		this.m_Prenom = p_Prenom;
+		this.m_ListeCommentaires = null;
 	}
 	
 	public Utilisateur(String p_Courriel, String p_Nom, String p_Prenom, String p_Telephone, boolean p_EstConnecte, boolean p_DernierConnecte){
@@ -30,6 +37,7 @@ public class Utilisateur implements Serializable {
 		this.m_DernierConnecte = p_DernierConnecte;
 		this.m_Nom = p_Nom;
 		this.m_Prenom = p_Prenom;
+		this.m_ListeCommentaires = null;
 	}
 
 	/**
@@ -128,5 +136,13 @@ public class Utilisateur implements Serializable {
 	 */
 	public void setPrenom(String m_Prenom) {
 		this.m_Prenom = m_Prenom;
+	}
+
+	public List<Commentaire> getListeCommentaires() {
+		return m_ListeCommentaires;
+	}
+
+	public void setListeCommentaires(List<Commentaire> m_ListeCommentaires) {
+		this.m_ListeCommentaires = m_ListeCommentaires;
 	}
 }

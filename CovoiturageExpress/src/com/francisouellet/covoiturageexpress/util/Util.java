@@ -22,6 +22,7 @@ public class Util {
 	
 	public static final String EXTRA_PARCOURS = "parcours";
 	public static final String EXTRA_UTILISATEUR = "utilisateur";
+	public static final String EXTRA_ID_UTILISATEUR = "id_utilisateur";
 	public static final String EXTRA_TYPE_PROFIL = "type_profil";
 	
 	//public static final String WEB_SERVICE = "localhost:11080";

@@ -4,6 +4,8 @@ import com.francisouellet.covoiturageexpress.classes.Utilisateur;
 import com.francisouellet.covoiturageexpress.util.Util;
 
 import android.app.Activity;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -77,5 +79,33 @@ public class ProfilUtilisateurActivity extends Activity {
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
 		return super.onOptionsItemSelected(item);
+	}
+	
+	private static class ObtenirUtilisateurAsync extends AsyncTask<Void, Void, Utilisateur>{
+		
+		private Exception m_Exception;
+		private Context m_Context;
+		
+		public ObtenirUtilisateurAsync(Context p_Context) {
+			this.m_Context = p_Context;
+			this.m_Exception = null;
+		}
+		
+		@Override
+		protected Utilisateur doInBackground(Void... params) {
+			Utilisateur utilisateur = null;
+			
+			try{
+				
+			}catch(Exception e){e.printStackTrace(); this.m_Exception = e;}
+			
+			return utilisateur;
+		}
+		
+		@Override
+		protected void onPostExecute(Utilisateur result) {
+			// TODO Auto-generated method stub
+			super.onPostExecute(result);
+		}
 	}
 }

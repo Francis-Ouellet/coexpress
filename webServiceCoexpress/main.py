@@ -2,7 +2,7 @@
 
 from google.appengine.ext import ndb
 from google.appengine.ext import db
-from modeles import Utilisateur, Parcours, Covoiturage
+from modeles import Utilisateur, Parcours, Covoiturage, Commentaire, CommentaireVote
 from math import hypot, fabs
 from datetime import datetime, date
 import webapp2
@@ -100,6 +100,18 @@ def verifier_covoiturage_existant(idConducteur, idPassager, jour):
         return found
     else:
         return False
+
+# Compte le nombre de votes positifs et négatifs d'un commentaire pour obtenir le score de ce commentaire    
+def obtenir_points_commentaire(idCommentaire):
+    query = CommentaireVote.query(CommentaireVote.idCommentaire == idCommentaire)
+    score = 0
+    for v in query:
+        if(v.typeVote):
+            score = score + 1
+        else:
+            score = score - 1
+            
+    return score
     
 class MainPageHandler(webapp2.RequestHandler):
     def get(self):
@@ -488,7 +500,124 @@ class CovoiturageHandler(webapp2.RequestHandler):
             
         except Exception, ex:
             logging.exception(ex)
-            self.error(500)      
+            self.error(500)
+            
+class CommentairesHandler(webapp2.RequestHandler):
+    def get(self, username, idCommentaire = None):
+        try:
+            resultat = None
+            utilisateur = ndb.Key('Utilisateur', username).get()
+            if(utilisateur is not None):
+                if(idCommentaire is None):
+                    # Tous les commentaires
+                    resultat = []
+                    query = Commentaire.query(Commentaire.proprietaire == username)
+                    
+                    for c in query:
+                        dictParcours = c.to_dict()
+                        dictParcours['idCommentaire'] = c.key.id()
+                        dictParcours['score'] = obtenir_points_commentaire(c.key.id())
+                        resultat.append(dictParcours)
+                else:
+                    # Ce commentaire en particulier
+                    commentaire = ndb.Key('Commentaire', idCommentaire).get()
+                    if(commentaire is not None):
+                        resultat = commentaire.to_dict()
+                        resultat['idCommentaire'] = c.key.id()
+                        resultat['score'] = obtenir_points_commentaire(c.key.id())
+                    else:
+                        self.error(404)
+            else:
+                self.error(404)
+                return
+            
+            self.response.headers['Content-Type'] = 'application/json'
+            self.response.out.write(json.dumps(resultat))
+            
+        except (ValueError, db.BadValueError), ex:
+            logging.info(ex)
+            self.error(400)
+            
+        except Exception, ex:
+            logging.exception(ex)
+            self.error(500)
+    
+    def put(self, username, idCommentaire):
+        try:
+            utilisateur = ndb.Key('Utilisateur',username).get()
+            if(utilisateur is not None and idCommentaire is not None):
+                cle = ndb.Key('Commentaire', idCommentaire)
+                jsonObj = json.loads(self.request.body)
+                status = 204
+                if(utilisateur.password == jsonObj.get('password')):
+                    # Ajout ou modification du commentaire
+                    commentaire = Commentaire(key=cle)
+                    commentaire.proprietaire = jsonObj['proprietaire']
+                    commentaire.auteur = jsonObj['auteur']
+                    commentaire.timestampCreation = jsonObj['timestampCreation']
+                    commentaire.texte = jsonObj['texte']
+                    commentaire.upvotes = jsonObj['upvotes']
+                    commentaire.downvotes = jsonObj['downvotes']
+                    commentaire.put()
+                    status = 201
+                else:
+                    self.error(401)
+                    return
+                self.response.set_status(status)
+            else:
+                self.error(404)
+                return
+                
+        except (ValueError, db.BadValueError), ex:
+            logging.info(ex)
+            self.error(400)
+            
+        except Exception, ex:
+            logging.exception(ex)
+            self.error(500)
+            
+class VoteHandler(webapp2.RequestHandler):
+    def put(self, username, idCommentaire, usernameVoteur):
+        try:
+            utilisateur = ndb.Key('Utilisateur',username).get()
+            if(utilisateur is not None):
+                commentaire = ndb.Key('Commentaire',idCommentaire).get()
+                if(commentaire is not None):
+                    voteur = ndb.Key('Utilisateur',usernameVoteur).get()
+                    if(voteur is not None):
+                        
+                        cle = ndb.Key('CommentaireVote', idCommentaire + usernameVoteur)
+                        jsonObj = json.loads(self.request.body)
+                        status = 204
+                        
+                        if(utilisateur.password == jsonObj['password']):
+                            commentaireVote = CommentaireVote(key = cle)
+                            commentaireVote.idCommentaire = idCommentaire
+                            commentaireVote.idVoteur = usernameVoteur
+                            commentaireVote.typeVote = jsonObj['tyepVote']
+                            commentaireVote.put()
+                            status = 201
+                        else:
+                            self.error(401)
+                            return
+                        
+                        self.response.set_status(status)
+                    else:
+                        self.error(404)
+                        return
+                else:
+                    self.error(404)
+                    return
+            else:
+                self.error(404)
+                return
+        except (ValueError, db.BadValueError), ex:
+            logging.info(ex)
+            self.error(400)
+            
+        except Exception, ex:
+            logging.exception(ex)
+            self.error(500)
             
 application = webapp2.WSGIApplication(
     [
@@ -507,7 +636,13 @@ application = webapp2.WSGIApplication(
         webapp2.Route(r'/utilisateurs/<username>/parcours/<idParcours>/ajouter/<idParcoursAjoute>',
                       handler=CovoiturageHandler, methods=['PUT']),
         webapp2.Route(r'/utilisateurs/<username>/parcours/<idParcours>/participants',
-                      handler=CovoiturageHandler, methods=['GET'])
+                      handler=CovoiturageHandler, methods=['GET']),
+        webapp2.Route(r'/utilisateurs/<username>/commentaires',
+                      handler=CommentairesHandler, methods=['GET']),
+        webapp2.Route(r'/utilisateurs/<username>/commentaires/<idCommentaire>',
+                      handler=CommentairesHandler, methods=['GET', 'PUT']),
+        webapp2.Route(r'/utilisateurs/<username>/commentaires/<idCommentaire>/vote/<usernameVoter>',
+                      handler=VoteHandler, methods=['PUT'])
         
     ],
     debug=True)            

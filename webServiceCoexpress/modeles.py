@@ -26,3 +26,18 @@ class Covoiturage(ndb.Model):
     conducteur = ndb.StringProperty()
     passagers = ndb.StringProperty(repeated=True)
     
+class Commentaire(ndb.Model):
+    proprietaire = ndb.StringProperty()
+    auteur = ndb.StringProperty()
+    timestampCreation = ndb.StringProperty()
+    texte = ndb.StringProperty()
+    upvotes = ndb.IntegerProperty()
+    downvotes = ndb.IntegerProperty()
+    
+class CommentaireVote(ndb.Model):
+    idCommentaire = ndb.StringProperty()
+    idVoteur = ndb.StringProperty()
+    # True vaut +1
+    # False vaut -1
+    typeVote = ndb.BooleanProperty()
+    
