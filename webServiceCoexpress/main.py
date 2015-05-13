@@ -576,6 +576,35 @@ class CommentairesHandler(webapp2.RequestHandler):
             logging.exception(ex)
             self.error(500)
             
+    def delete(self, username, idCommentaire):
+        try:
+            utilisateur = ndb.Key('Utilisateur', username).get()
+            if(utilisateur is not None):
+                cle = ndb.Key('Commentaire', idCommentaire)
+                if(cle is not None):
+                    if(utilisateur.password == self.request.get('password')):
+                        if(cle.get() is not None):
+                            cle.delete()
+                            ndb.delete_multi(CommentaireVote.query(CommentaireVote.idCommentaire == idCommentaire)
+                                             .fetch(keys_only=True))
+                            self.response.set_status(204)
+                    else:
+                        self.error(403)
+                        return
+                else:
+                    self.error(404)
+                    return
+            else:
+                self.error(404)
+                return
+        except (ValueError, db.BadValueError), ex:
+            logging.info(ex)
+            self.error(400)
+            
+        except Exception, ex:
+            logging.exception(ex)
+            self.error(500)    
+            
 class VoteHandler(webapp2.RequestHandler):
     def put(self, username, idCommentaire, usernameVoteur):
         try:
