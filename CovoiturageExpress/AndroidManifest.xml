@@ -67,7 +67,7 @@
 
         <activity
             android:name=".AjouterParticipantsActivity"
-            android:label="@string/title_activity_ajouter_participants"
+            android:label="@string/title_activity_trouver_passagers"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -76,6 +76,14 @@
         <activity
             android:name=".ProfilUtilisateurActivity"
             android:label="@string/title_activity_profil_utilisateur"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.francisouellet.covoiturageexpress.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ModifierCompteActivity"
+            android:label="@string/title_activity_modifier_compte"
             android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

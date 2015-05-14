@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.francisouellet.covoiturageexpress.ModifierCompteActivity" >
+
+    <item
+        android:id="@+id/action_confirmer_modification"
+        android:icon="@drawable/ic_action_accept_light"
+        android:showAsAction="ifRoom"
+        android:title="@string/action_confirmer_modification"/>
+
+</menu>

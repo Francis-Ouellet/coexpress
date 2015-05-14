@@ -12,8 +12,8 @@
     <string name="title_activity_trouver_conducteur">Trouver un conducteur</string>
     <string name="title_activity_profil_utilisateur_owner">Mon profil</string>
     <string name="title_activity_profil_utilisateur">Profil de</string>
+    <string name="title_activity_modifier_compte">Éditer mon profil</string>
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
 
     <!-- Connexion et création de compte -->
     <string name="lbl_courriel">Courriel</string>
@@ -64,7 +64,8 @@
     <string name="txt_mot_de_passe_different">Le mot de passe doit être identique</string>
     <string name="txt_tous_les_champs">Tous les champs doivent être remplis</string>
     <string name="txt_utilisateur_cree">Utilisateur créé avec succès</string>
-    <string name="txt_utilisateur_erreur_creation">Erreur lors de la création de l\'utilisateur</string>
+    <string name="txt_utilisateur_erreur_creation">Erreur réseau lors de la création de l\'utilisateur</string>
+    <string name="txt_utilisateur_erreur_modification">Erreur réseau lors de la modification de l\'utilisateur</string>
     <string name="txt_erreur_connexion">Erreur lors de la connexion</string>
     <string name="txt_adresse_depart_invalide">Une adresse de départ doit être fournie</string>
     <string name="txt_adresse_destination_invalide">Une adresse de destination doit être fournie</string>
@@ -80,9 +81,16 @@
     <string name="txt_ajout_participant_succes">Participant ajouté avec succès</string>
     <string name="txt_chargement_des_parcours">Chargement des parcours&#8230;</string>
 
-    <!-- Items de menu -->
+    <!-- Items de menu et d'action bar -->
     <string name="action_deconnexion">Déconnexion</string>
     <string name="action_mon_profil">Mon profil</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="action_ajouter_personne">Ajouter une personne</string>
+    <string name="action_ajouter_parcours">Ajouter un parcours</string>
+    <string name="action_editer_profil">Éditer mon profil</string>
+    <string name="action_ajouter_commentaire">Écrire un commentaire</string>
+    <string name="action_modifier_commentaire">Modifier le commentaire</string>
+    <string name="action_confirmer_modification">Confirmer modification</string>
 
     <!-- Description des images -->
     <string name="desc_bouton_ajouter">Bouton ajouter</string>
@@ -90,8 +98,7 @@
     <string name="desc_bouton_supprimer">Bouton supprimer</string>
     <string name="desc_bouton_annuler">Bouton annuler</string>
     <string name="desc_image_google_map">Carte montrant le départ et la destination</string>
-  	<string name="desc_bouton_upvote">Bouton de vote positif</string>
-  	<string name="desc_bouton_downvote">Bouton de vote négatif</string>
+    <string name="desc_bouton_upvote">Bouton de vote positif</string>
+    <string name="desc_bouton_downvote">Bouton de vote négatif</string>
     
-
 </resources>
