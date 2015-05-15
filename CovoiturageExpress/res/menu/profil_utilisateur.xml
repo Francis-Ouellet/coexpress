@@ -8,10 +8,4 @@
         android:title="@string/action_editer_profil"
         android:showAsAction="ifRoom" />
         
-    <item
-        android:id="@+id/action_ajouter_commentaire"
-        android:icon="@drawable/ic_comment_white_24dp"
-        android:title="@string/action_ajouter_commentaire"
-        android:showAsAction="ifRoom" />
-
 </menu>

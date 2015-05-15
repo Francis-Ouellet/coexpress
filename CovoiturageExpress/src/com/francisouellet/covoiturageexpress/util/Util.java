@@ -32,6 +32,7 @@ public class Util {
 	public static final String REST_CHERCHER = "/chercher";
 	public static final String REST_AJOUTER = "/ajouter";
 	public static final String REST_PARTICIPANTS = "/participants";
+	public static final String REST_COMMENTAIRES = "/commentaires";
 	
 	public static final String STATIC_MAPS_API = "maps.googleapis.com";
 	public static final String STATIC_MAPS_PATH = "/maps/api/staticmap";

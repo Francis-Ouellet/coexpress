@@ -171,14 +171,14 @@ class UtilisateurHandler(webapp2.RequestHandler):
                     utilisateur.telephone = jsonObj['telephone']
                     utilisateur.put()
                     status = 201
-                elif(jsonObj['previousPassword'] is not None and utilisateur.password == jsonObj['previousPassword']):
-                    if(jsonObj['nom'] is not None):
+                elif(jsonObj.get('previousPassword') is not None and utilisateur.password == jsonObj['previousPassword']):
+                    if(jsonObj.get('nom') is not None):
                         utilisateur.nom = jsonObj['nom']
-                    if(jsonObj['prenom'] is not None):
+                    if(jsonObj.get('prenom') is not None):
                         utilisateur.prenom = jsonObj['prenom']
-                    if(jsonObj['password'] is not None):
+                    if(jsonObj.get('password') is not None):
                         utilisateur.password = jsonObj['password']
-                    if(jsonObj['telephone'] is not None):
+                    if(jsonObj.get('telephone') is not None):
                         utilisateur.telephone = jsonObj['telephone']
                     utilisateur.put()
                     status = 201
@@ -548,21 +548,16 @@ class CommentairesHandler(webapp2.RequestHandler):
             if(utilisateur is not None and idCommentaire is not None):
                 cle = ndb.Key('Commentaire', idCommentaire)
                 jsonObj = json.loads(self.request.body)
-                status = 204
-                if(utilisateur.password == jsonObj.get('password')):
-                    # Ajout ou modification du commentaire
-                    commentaire = Commentaire(key=cle)
-                    commentaire.proprietaire = jsonObj['proprietaire']
-                    commentaire.auteur = jsonObj['auteur']
-                    commentaire.timestampCreation = jsonObj['timestampCreation']
-                    commentaire.texte = jsonObj['texte']
-                    commentaire.upvotes = jsonObj['upvotes']
-                    commentaire.downvotes = jsonObj['downvotes']
-                    commentaire.put()
-                    status = 201
-                else:
-                    self.error(401)
-                    return
+                # Ajout ou modification du commentaire
+                commentaire = Commentaire(key=cle)
+                commentaire.proprietaire = username
+                commentaire.auteur = jsonObj['auteur']
+                commentaire.timestampCreation = jsonObj['timestampCreation']
+                commentaire.texte = jsonObj['texte']
+                commentaire.upvotes = jsonObj['upvotes']
+                commentaire.downvotes = jsonObj['downvotes']
+                commentaire.put()
+                status = 201
                 self.response.set_status(status)
             else:
                 self.error(404)

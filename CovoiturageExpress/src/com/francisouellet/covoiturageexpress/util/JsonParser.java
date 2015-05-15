@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.francisouellet.covoiturageexpress.classes.Commentaire;
 import com.francisouellet.covoiturageexpress.classes.Parcours;
 import com.francisouellet.covoiturageexpress.classes.Utilisateur;
 
@@ -53,6 +54,19 @@ public class JsonParser {
 		jsonObj.put("distanceSupplementaire", p.getDistanceSupplementaire());
 		jsonObj.put("notes", p.getNotes());
 		jsonObj.put("actif", p.getActif());
+		
+		return jsonObj;
+	}
+	
+	public static JSONObject ToJsonObject(Commentaire c) throws JSONException{
+		JSONObject jsonObj = new JSONObject();
+		
+		
+		jsonObj.put("auteur", c.getIdAuteur());
+		jsonObj.put("timestampCreation", c.getTimestampCreation());
+		jsonObj.put("texte", c.getTexte());
+		jsonObj.put("upvotes", c.getUpvotes());
+		jsonObj.put("downvotes", c.getDownvotes());
 		
 		return jsonObj;
 	}

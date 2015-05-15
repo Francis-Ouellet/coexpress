@@ -18,7 +18,7 @@ import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.TextView;
 
-public class ParticipantsExpendableListAdapter extends BaseExpandableListAdapter implements OnChildClickListener {
+public class ParticipantsExpendableListAdapter extends BaseExpandableListAdapter{
 	
 	private Context m_Context;
 	private List<String> m_Entetes;
@@ -82,18 +82,6 @@ public class ParticipantsExpendableListAdapter extends BaseExpandableListAdapter
 		return convertView;
 	}
 	
-	@Override
-	public boolean onChildClick(ExpandableListView parent, View v,
-			int groupPosition, int childPosition, long id) {
-		
-		Intent i = new Intent((Activity)this.m_Context, ProfilUtilisateurActivity.class);
-		i.putExtra(Util.EXTRA_ID_UTILISATEUR, getChildId(groupPosition, childPosition));
-		i.putExtra(Util.EXTRA_TYPE_PROFIL, false);
-		((Activity)this.m_Context).startActivity(i);
-		
-		return true;
-	}
-
 	@Override
 	public int getGroupCount() {
 		return this.m_ListeGroupesParcours.size();

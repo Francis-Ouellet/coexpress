@@ -10,6 +10,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 
+import com.francisouellet.covoiturageexpress.ProfilUtilisateurActivity;
 import com.francisouellet.covoiturageexpress.R;
 import com.francisouellet.covoiturageexpress.classes.Parcours;
 import com.francisouellet.covoiturageexpress.classes.Utilisateur;
@@ -27,8 +28,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.app.Activity;
 import android.app.ExpandableListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -42,6 +45,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.TextView;
 
 public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
@@ -50,6 +54,7 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 	private Utilisateur m_Utilisateur;
 	
 	private static List<List<Parcours>> m_ParcoursParticipants;
+	private static ParticipantsExpendableListAdapter m_Adapter;
 	
 	public static final String ARG_PARCOURS = "parcours";
 	public static final String ARG_UTILISATEUR = "utilisateur";
@@ -158,7 +163,7 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 				
 	}
 	
-	public static class ParcoursDetailParticipantsFragment extends Fragment{
+	public static class ParcoursDetailParticipantsFragment extends Fragment implements OnChildClickListener{
 		
 		private ExpandableListView m_ListeParcours;
 		
@@ -172,10 +177,24 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 			
 			View racine = inflater.inflate(R.layout.fragment_parcours_participants, container, false);
 			m_ListeParcours = (ExpandableListView)racine.findViewById(R.id.liste_groupes_participants);
+			m_ListeParcours.setOnChildClickListener(this);
 			
 			new AsyncObtenirParticipants(getActivity(), utilisateur, parcours, m_ListeParcours).execute();
 			
 			return racine;
+		}
+		
+		@Override
+		public boolean onChildClick(ExpandableListView parent, View v,
+				int groupPosition, int childPosition, long id) {
+			
+			Intent i = new Intent(getActivity(), ProfilUtilisateurActivity.class);
+			i.putExtra(Util.EXTRA_ID_UTILISATEUR, 
+					((Parcours)m_Adapter.getChild(groupPosition, childPosition)).getProprietaire());
+			i.putExtra(Util.EXTRA_TYPE_PROFIL, false);
+			getActivity().startActivity(i);
+			
+			return false;
 		}
 		
 	}
@@ -308,7 +327,7 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 				for(int i = 0; i < result.size(); i++)
 					entetes.add("Covoiturage " + (i + 1));
 				
-				ParticipantsExpendableListAdapter m_Adapter = new ParticipantsExpendableListAdapter(this.m_Context, entetes, result);
+				m_Adapter = new ParticipantsExpendableListAdapter(this.m_Context, entetes, result);
 				m_ListeParcours.setAdapter(m_Adapter);
 			}
 		}

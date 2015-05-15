@@ -15,6 +15,7 @@ import com.francisouellet.covoiturageexpress.util.Util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -101,13 +102,13 @@ public class ModifierCompteActivity extends Activity {
 		String motDePasse = this.lblMotDePasse.getText().toString().trim();
 		String motDePasseConfirmer = this.lblMotDePasseConfirmer.getText().toString().trim();
 		
-		if(prenom != null && prenom != "")
+		if(!prenom.isEmpty())
 			mUtilisateur.setPrenom(prenom);
-		if(nom != null && nom != "")
+		if(!nom.isEmpty())
 			mUtilisateur.setNom(nom);
-		if(telephone != null && telephone != "")
+		if(!telephone.isEmpty())
 			mUtilisateur.setTelephone(telephone);
-		if(motDePasse != null && motDePasse != "" && motDePasseConfirmer != null && motDePasseConfirmer != ""){
+		if(!motDePasse.isEmpty() || !motDePasseConfirmer.isEmpty()){
 			if(motDePasse.equals(motDePasseConfirmer))	
 				try{mUtilisateur.setEncodedPassword(Util.sha1(motDePasse));}catch(Exception e){e.printStackTrace();}
 			else
@@ -150,11 +151,15 @@ public class ModifierCompteActivity extends Activity {
 		
 		@Override
 		protected void onPostExecute(Void result) {
-			if(m_Exception != null){
+			// Pas d'erreur
+			if(m_Exception == null){
 				UtilisateurDataSource uds = new UtilisateurDataSource(m_Context);
 				uds.open();
 				uds.update(mUtilisateur);
 				uds.close();
+				Intent i = new Intent();
+				i.putExtra(Util.EXTRA_UTILISATEUR, mUtilisateur);
+				((Activity)m_Context).setResult(RESULT_OK, i);
 				((Activity)m_Context).finish();
 			}
 			else{

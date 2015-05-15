@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,13 +6,13 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.francisouellet.covoiturageexpress.ProfilUtilisateurActivity"
-    android:orientation="vertical" >
+    tools:context="com.francisouellet.covoiturageexpress.ProfilUtilisateurActivity">
     
     <LinearLayout 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:id="@+id/profil_utilisateur_conteneur_nom">
         
         <TextView 
             android:layout_width="0dp"
@@ -30,21 +30,50 @@
     <TextView 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/profil_utilisateur_conteneur_nom"
         android:id="@+id/profil_utilisateur_telephone"/>
     
     <TextView 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/profil_utilisateur_telephone"
         android:id="@+id/profil_utilisateur_stat_passager"/>
     
     <TextView 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/profil_utilisateur_stat_passager"
         android:id="@+id/profil_utilisateur_stat_conducteur"/>
     
     <ListView 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/profil_utilisateur_stat_conducteur"
         android:id="@+id/profil_utilisateur_commentaires" />
     
-</LinearLayout>
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/profil_utilisateur_conteneur_commentaire"
+        android:orientation="horizontal" >
+        
+        <EditText 
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_weight="6"
+			android:hint="@string/lbl_commentaire"
+			android:id="@+id/profil_utilisateur_commentaire" />
+        
+        <ImageView 
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/selector_bouton_ajouter_commentaire"
+            android:clickable="true"
+            android:onClick="envoyerCommentaire"
+            android:contentDescription="@string/desc_bouton_commentaire"/>
+        
+    </LinearLayout>
+    
+</RelativeLayout>

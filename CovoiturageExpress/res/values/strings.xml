@@ -57,6 +57,9 @@
     <string name="parcours_fragment_titre_parcours">Parcours</string>
     <string name="parcours_fragment_titre_participants">Participants</string>
     <string name="parcours_fragment_titre_carte">Carte</string>
+    
+    <!-- Ajout d'un commentaire -->
+    <string name="lbl_commentaire">Votre commentaire &#8230;</string>
 
     <!-- Alertes et messages d'erreurs -->
     <string name="txt_courriel_different">Le courriel doit être identique</string>
@@ -100,5 +103,6 @@
     <string name="desc_image_google_map">Carte montrant le départ et la destination</string>
     <string name="desc_bouton_upvote">Bouton de vote positif</string>
     <string name="desc_bouton_downvote">Bouton de vote négatif</string>
+    <string name="desc_bouton_commentaire">Envoyer le commentaire</string>
     
 </resources>
