@@ -104,14 +104,15 @@ def verifier_covoiturage_existant(idConducteur, idPassager, jour):
 # Compte le nombre de votes positifs et négatifs d'un commentaire pour obtenir le score de ce commentaire    
 def obtenir_points_commentaire(idCommentaire):
     query = CommentaireVote.query(CommentaireVote.idCommentaire == idCommentaire)
-    score = 0
+    upvotes = 0
+    downvotes = 0
     for v in query:
         if(v.typeVote):
-            score = score + 1
+            upvotes = upvotes + 1
         else:
-            score = score - 1
+            downvotes = downvotes + 1
             
-    return score
+    return [upvotes, downvotes]
     
 class MainPageHandler(webapp2.RequestHandler):
     def get(self):
@@ -514,17 +515,21 @@ class CommentairesHandler(webapp2.RequestHandler):
                     query = Commentaire.query(Commentaire.proprietaire == username)
                     
                     for c in query:
+                        votes = obtenir_points_commentaire(c.key.id())
                         dictParcours = c.to_dict()
                         dictParcours['idCommentaire'] = c.key.id()
-                        dictParcours['score'] = obtenir_points_commentaire(c.key.id())
+                        dictParcours['upvotes'] = votes[0]
+                        dictParcours['downvotes'] = votes[1] 
                         resultat.append(dictParcours)
                 else:
                     # Ce commentaire en particulier
                     commentaire = ndb.Key('Commentaire', idCommentaire).get()
                     if(commentaire is not None):
+                        votes = obtenir_points_commentaire(c.key.id())
                         resultat = commentaire.to_dict()
                         resultat['idCommentaire'] = c.key.id()
-                        resultat['score'] = obtenir_points_commentaire(c.key.id())
+                        dictParcours['upvotes'] = votes[0]
+                        dictParcours['downvotes'] = votes[1]
                     else:
                         self.error(404)
             else:
@@ -614,11 +619,11 @@ class VoteHandler(webapp2.RequestHandler):
                         jsonObj = json.loads(self.request.body)
                         status = 204
                         
-                        if(utilisateur.password == jsonObj['password']):
+                        if(voteur.password == jsonObj['password']):
                             commentaireVote = CommentaireVote(key = cle)
                             commentaireVote.idCommentaire = idCommentaire
                             commentaireVote.idVoteur = usernameVoteur
-                            commentaireVote.typeVote = jsonObj['tyepVote']
+                            commentaireVote.typeVote = jsonObj['typeVote']
                             commentaireVote.put()
                             status = 201
                         else:
@@ -665,7 +670,7 @@ application = webapp2.WSGIApplication(
                       handler=CommentairesHandler, methods=['GET']),
         webapp2.Route(r'/utilisateurs/<username>/commentaires/<idCommentaire>',
                       handler=CommentairesHandler, methods=['GET', 'PUT']),
-        webapp2.Route(r'/utilisateurs/<username>/commentaires/<idCommentaire>/vote/<usernameVoter>',
+        webapp2.Route(r'/utilisateurs/<username>/commentaires/<idCommentaire>/vote/<usernameVoteur>',
                       handler=VoteHandler, methods=['PUT'])
         
     ],

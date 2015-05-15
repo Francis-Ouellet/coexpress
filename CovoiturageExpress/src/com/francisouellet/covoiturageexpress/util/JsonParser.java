@@ -33,7 +33,7 @@ public class JsonParser {
 	
 	/**
 	 * Converti un Parcours en objet JSON
-	 * @param p Le PArcours a convertir
+	 * @param p Le Parcours a convertir
 	 * @return Un JSONObject représentant le parcours 
 	 * @throws JSONException
 	 */
@@ -58,6 +58,12 @@ public class JsonParser {
 		return jsonObj;
 	}
 	
+	/**
+	 * Converti un commentaire en objet JSON
+	 * @param c	Le commentaire à convertir
+	 * @return Un JSONObject représentant le parcours
+	 * @throws JSONException
+	 */
 	public static JSONObject ToJsonObject(Commentaire c) throws JSONException{
 		JSONObject jsonObj = new JSONObject();
 		
@@ -72,9 +78,9 @@ public class JsonParser {
 	}
 	
 	/**
-	 * Converti une chaine de caractères JSON en Utilisateur
-	 * @param strJson
-	 * @return Une instance d'Utilisateur correspondant à la chaîne
+	 * Converti un JSONObject en Utilisateur
+	 * @param jsonU	Objet JSON
+	 * @return Une instance d'Utilisateur correspondant au JSON
 	 * @throws JSONException
 	 */
 	public static Utilisateur ToUtilisateur(JSONObject jsonU) throws JSONException{
@@ -89,9 +95,9 @@ public class JsonParser {
 	}
 	
 	/**
-	 * Converti une chaîne de caractères JSON en Parcours
-	 * @param strJson
-	 * @return Une instance de Parcours correspondant à la chaîne
+	 * Converti un JSONObject en Parcours
+	 * @param jsonP
+	 * @return Une instance de Parcours correspondant au JSON
 	 * @throws JSONException
 	 */
 	public static Parcours ToParcours(JSONObject jsonP) throws JSONException{
@@ -142,6 +148,24 @@ public class JsonParser {
 		}
 		
 		return p;
+	}
+	
+	/**
+	 * Converti un JSONObject en Commentaire
+	 * @param jsonC
+	 * @return Une instance de Commentaire correspondant au JSON
+	 * @throws JSONException
+	 */
+	public static Commentaire ToCommentaire(JSONObject jsonC) throws JSONException{
+		Commentaire c = null;
+		c = new Commentaire(
+				jsonC.getString("idCommentaire"), 
+				jsonC.getString("auteur"), 
+				jsonC.getString("timestampCreation"), 
+				jsonC.getString("texte"));
+		c.setUpvotes(Integer.parseInt(jsonC.getString("upvotes")));
+		c.setDownvotes(Integer.parseInt(jsonC.getString("downvotes")));
+		return c;
 	}
 	
 }

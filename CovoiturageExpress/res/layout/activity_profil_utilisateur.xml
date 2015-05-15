@@ -49,6 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/profil_utilisateur_stat_conducteur"
+        android:paddingBottom="60dp"
         android:id="@+id/profil_utilisateur_commentaires" />
     
     <LinearLayout 
