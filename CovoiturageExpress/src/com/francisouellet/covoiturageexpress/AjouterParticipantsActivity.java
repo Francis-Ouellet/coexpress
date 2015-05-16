@@ -22,15 +22,18 @@ import com.francisouellet.covoiturageexpress.util.Util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
-public class AjouterParticipantsActivity extends Activity {
+public class AjouterParticipantsActivity extends Activity implements OnItemClickListener{
 	
 	private Bundle mExtras;
 	private Parcours mParcoursDemandeur;
@@ -81,6 +84,15 @@ public class AjouterParticipantsActivity extends Activity {
 	public void enleverParticipant(View v){
 		m_Adapter.remove(m_Parcours.get(m_ListeParcoursPotentiels.getPositionForView(v)));
 		m_Adapter.notifyDataSetChanged();
+	}
+	
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		Intent i = new Intent(this, ProfilUtilisateurActivity.class);
+		i.putExtra(Util.EXTRA_ID_UTILISATEUR, m_Parcours.get(position).getProprietaire());
+		i.putExtra(Util.EXTRA_TYPE_PROFIL, false);
+		this.startActivity(i);
 	}
 	
 	private class AsyncChercherParticipantsPotentiels extends AsyncTask<Void, Void, List<Parcours>>{
