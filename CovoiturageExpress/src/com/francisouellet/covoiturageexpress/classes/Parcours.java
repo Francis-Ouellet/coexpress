@@ -23,6 +23,7 @@ public class Parcours implements Serializable {
 	private Double m_DestinationLatitude;
 	private Double m_DestinationLongitude;
 	private String m_TimestampDepart;
+	private String m_TimestampDerniereModification;
 	private List<Integer> m_JoursRepetes;
 	private int m_NbPlaces;
 	private double m_DistanceSupplementaire;
@@ -41,6 +42,7 @@ public class Parcours implements Serializable {
 	 * @param p_DestinationLatitude
 	 * @param p_DestinationLongitude
 	 * @param p_TimestampDepart
+	 * @param p_TimestampDerniereModification
 	 * @param p_JoursRepetes			Liste des jours où il faut répéter la demande de parcours
 	 * @param p_NbPlaces
 	 * @param p_DistanceSupplementaire
@@ -51,7 +53,8 @@ public class Parcours implements Serializable {
 			String p_Id, String p_Proprietaire, Boolean p_Conducteur, 
 			String p_AdresseDepart, Double p_DepartLatitude, Double p_DepartLongitude, 
 			String p_AdresseDestination, Double p_DestinationLatitude, Double p_DestinationLongitude, 
-			String p_TimestampDepart, List<Integer> p_JoursRepetes, int p_NbPlaces, 
+			String p_TimestampDepart, String p_TimestampDerniereModification,
+			List<Integer> p_JoursRepetes, int p_NbPlaces, 
 			double p_DistanceSupplementaire, String p_Notes, Boolean p_Actif){
 		this.m_Id = p_Id;
 		this.m_Proprietaire = p_Proprietaire;
@@ -63,6 +66,7 @@ public class Parcours implements Serializable {
 		this.m_DestinationLatitude = p_DestinationLatitude;
 		this.m_DestinationLongitude = p_DestinationLongitude;
 		this.m_TimestampDepart = p_TimestampDepart;
+		this.m_TimestampDerniereModification = p_TimestampDerniereModification;
 		this.m_JoursRepetes = p_JoursRepetes;
 		this.m_NbPlaces = p_NbPlaces;
 		this.m_DistanceSupplementaire = p_DistanceSupplementaire;
@@ -82,6 +86,7 @@ public class Parcours implements Serializable {
 	 * @param p_DestinationLatitude
 	 * @param p_DestinationLongitude
 	 * @param p_TimestampDepart
+	 * @param p_TimestampDerniereModification
 	 * @param p_NbPlaces
 	 * @param p_DistanceSupplementaire
 	 * @param p_Notes
@@ -91,7 +96,8 @@ public class Parcours implements Serializable {
 			String p_Id, String p_Proprietaire, Boolean p_Conducteur, 
 			String p_AdresseDepart, Double p_DepartLatitude, Double p_DepartLongitude, 
 			String p_AdresseDestination, Double p_DestinationLatitude, Double p_DestinationLongitude, 
-			String p_TimestampDepart, int p_NbPlaces, double p_DistanceSupplementaire, 
+			String p_TimestampDepart, String p_TimestampDerniereModification,
+			int p_NbPlaces, double p_DistanceSupplementaire, 
 			String p_Notes, Boolean p_Actif){
 		this.m_Id = p_Id;
 		this.m_Proprietaire = p_Proprietaire;
@@ -103,6 +109,7 @@ public class Parcours implements Serializable {
 		this.m_DestinationLatitude = p_DestinationLatitude;
 		this.m_DestinationLongitude = p_DestinationLongitude;
 		this.m_TimestampDepart = p_TimestampDepart;
+		this.m_TimestampDerniereModification = p_TimestampDerniereModification;
 		this.m_NbPlaces = p_NbPlaces;
 		this.m_DistanceSupplementaire = p_DistanceSupplementaire;
 		this.m_Notes = p_Notes;
@@ -121,6 +128,7 @@ public class Parcours implements Serializable {
 	 * @param p_DestinationLatitude
 	 * @param p_DestinationLongitude
 	 * @param p_TimestampDepart
+	 * @param p_TimestampDerniereModification
 	 * @param p_JoursRepetes			Liste des jours où il faut répéter la demande de parcours
 	 * @param p_Notes
 	 * @param p_Actif
@@ -129,7 +137,8 @@ public class Parcours implements Serializable {
 			String p_Id, String p_Proprietaire, Boolean p_Conducteur, 
 			String p_AdresseDepart, Double p_DepartLatitude, Double p_DepartLongitude, 
 			String p_AdresseDestination, Double p_DestinationLatitude, Double p_DestinationLongitude, 
-			String p_TimestampDepart, List<Integer> p_JoursRepetes, String p_Notes, Boolean p_Actif){
+			String p_TimestampDepart, String p_TimestampDerniereModification,
+			List<Integer> p_JoursRepetes, String p_Notes, Boolean p_Actif){
 		this.m_Id = p_Id;
 		this.m_Proprietaire = p_Proprietaire;
 		this.m_Conducteur = p_Conducteur;
@@ -140,6 +149,7 @@ public class Parcours implements Serializable {
 		this.m_DestinationLatitude = p_DestinationLatitude;
 		this.m_DestinationLongitude = p_DestinationLongitude;
 		this.m_TimestampDepart = p_TimestampDepart;
+		this.m_TimestampDerniereModification = p_TimestampDerniereModification;
 		this.m_JoursRepetes = p_JoursRepetes;
 		this.m_NbPlaces = 1;
 		this.m_Notes = p_Notes;
@@ -158,6 +168,7 @@ public class Parcours implements Serializable {
 	 * @param p_DestinationLatitude
 	 * @param p_DestinationLongitude
 	 * @param p_TimestampDepart
+	 * @param p_TimestampDerniereModification
 	 * @param p_Notes
 	 * @param p_Actif
 	 */
@@ -165,7 +176,8 @@ public class Parcours implements Serializable {
 			String p_Id, String p_Proprietaire, Boolean p_Conducteur, 
 			String p_AdresseDepart, Double p_DepartLatitude, Double p_DepartLongitude, 
 			String p_AdresseDestination, Double p_DestinationLatitude, Double p_DestinationLongitude, 
-			String p_TimestampDepart, String p_Notes, Boolean p_Actif){
+			String p_TimestampDepart, String p_TimestampDerniereModification,
+			String p_Notes, Boolean p_Actif){
 		this.m_Id = p_Id;
 		this.m_Proprietaire = p_Proprietaire;
 		this.m_Conducteur = p_Conducteur;
@@ -176,6 +188,7 @@ public class Parcours implements Serializable {
 		this.m_DestinationLatitude = p_DestinationLatitude;
 		this.m_DestinationLongitude = p_DestinationLongitude;
 		this.m_TimestampDepart = p_TimestampDepart;
+		this.m_TimestampDerniereModification = p_TimestampDerniereModification;
 		this.m_NbPlaces = 1;
 		this.m_Notes = p_Notes;
 		this.m_Actif = p_Actif;
@@ -259,6 +272,15 @@ public class Parcours implements Serializable {
 
 	public void setTimestampDepart(String m_TimestampDepart) {
 		this.m_TimestampDepart = m_TimestampDepart;
+	}
+
+	public String getTimestampDerniereModification() {
+		return m_TimestampDerniereModification;
+	}
+
+	public void setTimestampDerniereModification(
+			String m_TimestampDerniereModification) {
+		this.m_TimestampDerniereModification = m_TimestampDerniereModification;
 	}
 
 	public List<Integer> getJoursRepetes() {

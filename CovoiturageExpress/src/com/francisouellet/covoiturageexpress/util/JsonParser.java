@@ -49,6 +49,7 @@ public class JsonParser {
 		jsonObj.put("destinationLatitude", p.getDestinationLatitude());
 		jsonObj.put("destinationLongitude", p.getDestinationLongitude());
 		jsonObj.put("departTimestamp", p.getTimestampDepart());
+		jsonObj.put("derniereModificationTimestamp", p.getTimestampDerniereModification());
 		jsonObj.put("joursRepetes", (ArrayList<Integer>)p.getJoursRepetes());
 		jsonObj.put("nbPlaces", p.getNbPlaces());
 		jsonObj.put("distanceSupplementaire", p.getDistanceSupplementaire());
@@ -122,7 +123,8 @@ public class JsonParser {
 					jsonP.getString("adresseDestination"), 
 					jsonP.getDouble("destinationLatitude"), 
 					jsonP.getDouble("destinationLongitude"), 
-					jsonP.getString("departTimestamp"), 
+					jsonP.getString("departTimestamp"),
+					jsonP.getString("derniereModificationTimestamp"),
 					joursRepetes, 
 					jsonP.getInt("nbPlaces"),
 					jsonP.getDouble("distanceSupplementaire"),
@@ -141,7 +143,8 @@ public class JsonParser {
 					jsonP.getString("adresseDestination"), 
 					jsonP.getDouble("destinationLatitude"), 
 					jsonP.getDouble("destinationLongitude"), 
-					jsonP.getString("departTimestamp"), 
+					jsonP.getString("departTimestamp"),
+					jsonP.getString("derniereModificationTimestamp"),
 					joursRepetes, 
 					jsonP.getString("notes"),
 					jsonP.getBoolean("actif"));

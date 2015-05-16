@@ -41,6 +41,7 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 public class CreationParcoursActivity extends Activity implements OnCheckedChangeListener{
 	
@@ -201,10 +202,11 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 				this.joursRepetes = null;
 			
 			String id_Parcours;
+			String timestamp = Calendar.getInstance().getTimeInMillis() + "";
 			if(this.modeModification)
 				id_Parcours = this.parcours.getId();
 			else
-				id_Parcours = Calendar.getInstance().getTimeInMillis() + this.utilisateur.getCourriel();
+				id_Parcours = timestamp + this.utilisateur.getCourriel();
 			
 			if(Geocoder.isPresent()){
 				try{
@@ -221,7 +223,13 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 						this.destinationLongitude = destination.get(0).getLongitude();
 					}
 					
-				}catch(Exception e){e.printStackTrace();}
+				}catch(Exception e){
+					e.printStackTrace(); 
+					Util.easyToast(this, R.string.txt_erreur_geocoder, Toast.LENGTH_LONG);
+				}
+			}
+			else{
+				Util.easyToast(this, R.string.txt_erreur_geocoder, Toast.LENGTH_LONG);
 			}
 			
 			if(this.typeParcours){	// True -> Conducteur	
@@ -232,14 +240,15 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 						id_Parcours, utilisateur.getCourriel(), this.typeParcours,
 						this.adresseDepart, this.departLatitude, this.departLongitude, 
 						this.adresseDestination, this.destinationLatitude, this.destinationLongitude, 
-						this.timestampDepart, this.joursRepetes, 
+						this.timestampDepart, timestamp, this.joursRepetes, 
 						this.nbPlaces, this.distanceSupp, this.notes, false); 
 			} else { // False -> Passager
 				this.parcours = new Parcours(
 						id_Parcours, utilisateur.getCourriel(), this.typeParcours,
 						this.adresseDepart, this.departLatitude, this.departLongitude, 
 						this.adresseDestination, this.destinationLatitude, this.destinationLongitude, 
-						this.timestampDepart, this.joursRepetes, this.notes, false);
+						this.timestampDepart, timestamp,
+						this.joursRepetes, this.notes, false);
 			}
 			
 			new AsyncEnregistrementParcours(this).execute();
@@ -482,29 +491,29 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 		@Override
 		protected void onPostExecute(Void result) {
 			// Tout s'est bien déroulé au niveau du service Web
-			if(m_Exception == null){
-				// Si on est en modification
-				if(modeModification){
-					if(miseAJourLocalParcours(parcours)){
-						Util.easyToast(this.m_Context, R.string.txt_parcours_modifie);
-						finish();
-					}
-					else
-						Util.easyToast(this.m_Context, R.string.txt_parcours_erreur_modification);
-				}
-				// Si on est en ajout
-				else{
-					if(enregistrementLocalParcours(parcours)){
-						Util.easyToast(this.m_Context, R.string.txt_parcours_cree);
-						finish();
-					}
-					else
-						Util.easyToast(this.m_Context, R.string.txt_parcours_erreur_creation);
-				}
+			if(m_Exception != null){
+				Util.easyToast(this.m_Context, R.string.txt_parcours_erreur_creation,Toast.LENGTH_LONG);
 			}
-			else
-			{
-				Util.easyToast(this.m_Context, R.string.txt_parcours_erreur_creation);
+			
+			// Si on est en modification
+			if(modeModification){
+				if(miseAJourLocalParcours(parcours)){
+					if(m_Exception == null)
+						Util.easyToast(this.m_Context, R.string.txt_parcours_modifie);
+					finish();
+				}
+				else
+					Util.easyToast(this.m_Context, R.string.txt_parcours_erreur_modification_locale);
+			}
+			// Si on est en ajout
+			else{
+				if(enregistrementLocalParcours(parcours)){
+					if(m_Exception == null)
+						Util.easyToast(this.m_Context, R.string.txt_parcours_cree);
+					finish();
+				}
+				else
+					Util.easyToast(this.m_Context, R.string.txt_parcours_erreur_creation_locale);
 			}
 		}
 	}

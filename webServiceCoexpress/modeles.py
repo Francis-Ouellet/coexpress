@@ -16,6 +16,7 @@ class Parcours(ndb.Model):
     destinationLatitude = ndb.FloatProperty()
     destinationLongitude = ndb.FloatProperty()
     departTimestamp = ndb.StringProperty()
+    derniereModificationTimestamp = ndb.StringProperty()
     joursRepetes = ndb.IntegerProperty(repeated=True)
     nbPlaces = ndb.IntegerProperty()
     distanceSupplementaire = ndb.FloatProperty()

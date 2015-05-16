@@ -8,6 +8,8 @@ import java.util.List;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
@@ -43,6 +45,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class MainActivity extends Activity implements OnItemClickListener{
 
@@ -54,9 +57,9 @@ public class MainActivity extends Activity implements OnItemClickListener{
 	
 	private UtilisateurDataSource uds;
 	private ParcoursDataSource pds;
-	private Utilisateur utilisateur;
+	private static Utilisateur utilisateur;
 	
-	private HttpClient m_ClientHttp = new DefaultHttpClient();
+	private static HttpClient m_ClientHttp = new DefaultHttpClient();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -223,15 +226,49 @@ public class MainActivity extends Activity implements OnItemClickListener{
 
 		@Override
 		protected void onPostExecute(List<ParcoursEtCarte> result) {
-			// Si la requête a fonctionné et que la liste retournée contient des items, on les affiche
-			if(m_Exception == null && result != null && result.size() > 0){
-				if(m_Parcours != null)
-					m_Parcours.clear();
-				else
-					m_Parcours = new ArrayList<Parcours>();
-				for (ParcoursEtCarte item : result){
-					m_Parcours.add(item.getParcours());
+			// Si la requête a fonctionné
+			m_Parcours = new ArrayList<Parcours>();
+			if(m_Exception == null){
+				// Si la liste retournée contient des items, on les affiche
+				if(result != null && result.size() > 0){
+					for (ParcoursEtCarte item : result){
+						m_Parcours.add(item.getParcours());
+					}
 				}
+				
+				ParcoursDataSource pds = new ParcoursDataSource(m_Context);
+				pds.open();
+				List<Parcours> parcoursLocaux = pds.getAllByOwner(utilisateur.getCourriel());
+				pds.close();
+				
+				List<Parcours> parcoursAEnvoyer = new ArrayList<Parcours>();
+				
+				for(Parcours local : parcoursLocaux){
+					int i = 0;
+					boolean found = false;
+					// Parcours pour trouver un match
+					while(!found && i < m_Parcours.size()){
+						if(local.getId().equals(m_Parcours.get(i).getId()))
+							found = true;
+						else
+							i++;
+					}
+					// Si un match est trouvé, on compare les dates des dernieres modifications
+					// pour savoir lequel est le plus récent
+					if(found){
+						if(Long.parseLong(local.getTimestampDerniereModification()) > 
+								Long.parseLong(m_Parcours.get(i).getTimestampDerniereModification())){
+							parcoursAEnvoyer.add(local);
+						} 
+					}
+					// Un match n'a pas été trouvé, donc l'instance locale n'existe pas sur le serveur
+					else
+						parcoursAEnvoyer.add(local);
+				}
+				
+				if(parcoursAEnvoyer.size() > 0)
+					new AsyncRenvoyerParcours(m_Context).execute(parcoursAEnvoyer);
+				
 			}
 			// Si la requête n'a pas fonctionné, on vérifie s'il existe des parcours en local à afficher
 			else{
@@ -305,6 +342,53 @@ public class MainActivity extends Activity implements OnItemClickListener{
 				Util.easyToast(this.m_Context, R.string.txt_parcours_erreur_suppression);
 			}
 		}
+	}
+	
+	private static class AsyncRenvoyerParcours extends AsyncTask<List<Parcours>, Void, Void>{
+		
+		private Context m_Context;
+		private Exception m_Exception;
+		
+		public AsyncRenvoyerParcours(Context p_Context) {
+			this.m_Context = p_Context;
+			this.m_Exception = null;
+		}
+		
+		@Override
+		protected Void doInBackground(List<Parcours>... params) {
+			try{
+				
+				List<Parcours> listeParcours = params[0];
+				
+				for(Parcours parcours : listeParcours){
+					
+					URI uri = new URI("http", Util.WEB_SERVICE, 
+							Util.REST_UTILISATEURS + "/" + utilisateur.getCourriel() + 
+							Util.REST_PARCOURS + "/" + parcours.getId(), null, null);
+					
+					HttpPut put = new HttpPut(uri);
+					put.setEntity(new StringEntity(JsonParser.ToJsonObject(parcours)
+							.put("password", utilisateur.getEncodedPassword()).toString(), "UTF-8"));
+					put.addHeader("Content-Type","application/json");
+					m_ClientHttp.execute(put, new BasicResponseHandler());
+				}
+				
+				
+			}catch(Exception e){m_Exception = e; e.printStackTrace();}
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+			if(m_Exception == null){
+				Util.easyToast(m_Context, R.string.txt_synchronisation_des_parcours);
+				((MainActivity)m_Context).new AsyncObtenirParcours(m_Context).execute();
+			}
+			else{
+				Util.easyToast(m_Context, R.string.txt_erreur_synchronisation_des_parcours, Toast.LENGTH_LONG);
+			}
+		}
+		
 	}
 	
 }

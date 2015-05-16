@@ -77,12 +77,22 @@
     <string name="txt_date_heure_invalide">La date fournie est antérieure à la date actuelle</string>
     <string name="txt_parcours_cree">Parcours créé avec succès</string>
     <string name="txt_parcours_modifie">Parcours modifié avec succès</string>
-    <string name="txt_parcours_erreur_creation">Erreur lors de la création du parcours</string>
+    <string name="txt_parcours_erreur_creation">Erreur lors de la création du parcours. 
+        Une nouvelle tentative sera faite au prochain démarrage de l\'application</string>
+    <string name="txt_parcours_erreur_creation_locale">Erreur de création locale du parcours. 
+        Vérifiez les champs et réessayez.</string>
     <string name="txt_parcours_erreur_suppression">Erreur lors de la suppression du parcours</string>
     <string name="txt_parcours_erreur_modification">Erreur lors de la modification du parcours</string>
+    <string name="txt_parcours_erreur_modification_locale">Erreur lors de la modification locale du parcours.
+        Vérifiez les champs et réessayez.</string>
     <string name="txt_ajout_participant_erreur">Erreur lors de l\'ajout du participant</string>
     <string name="txt_ajout_participant_succes">Participant ajouté avec succès</string>
     <string name="txt_chargement_des_parcours">Chargement des parcours&#8230;</string>
+    <string name="txt_synchronisation_des_parcours">Parcours synchronisés avec succès</string>
+    <string name="txt_erreur_synchronisation_des_parcours">Erreur lors de la synchronisation des parcours. 
+        Une nouvelle tentative sera faite au prochain démarrage de l\'application</string>
+    <string name="txt_erreur_geocoder">La conversion des adresses en points géographiques a échoué.
+        Vérfiez la connexion Internet et effectuez une modification pour les générer à nouveau.</string>
 
     <!-- Items de menu et d'action bar -->
     <string name="action_deconnexion">Déconnexion</string>

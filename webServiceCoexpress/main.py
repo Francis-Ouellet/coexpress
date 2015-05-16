@@ -278,6 +278,7 @@ class ParcoursHandler(webapp2.RequestHandler):
                         parcours.destinationLatitude = jsonObj['destinationLatitude']
                         parcours.destinationLongitude = jsonObj['destinationLongitude']
                         parcours.departTimestamp = jsonObj['departTimestamp']
+                        parcours.derniereModificationTimestamp = jsonObj['derniereModificationTimestamp']
                         if(jsonObj.get('joursRepetes') is not None):
                             parcours.joursRepetes = map(int,jsonObj['joursRepetes'].replace("[","").replace("]","").split(", "))
                         parcours.nbPlaces = jsonObj['nbPlaces']

@@ -66,7 +66,7 @@
     <string name="txt_courriel_invalide">E-mail must be valid</string>
     <string name="txt_mot_de_passe_different">Password must be the same</string>
     <string name="txt_tous_les_champs">All fields must be filled</string>
-    <string name="txt_utilisateur_cree">Account succesfully created</string>
+    <string name="txt_utilisateur_cree">Account successfully created</string>
     <string name="txt_utilisateur_erreur_creation">Connection error while creating the account</string>
     <string name="txt_utilisateur_erreur_modification">Connection error while modifying the account</string>
     <string name="txt_erreur_connexion">Connection error</string>
@@ -75,13 +75,14 @@
     <string name="txt_nb_places_invalide">A number of seats must be given</string>
     <string name="txt_distance_supp_invalide">A tolerated extra distance must be given</string>
     <string name="txt_date_heure_invalide">Given date is smaller than current date</string>
-    <string name="txt_parcours_cree">Trip succesfully created</string>
-    <string name="txt_parcours_modifie">Trip succesfully modified</string>
-    <string name="txt_parcours_erreur_creation">Error while creating the trip</string>
+    <string name="txt_parcours_cree">Trip successfully created</string>
+    <string name="txt_parcours_modifie">Trip successfully modified</string>
+    <string name="txt_parcours_erreur_creation">Error while creating the trip. 
+        A new tentative will be done on next startup</string>
     <string name="txt_parcours_erreur_suppression">Error while deleting the trip</string>
     <string name="txt_parcours_erreur_modification">Error while modifying the trip</string>
     <string name="txt_ajout_participant_erreur">Error while adding a participant</string>
-    <string name="txt_ajout_participant_succes">Participant succesfully added</string>
+    <string name="txt_ajout_participant_succes">Participant successfully added</string>
     <string name="txt_chargement_des_parcours">Loading trips&#8230;</string>
 
     <!-- Items de menu et d'action bar -->

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper{
 	
 	// Version BD
-	private final static int DB_VERSION = 5;
+	private final static int DB_VERSION = 6;
 	
 	// Nom
 	private final static String DATABASE_NAME = "covoiturageexpress.sqlite";
@@ -34,6 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	public final static String COL_DESTINATIONLATITUDE = "destinationlatitude";
 	public final static String COL_DESTINATIONLONGITUDE = "destinationlongitude";
 	public final static String COL_TIMESTAMPDEPART = "timestampdepart";
+	public final static String COL_TIMESTAMPDERNIEREMODIFICATION = "timestampdernieremodification";
 	public final static String COL_JOURSREPETES = "joursrepetes";
 	public final static String COL_NBPLACES = "nbplaces";
 	public final static String COL_DISTANCESUPPLEMENTAIRE = "distancesupplementaire";
@@ -67,6 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 				+ COL_DESTINATIONLATITUDE + " real,"
 				+ COL_DESTINATIONLONGITUDE + " real,"
 				+ COL_TIMESTAMPDEPART + " text,"
+				+ COL_TIMESTAMPDERNIEREMODIFICATION + " text,"
 				+ COL_JOURSREPETES + " text,"
 				+ COL_NBPLACES + " integer,"
 				+ COL_DISTANCESUPPLEMENTAIRE + " real,"

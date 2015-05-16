@@ -93,6 +93,7 @@ public class ParcoursDataSource extends BaseDataSource<Parcours, String> {
 		row.put(DatabaseHelper.COL_DESTINATIONLATITUDE, element.getDestinationLatitude());
 		row.put(DatabaseHelper.COL_DESTINATIONLONGITUDE, element.getDestinationLongitude());
 		row.put(DatabaseHelper.COL_TIMESTAMPDEPART, element.getTimestampDepart());
+		row.put(DatabaseHelper.COL_TIMESTAMPDERNIEREMODIFICATION, element.getTimestampDerniereModification());
 		if(element.getJoursRepetes() != null)
 			row.put(DatabaseHelper.COL_JOURSREPETES, ((ArrayList<Integer>)element.getJoursRepetes()).toString());
 		else
@@ -117,6 +118,7 @@ public class ParcoursDataSource extends BaseDataSource<Parcours, String> {
 				c.getDouble(c.getColumnIndex(DatabaseHelper.COL_DESTINATIONLATITUDE)),
 				c.getDouble(c.getColumnIndex(DatabaseHelper.COL_DESTINATIONLONGITUDE)),
 				c.getString(c.getColumnIndex(DatabaseHelper.COL_TIMESTAMPDEPART)),
+				c.getString(c.getColumnIndex(DatabaseHelper.COL_TIMESTAMPDERNIEREMODIFICATION)),
 				Util.toList(c.getString(c.getColumnIndex(DatabaseHelper.COL_JOURSREPETES))),
 				c.getInt(c.getColumnIndex(DatabaseHelper.COL_NBPLACES)),
 				c.getDouble(c.getColumnIndex(DatabaseHelper.COL_DISTANCESUPPLEMENTAIRE)),
