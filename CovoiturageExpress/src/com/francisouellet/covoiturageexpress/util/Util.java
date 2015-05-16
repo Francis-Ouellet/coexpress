@@ -7,9 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 public class Util {
@@ -39,6 +43,13 @@ public class Util {
 	public static final String STATIC_MAPS_PATH = "/maps/api/staticmap";
 	public static final String STATIC_MAPS_SIZE = "size";
 	public static final String STATIC_MAPS_MARKERS = "markers";
+	
+	public static final String SHARED_PREFERENCES_AIDE_MAIN = "aide_main";
+	public static final String SHARED_PREFERENCES_AIDE_AJOUTER_PARTICIPANT = "aide_ajouter_participant";
+	public static final String SHARED_PREFERENCES_AIDE_CREATION_PARCOURS = "aide_creation_parcours";
+	public static final String SHARED_PREFERENCES_AIDE_MODIFIER_COMPTE = "aide_modifier_compte";
+	public static final String SHARED_PREFERENCES_AIDE_PARCOURS_DETAIL = "aide_parcours_detail";
+	public static final String SHARED_PREFERENCES_AIDE_PROFIL_UTILISATEUR = "aide_profil_utilisateur";
 	
 	/**
 	 * Génère un SHA1 à partir d'une chaîne de caractère
@@ -102,6 +113,13 @@ public class Util {
 		return null;
 	}
 	
+	/**
+	 * Converti une paire de coordonnées en une adresse
+	 * @param latitude
+	 * @param longitude
+	 * @param context
+	 * @return
+	 */
 	public static String obtenirAdresse(double latitude, double longitude, Context context){
 		String adresse = null;
 		if(Geocoder.isPresent()){
@@ -116,5 +134,20 @@ public class Util {
 		}
 		
 		return adresse;
+	}
+	
+	public static void montrerAideInteractive(Context p_Context, int p_IdVueAide, int p_IdLayoutAide){
+		final Dialog dialog = new Dialog(p_Context, android.R.style.Theme_Translucent_NoTitleBar);
+		dialog.setContentView(p_IdVueAide);
+		RelativeLayout layout = (RelativeLayout)dialog.findViewById(p_IdLayoutAide);
+		layout.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+			}
+		});
+		
+		dialog.show();
 	}
 }

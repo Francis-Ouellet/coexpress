@@ -16,6 +16,7 @@ import com.francisouellet.covoiturageexpress.util.Util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -42,6 +43,12 @@ public class ModifierCompteActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_modifier_compte);
 		getActionBar().setDisplayShowHomeEnabled(false);
+		
+		SharedPreferences sp = getPreferences(Context.MODE_PRIVATE);
+		if(sp.getBoolean(Util.SHARED_PREFERENCES_AIDE_MODIFIER_COMPTE, true)){
+			sp.edit().putBoolean(Util.SHARED_PREFERENCES_AIDE_MODIFIER_COMPTE, false).commit();
+			Util.montrerAideInteractive(this, R.layout.aide_modifier_compte, R.id.aide_modifier_compte);
+		}
 		
 		this.lblPrenom = (EditText)this.findViewById(R.id.modifier_compte_prenom);
 		this.lblNom = (EditText)this.findViewById(R.id.modifier_compte_nom);

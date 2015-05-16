@@ -22,6 +22,7 @@ import com.francisouellet.covoiturageexpress.util.Util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -47,6 +48,12 @@ public class AjouterParticipantsActivity extends Activity {
 		setContentView(R.layout.activity_ajouter_participants);
 		getActionBar().setDisplayShowHomeEnabled(false);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		SharedPreferences sp = getPreferences(Context.MODE_PRIVATE);
+		if(sp.getBoolean(Util.SHARED_PREFERENCES_AIDE_AJOUTER_PARTICIPANT, true)){
+			sp.edit().putBoolean(Util.SHARED_PREFERENCES_AIDE_AJOUTER_PARTICIPANT, false).commit();
+			Util.montrerAideInteractive(this, R.layout.aide_ajouter_participant, R.id.aide_ajouter_participant);
+		}
 		
 		mExtras = getIntent().getExtras();
 		if(mExtras != null){

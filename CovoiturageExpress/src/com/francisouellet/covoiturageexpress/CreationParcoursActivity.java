@@ -26,6 +26,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.AsyncTask;
@@ -89,6 +90,12 @@ public class CreationParcoursActivity extends Activity implements OnCheckedChang
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_creation_parcours);
 		getActionBar().setDisplayShowHomeEnabled(false);
+		
+		SharedPreferences sp = getPreferences(Context.MODE_PRIVATE);
+		if(sp.getBoolean(Util.SHARED_PREFERENCES_AIDE_CREATION_PARCOURS, true)){
+			sp.edit().putBoolean(Util.SHARED_PREFERENCES_AIDE_CREATION_PARCOURS, false).commit();
+			Util.montrerAideInteractive(this, R.layout.aide_creation_parcours, R.id.aide_creation_parcours);
+		}
 		
 		this.lblTypeParcours = (Switch)this.findViewById(R.id.creation_parcours_type_parcours);
 		this.lblAdresseDepart = (EditText)this.findViewById(R.id.creation_parcours_adresse_depart);

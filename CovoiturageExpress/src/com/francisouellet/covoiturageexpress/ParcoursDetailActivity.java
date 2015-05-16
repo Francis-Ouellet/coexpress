@@ -8,7 +8,9 @@ import com.francisouellet.covoiturageexpress.util.Util;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.app.ActionBar.Tab;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -37,6 +39,12 @@ public class ParcoursDetailActivity extends FragmentActivity {
 		setContentView(R.layout.activity_parcours_detail);
 		getActionBar().setDisplayShowHomeEnabled(false);
 		getActionBar().setDisplayHomeAsUpEnabled(true);
+		
+		SharedPreferences sp = getPreferences(Context.MODE_PRIVATE);
+		if(sp.getBoolean(Util.SHARED_PREFERENCES_AIDE_PARCOURS_DETAIL, true)){
+			sp.edit().putBoolean(Util.SHARED_PREFERENCES_AIDE_PARCOURS_DETAIL, false).commit();
+			Util.montrerAideInteractive(this, R.layout.aide_parcours_detail, R.id.aide_parcours_detail);
+		}
 		
 		// Récupération du parcours dans les extras
 		mExtras = getIntent().getExtras();

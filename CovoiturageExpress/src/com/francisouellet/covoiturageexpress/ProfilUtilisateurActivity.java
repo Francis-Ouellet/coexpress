@@ -27,6 +27,7 @@ import com.francisouellet.covoiturageexpress.util.Util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -69,6 +70,12 @@ public class ProfilUtilisateurActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_profil_utilisateur);
 		getActionBar().setDisplayShowHomeEnabled(false);
+		
+		SharedPreferences sp = getPreferences(Context.MODE_PRIVATE);
+		if(sp.getBoolean(Util.SHARED_PREFERENCES_AIDE_PROFIL_UTILISATEUR, true)){
+			sp.edit().putBoolean(Util.SHARED_PREFERENCES_AIDE_PROFIL_UTILISATEUR, false).commit();
+			Util.montrerAideInteractive(this, R.layout.aide_profil_utilisateur, R.id.aide_profil_utilisateur);
+		}
 		
 		lblPrenom = (TextView)findViewById(R.id.profil_utilisateur_prenom);
 		lblNom = (TextView)findViewById(R.id.profil_utilisateur_nom);

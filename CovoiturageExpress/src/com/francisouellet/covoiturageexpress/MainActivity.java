@@ -29,6 +29,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
@@ -69,6 +70,12 @@ public class MainActivity extends Activity implements OnItemClickListener{
 		m_ListeParcours = (ListView)this.findViewById(android.R.id.list);
 		m_ListeParcours.setEmptyView(findViewById(android.R.id.empty));
 		m_ListeParcours.setOnItemClickListener(this);
+		
+		SharedPreferences sp = getPreferences(Context.MODE_PRIVATE);
+		if(sp.getBoolean(Util.SHARED_PREFERENCES_AIDE_MAIN, true)){
+			sp.edit().putBoolean(Util.SHARED_PREFERENCES_AIDE_MAIN, false).commit();
+			Util.montrerAideInteractive(this, R.layout.aide_main, R.id.aide_main);
+		}
 	}
 	
 	@Override
@@ -78,7 +85,7 @@ public class MainActivity extends Activity implements OnItemClickListener{
 		pds = new ParcoursDataSource(this);
 		try{
 			uds.open();
-			this.utilisateur = uds.getConnectedUser();
+			utilisateur = uds.getConnectedUser();
 			uds.close();
 		}catch(Exception e){Log.i(TAG, e.toString());}
 		
@@ -116,7 +123,7 @@ public class MainActivity extends Activity implements OnItemClickListener{
 		else if(id == R.id.action_mon_profil){
 			Intent i = new Intent(this, ProfilUtilisateurActivity.class);
 			i.putExtra(Util.EXTRA_TYPE_PROFIL, true);
-			i.putExtra(Util.EXTRA_UTILISATEUR, this.utilisateur);
+			i.putExtra(Util.EXTRA_UTILISATEUR, utilisateur);
 			this.startActivity(i);
 			return true;
 		}
@@ -144,7 +151,7 @@ public class MainActivity extends Activity implements OnItemClickListener{
 			long id) {
 		Intent i = new Intent(this, ParcoursDetailActivity.class);
 		i.putExtra(Util.EXTRA_PARCOURS, this.m_Parcours.get(position));
-		i.putExtra(Util.EXTRA_UTILISATEUR, this.utilisateur);
+		i.putExtra(Util.EXTRA_UTILISATEUR, utilisateur);
 		this.startActivity(i);
 	}
 	
