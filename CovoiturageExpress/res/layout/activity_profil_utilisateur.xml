@@ -50,7 +50,16 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/profil_utilisateur_stat_conducteur"
         android:paddingBottom="60dp"
-        android:id="@+id/profil_utilisateur_commentaires" />
+        android:id="@android:id/list" />
+    
+    <TextView 
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@android:id/list"
+        android:gravity="center"
+        android:paddingTop="20dp"
+        android:text="@string/liste_vide_commentaires"/>
     
     <LinearLayout 
         android:layout_width="match_parent"
@@ -63,6 +72,7 @@
 			android:layout_width="0dp"
 			android:layout_height="wrap_content"
 			android:layout_weight="6"
+			android:inputType="textCapSentences"
 			android:hint="@string/lbl_commentaire"
 			android:id="@+id/profil_utilisateur_commentaire" />
         

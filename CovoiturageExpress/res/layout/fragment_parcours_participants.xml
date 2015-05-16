@@ -7,8 +7,16 @@
     <ExpandableListView 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/liste_groupes_participants">
+        android:id="@android:id/list">
         
     </ExpandableListView>
+    
+    <TextView 
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="20dp"
+        android:text="@string/liste_vide_participants"/>
 
 </LinearLayout>

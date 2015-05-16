@@ -105,4 +105,10 @@
     <string name="desc_bouton_downvote">Bouton de vote négatif</string>
     <string name="desc_bouton_commentaire">Envoyer le commentaire</string>
     
+    <!-- Avertissements de liste vide -->
+    <string name="liste_vide_parcours">Aucuns parcours à afficher</string>
+    <string name="liste_vide_commentaires">Aucuns commentaires à afficher</string>
+    <string name="liste_vide_participants">Aucuns participants à afficher</string>
+    <string name="liste_vide_participants_potentiels">Aucuns participants potentiels à afficher</string>
+    
 </resources>

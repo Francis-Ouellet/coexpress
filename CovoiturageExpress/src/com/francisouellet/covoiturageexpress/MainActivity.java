@@ -63,7 +63,8 @@ public class MainActivity extends Activity implements OnItemClickListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		
-		m_ListeParcours = (ListView)this.findViewById(R.id.liste_mes_parcours);
+		m_ListeParcours = (ListView)this.findViewById(android.R.id.list);
+		m_ListeParcours.setEmptyView(findViewById(android.R.id.empty));
 		m_ListeParcours.setOnItemClickListener(this);
 	}
 	

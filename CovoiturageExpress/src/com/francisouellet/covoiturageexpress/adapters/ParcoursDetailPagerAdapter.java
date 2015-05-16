@@ -176,7 +176,8 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 			Utilisateur utilisateur = (Utilisateur)getArguments().getSerializable(ParcoursDetailPagerAdapter.ARG_UTILISATEUR);
 			
 			View racine = inflater.inflate(R.layout.fragment_parcours_participants, container, false);
-			m_ListeParcours = (ExpandableListView)racine.findViewById(R.id.liste_groupes_participants);
+			m_ListeParcours = (ExpandableListView)racine.findViewById(android.R.id.list);
+			m_ListeParcours.setEmptyView(racine.findViewById(android.R.id.empty));
 			m_ListeParcours.setOnChildClickListener(this);
 			
 			new AsyncObtenirParticipants(getActivity(), utilisateur, parcours, m_ListeParcours).execute();
@@ -331,6 +332,13 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 				
 				m_Adapter = new ParticipantsExpendableListAdapter(this.m_Context, entetes, result);
 				m_ListeParcours.setAdapter(m_Adapter);
+			}
+			// Pas de parcours trouvé, ou bien un erreur réseau. La carte doit quand même afficher 
+			// Le parcours de l'utilisateur
+			else{
+				m_ParcoursParticipants = new ArrayList<List<Parcours>>();
+				m_ParcoursParticipants.add(new ArrayList<Parcours>());
+				m_ParcoursParticipants.get(0).add(m_Parcours);
 			}
 		}
 	}

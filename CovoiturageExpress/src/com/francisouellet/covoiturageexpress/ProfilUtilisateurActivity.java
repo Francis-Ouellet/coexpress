@@ -75,7 +75,8 @@ public class ProfilUtilisateurActivity extends Activity {
 		lblTelephone = (TextView)findViewById(R.id.profil_utilisateur_telephone);
 		lblStatPassager = (TextView)findViewById(R.id.profil_utilisateur_stat_passager);
 		lblStatConducteur = (TextView)findViewById(R.id.profil_utilisateur_stat_conducteur);
-		listCommentaires = (ListView)findViewById(R.id.profil_utilisateur_commentaires);
+		listCommentaires = (ListView)findViewById(android.R.id.list);
+		listCommentaires.setEmptyView(findViewById(android.R.id.empty));
 		lblCommentaire = (EditText)findViewById(R.id.profil_utilisateur_commentaire);
 		
 		mIdUtilisateur = null;

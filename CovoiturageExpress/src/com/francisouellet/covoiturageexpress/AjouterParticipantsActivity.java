@@ -61,7 +61,8 @@ public class AjouterParticipantsActivity extends Activity {
 		else
 			getActionBar().setTitle(R.string.title_activity_trouver_conducteur);
 		
-		m_ListeParcoursPotentiels = (ListView)this.findViewById(R.id.liste_participants_potentiels);
+		m_ListeParcoursPotentiels = (ListView)this.findViewById(android.R.id.list);
+		m_ListeParcoursPotentiels.setEmptyView(findViewById(android.R.id.empty));
 		
 		new AsyncChercherParticipantsPotentiels(this).execute();
 	}

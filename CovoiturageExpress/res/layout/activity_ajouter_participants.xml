@@ -2,11 +2,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.francisouellet.covoiturageexpress.AjouterParticipantsActivity" >
+    tools:context="com.francisouellet.covoiturageexpress.AjouterParticipantsActivity"
+    android:orientation="horizontal" >
 
     <ListView 
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/liste_participants_potentiels"></ListView>
+        android:id="@android:id/list"></ListView>
+    
+    <TextView 
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="20dp"
+        android:text="@string/liste_vide_participants_potentiels"/>
 
 </LinearLayout>
