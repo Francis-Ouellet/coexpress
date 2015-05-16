@@ -1,0 +1,105 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="horizontal"
+    tools:context="com.francisouellet.covoiturageexpress.ProfilUtilisateurActivity"
+    android:baselineAligned="false">
+    
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" >
+        
+        <LinearLayout 
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal"
+	        android:id="@+id/profil_utilisateur_conteneur_nom">
+        
+	       <TextView 
+	           android:layout_width="0dp"
+	           android:layout_height="wrap_content"
+	           android:layout_weight="1"
+	           android:id="@+id/profil_utilisateur_prenom"/>
+	       
+	       <TextView 
+	           android:layout_width="0dp"
+	           android:layout_height="wrap_content"
+	           android:layout_weight="1"
+	           android:id="@+id/profil_utilisateur_nom"/>
+	   </LinearLayout>
+	   
+	   <TextView 
+	       android:layout_width="match_parent"
+	       android:layout_height="wrap_content"
+	       android:layout_below="@id/profil_utilisateur_conteneur_nom"
+	       android:id="@+id/profil_utilisateur_telephone"/>
+	   
+	   <TextView 
+	       android:layout_width="match_parent"
+	       android:layout_height="wrap_content"
+	       android:layout_below="@id/profil_utilisateur_telephone"
+	       android:id="@+id/profil_utilisateur_stat_passager"/>
+	   
+	   <TextView 
+	       android:layout_width="match_parent"
+	       android:layout_height="wrap_content"
+	       android:layout_below="@+id/profil_utilisateur_stat_passager"
+	       android:id="@+id/profil_utilisateur_stat_conducteur"/>
+	   
+	   <LinearLayout 
+	       android:layout_width="match_parent"
+	       android:layout_height="wrap_content"
+	       android:layout_alignParentBottom="true"
+	       android:id="@+id/profil_utilisateur_conteneur_commentaire"
+	       android:orientation="horizontal" >
+	       
+	       <EditText 
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="6"
+				android:inputType="textCapSentences"
+				android:hint="@string/lbl_commentaire"
+				android:id="@+id/profil_utilisateur_commentaire" />
+	       
+	       <ImageView 
+		       android:layout_width="0dp"
+		       android:layout_height="wrap_content"
+		       android:layout_weight="1"
+		       android:src="@drawable/selector_bouton_ajouter_commentaire"
+		       android:clickable="true"
+		       android:onClick="envoyerCommentaire"
+		       android:contentDescription="@string/desc_bouton_commentaire"/>
+        
+    	</LinearLayout>
+        
+    </RelativeLayout>
+    
+    <LinearLayout 
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+	   
+    	<ListView 
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:paddingBottom="60dp"
+	        android:id="@android:id/list" />
+	    
+	    <TextView 
+	        android:id="@android:id/empty"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:gravity="center"
+	        android:paddingTop="20dp"
+	        android:text="@string/liste_vide_commentaires"/>    
+    
+    </LinearLayout>
+    
+</LinearLayout>
