@@ -469,7 +469,7 @@ class CovoiturageHandler(webapp2.RequestHandler):
                     parcoursDesire = ndb.Key('Parcours', idParcoursAjoute).get()
                     if(parcoursDesire is not None):
                         jsonObj = json.loads(self.request.body)
-                        cle = ndb.Key('Covoiturage', idParcours + jsonObj['jour'])
+                        cle = ndb.Key('Covoiturage', idParcours + jsonObj.get('jour'))
                         if(utilisateur.password == jsonObj.get('password')):
                             covoiturage = Covoiturage(key=cle)
                             
@@ -478,17 +478,15 @@ class CovoiturageHandler(webapp2.RequestHandler):
                                 covoiturage.conducteur = idParcours
                                 covoiturage.passagers.append(idParcoursAjoute)
                                 # Réduction du nombre de places disponibles du conducteur
-                                parcours = Parcours(key=parcoursDemandeur.key.id())
-                                parcours.nbPlaces = parcoursDemandeur.nbPlaces - parcoursDesire.nbPlaces
-                                parcours.put()
+                                parcoursDemandeur.nbPlaces = parcoursDemandeur.nbPlaces - parcoursDesire.nbPlaces
+                                parcoursDemandeur.put()
                             # Demandeur passager et désiré conducteur
                             elif(parcoursDesire.typeParcours):
                                 covoiturage.conducteur = idParcoursAjoute
                                 covoiturage.passagers.append(idParcours)
                                 # Réduction du nombre de places disponibles du conducteur
-                                parcours = Parcours(key=parcoursDesire.key.id())
-                                parcours.nbPlaces = parcoursDesire.nbPlaces - parcoursDemandeur.nbPlaces
-                                parcours.put()
+                                parcoursDesire.nbPlaces = parcoursDesire.nbPlaces - parcoursDemandeur.nbPlaces
+                                parcoursDesire.put()
                                 
                             covoiturage.put()
                         else:
