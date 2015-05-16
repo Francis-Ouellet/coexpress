@@ -291,6 +291,12 @@ public class MainActivity extends Activity implements OnItemClickListener{
 			// Pas d'exception : on supprime le parcours de la liste affichée
 			if(m_Exception == null){
 				int index = m_Parcours.indexOf(parcours);
+				
+				ParcoursDataSource pds = new ParcoursDataSource(m_Context);
+				pds.open();
+				pds.remove(parcours.getId());
+				pds.close();
+				
 				m_Parcours.remove(index);
 				m_Adapter.remove(m_Adapter.getItem(index));
 				m_Adapter.notifyDataSetChanged();
