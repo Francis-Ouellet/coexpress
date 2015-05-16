@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import com.francisouellet.covoiturageexpress.adapters.CommentairesAdapter;
 import com.francisouellet.covoiturageexpress.classes.Commentaire;
+import com.francisouellet.covoiturageexpress.classes.CommentaireEtVote;
 import com.francisouellet.covoiturageexpress.classes.Utilisateur;
 import com.francisouellet.covoiturageexpress.database.UtilisateurDataSource;
 import com.francisouellet.covoiturageexpress.util.JsonParser;
@@ -33,6 +34,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -46,10 +48,12 @@ public class ProfilUtilisateurActivity extends Activity {
 	private static TextView lblStatConducteur;
 	private static ListView listCommentaires;
 	private static EditText lblCommentaire;
+	private static ImageView imgUpvote;
+	private static ImageView imgDownvote;
 	
-	private static Utilisateur mUtilisateur = null;
-	private static String mIdUtilisateur = null;
-	private static List<Commentaire> mCommentaires = null;
+	private static Utilisateur mUtilisateur;
+	private static String mIdUtilisateur;
+	private static List<Commentaire> mCommentaires;
 	// Indique si la page de profil est celle de :
 	// l'utilisateur connecté (true)
 	// ou d'un autre utilisateur (false)
@@ -73,6 +77,10 @@ public class ProfilUtilisateurActivity extends Activity {
 		lblStatConducteur = (TextView)findViewById(R.id.profil_utilisateur_stat_conducteur);
 		listCommentaires = (ListView)findViewById(R.id.profil_utilisateur_commentaires);
 		lblCommentaire = (EditText)findViewById(R.id.profil_utilisateur_commentaire);
+		
+		mIdUtilisateur = null;
+		mUtilisateur = null;
+		mCommentaires = null;
 		
 		// Obtient le type de profil
 		// Obtient l'objet de l'utilisateur actuel s'il s'agit de mon profil
@@ -138,14 +146,35 @@ public class ProfilUtilisateurActivity extends Activity {
 	}
 	
 	public void upvote(View v){
-		Commentaire c = mCommentaires.get(listCommentaires.getPositionForView(v));
-		new VoterAsync(this).execute(c.getId(), "true");
-		
+		int position = listCommentaires.getPositionForView(v);
+		Commentaire c = mCommentaires.get(position);
+		if(m_Adapter.getItem(position).isTypeVote() == null){
+			new VoterAsync(this, c, position, true).execute();
+			m_Adapter.getItem(position).getCommentaire().ajouterUpvote();
+		}else if (!m_Adapter.getItem(position).isTypeVote()){
+			new VoterAsync(this, c, position, true).execute();
+			m_Adapter.getItem(position).getCommentaire().ajouterUpvote();
+			m_Adapter.getItem(position).getCommentaire().ajouterUpvote();
+		}else{
+			new VoterAsync(this, c, position, null).execute();
+			m_Adapter.getItem(position).getCommentaire().ajouterDownvote();
+		}
 	}
 	
 	public void downvote(View v){
-		Commentaire c = mCommentaires.get(listCommentaires.getPositionForView(v));
-		new VoterAsync(this).execute(c.getId(), "false");
+		int position = listCommentaires.getPositionForView(v);
+		Commentaire c = mCommentaires.get(position);
+		if(m_Adapter.getItem(position).isTypeVote() == null){
+			new VoterAsync(this, c, position, false).execute();
+			m_Adapter.getItem(position).getCommentaire().ajouterDownvote();
+		}else if(m_Adapter.getItem(position).isTypeVote()){
+			new VoterAsync(this, c, position, false).execute();
+			m_Adapter.getItem(position).getCommentaire().ajouterDownvote();
+			m_Adapter.getItem(position).getCommentaire().ajouterDownvote();
+		}else{
+			new VoterAsync(this, c, position, null).execute();
+			m_Adapter.getItem(position).getCommentaire().ajouterUpvote();
+		}
 	}
 	
 	
@@ -248,12 +277,13 @@ public class ProfilUtilisateurActivity extends Activity {
 				InputMethodManager imm = (InputMethodManager)((Activity)m_Context).getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(lblCommentaire.getWindowToken(), 0);
 				mCommentaires.add(result);
+				m_Adapter.add(new CommentaireEtVote(result, null));
 				m_Adapter.notifyDataSetChanged();
 			}
 		}
 	} 
 	
-	private static class ObtenirCommentairesAsync extends AsyncTask<Void, Void, List<Commentaire>>{
+	private static class ObtenirCommentairesAsync extends AsyncTask<Void, Void, List<CommentaireEtVote>>{
 		
 		private Context m_Context;
 		private Exception m_Exception;
@@ -264,11 +294,18 @@ public class ProfilUtilisateurActivity extends Activity {
 		}
 		
 		@Override
-		protected List<Commentaire> doInBackground(Void... params) {
+		protected List<CommentaireEtVote> doInBackground(Void... params) {
 			
+			List<CommentaireEtVote> commentairesEtVotes = null;
 			List<Commentaire> commentaires = null;
+			List<StringBoolean> votes = null;
 			
 			try{
+				
+				UtilisateurDataSource uds = new UtilisateurDataSource(m_Context);
+				uds.open();
+				Utilisateur voteur = uds.getConnectedUser();
+				uds.close();
 				
 				URI uri = new URI("http",Util.WEB_SERVICE, Util.REST_UTILISATEURS + "/" + mUtilisateur.getCourriel() +
 						Util.REST_COMMENTAIRES, null, null);
@@ -282,51 +319,102 @@ public class ProfilUtilisateurActivity extends Activity {
 					commentaires.add(JsonParser.ToCommentaire(jsonCommentaires.getJSONObject(i)));
 				}
 				
+				uri = new URI("http", Util.WEB_SERVICE, Util.REST_UTILISATEURS + "/" + mUtilisateur.getCourriel() +
+						Util.REST_COMMENTAIRES + Util.REST_VOTE + "/" + voteur.getCourriel(), null, null);
+				
+				get = new HttpGet(uri);
+				body = m_ClientHttp.execute(get, new BasicResponseHandler());
+				JSONArray jsonVotes = new JSONArray(body);
+				votes = new ArrayList<StringBoolean>();
+				for(int i = 0; i < jsonVotes.length(); i++){
+					votes.add(new StringBoolean(
+							jsonVotes.getJSONObject(i).getBoolean("typeVote"), 
+							jsonVotes.getJSONObject(i).getString("idCommentaire")));
+				}
+				
+				commentairesEtVotes = new ArrayList<CommentaireEtVote>();
+				for(int i = 0; i < commentaires.size(); i++){
+					
+					boolean found = false;
+					int j = 0;
+					while(!found && j < votes.size())
+						if(commentaires.get(i).getId().equals(votes.get(j).string))
+							found = true;
+						else
+							j++;
+					
+					if(found)
+						commentairesEtVotes.add(new CommentaireEtVote(commentaires.get(i), votes.get(j).bool));
+					else
+						commentairesEtVotes.add(new CommentaireEtVote(commentaires.get(i), null));
+					
+				}
+				
 			}catch(Exception e){m_Exception = e; e.printStackTrace();}
-			return commentaires;
+			return commentairesEtVotes;
 		}
 		
 		@Override
-		protected void onPostExecute(List<Commentaire> result) {
+		protected void onPostExecute(List<CommentaireEtVote> result) {
 			if(m_Exception == null && result != null){
-				mCommentaires = result;
-				m_Adapter = new CommentairesAdapter(m_Context, mCommentaires, R.layout.liste_commentaires_item);
+				mCommentaires = new ArrayList<Commentaire>();
+				for (CommentaireEtVote commentaireEtVote : result) {
+					mCommentaires.add(commentaireEtVote.getCommentaire());
+				}
+				m_Adapter = new CommentairesAdapter(m_Context, result, R.layout.liste_commentaires_item);
 				listCommentaires.setAdapter(m_Adapter);
+			}
+		}
+		
+		private static class StringBoolean{
+			Boolean bool;
+			String string;
+			
+			public StringBoolean(Boolean pBool, String pString) {
+				bool = pBool;
+				string = pString;
 			}
 		}
 	}  
 	
-	private static class VoterAsync extends AsyncTask<String, Void, Void>{
+	private static class VoterAsync extends AsyncTask<Void, Void, Void>{
 		
 		private Context m_Context;
 		private Exception m_Exception;
+		private Commentaire m_Commentaire;
+		private int m_Position;
+		private Boolean m_TypeVote;
 		
-		public VoterAsync(Context p_Context) {
+		public VoterAsync(Context p_Context, Commentaire p_Commentaire, int p_Position, Boolean p_TypeVote) {
 			this.m_Context = p_Context;
+			this.m_Commentaire = p_Commentaire;
+			this.m_Position = p_Position;
+			this.m_TypeVote = p_TypeVote;
 			this.m_Exception = null;
 		}
 		
 		@Override
-		protected Void doInBackground(String... params) {
+		protected Void doInBackground(Void... params) {
 			try{
-				
-				String idCommentaire = params[0];
-				Boolean vote = Boolean.valueOf(params[1]);
 				
 				UtilisateurDataSource uds = new UtilisateurDataSource(m_Context);
 				uds.open();
-				Utilisateur commenteur = uds.getConnectedUser();
+				Utilisateur voteur = uds.getConnectedUser();
 				uds.close();
 				
 				URI uri = new URI("http", Util.WEB_SERVICE, 
 						Util.REST_UTILISATEURS + "/" + mUtilisateur.getCourriel() +
-						Util.REST_COMMENTAIRES + "/" + idCommentaire + 
-						Util.REST_VOTE + "/" + commenteur.getCourriel(), null, null);
+						Util.REST_COMMENTAIRES + "/" + m_Commentaire.getId() + 
+						Util.REST_VOTE + "/" + voteur.getCourriel(), null, null);
 				
 				HttpPut put = new HttpPut(uri);
-				put.setEntity(new StringEntity(new JSONObject()
-						.put("typeVote", vote)
-						.put("password", commenteur.getEncodedPassword()).toString(), "UTF-8"));
+				if(m_TypeVote != null)
+					put.setEntity(new StringEntity(new JSONObject()
+							.put("typeVote", m_TypeVote)
+							.put("password", voteur.getEncodedPassword()).toString(), "UTF-8"));
+				else
+					put.setEntity(new StringEntity(new JSONObject()
+						.put("password", voteur.getEncodedPassword()).toString(), "UTF-8"));
 				put.addHeader("Content-Type","application/json");
 				m_ClientHttp.execute(put, new BasicResponseHandler());
 				
@@ -337,7 +425,8 @@ public class ProfilUtilisateurActivity extends Activity {
 		@Override
 		protected void onPostExecute(Void result) {
 			if(m_Exception == null){
-				
+				m_Adapter.getItem(m_Position).setTypeVote(m_TypeVote);
+				listCommentaires.setAdapter(m_Adapter);
 			}
 		}
 	}

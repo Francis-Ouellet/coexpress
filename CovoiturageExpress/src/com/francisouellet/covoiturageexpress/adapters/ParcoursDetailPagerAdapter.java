@@ -302,6 +302,8 @@ public class ParcoursDetailPagerAdapter extends FragmentPagerAdapter{
 						Util.REST_PARCOURS + "/" + m_Parcours.getId() +
 						Util.REST_PARTICIPANTS, null, null);
 				
+				Log.i("URI", uri.toString());
+				
 				HttpGet get = new HttpGet(uri);
 				String body = new DefaultHttpClient().execute(get, new BasicResponseHandler());
 				

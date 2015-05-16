@@ -425,14 +425,23 @@ class CovoiturageHandler(webapp2.RequestHandler):
                                 for passager in covoiturage.passagers:
                                     sousResultat.append(serialiser_parcours_covoiturage(passager))
                                 resultat.append(sousResultat)
+                    else:
+                        covoiturage = ndb.Key('Covoiturage', idParcours).get()
+                        if(covoiturage is not None):
+                            sousResultat = []
+                            sousResultat.append(serialiser_parcours_covoiturage(covoiturage.conducteur))
+                            for passager in covoiturage.passagers:
+                                sousResultat.append(serialiser_parcours_covoiturage(passager))
+                            resultat.append(sousResultat)
+                        else:
+                            query = Covoiturage.query(Covoiturage.passagers == idParcours)
+                            for covoiturage in query:
+                                sousResultat = []
+                                sousResultat.append(serialiser_parcours_covoiturage(covoiturage.conducteur))
+                                for passager in covoiturage.passagers:
+                                    sousResultat.append(serialiser_parcours_covoiturage(passager))
+                                resultat.append(sousResultat)
                     
-                    covoiturage = ndb.Key('Covoiturage', idParcours).get()
-                    if(covoiturage is not None):
-                        sousResultat = []
-                        sousResultat.append(serialiser_parcours_covoiturage(covoiturage.conducteur))
-                        for passager in covoiturage.passagers:
-                            sousResultat.append(serialiser_parcours_covoiturage(passager))
-                        resultat.append(sousResultat)
                 else:
                     self.error(404)
                     return
@@ -469,7 +478,7 @@ class CovoiturageHandler(webapp2.RequestHandler):
                                 covoiturage.conducteur = idParcours
                                 covoiturage.passagers.append(idParcoursAjoute)
                                 # Réduction du nombre de places disponibles du conducteur
-                                parcours = Parcours(key=parcoursDemandeur.key)
+                                parcours = Parcours(key=parcoursDemandeur.key.id())
                                 parcours.nbPlaces = parcoursDemandeur.nbPlaces - parcoursDesire.nbPlaces
                                 parcours.put()
                             # Demandeur passager et désiré conducteur
@@ -477,7 +486,7 @@ class CovoiturageHandler(webapp2.RequestHandler):
                                 covoiturage.conducteur = idParcoursAjoute
                                 covoiturage.passagers.append(idParcours)
                                 # Réduction du nombre de places disponibles du conducteur
-                                parcours = Parcours(key=parcoursDesire.key)
+                                parcours = Parcours(key=parcoursDesire.key.id())
                                 parcours.nbPlaces = parcoursDesire.nbPlaces - parcoursDemandeur.nbPlaces
                                 parcours.put()
                                 
@@ -606,6 +615,37 @@ class CommentairesHandler(webapp2.RequestHandler):
             self.error(500)    
             
 class VoteHandler(webapp2.RequestHandler):
+    def get(self, username, usernameVoteur):
+        try:
+            resultat = []
+            utilisateur = ndb.Key('Utilisateur', username).get()
+            if(utilisateur is not None):
+                voteur = ndb.Key('Utilisateur', usernameVoteur).get()
+                if(voteur is not None):
+                    commentairesVotes = CommentaireVote.query(CommentaireVote.idVoteur == usernameVoteur)
+                    commentaires = Commentaire.query(Commentaire.proprietaire == username)
+                    
+                    for commentaire in commentaires:
+                        for commentaireVote in commentairesVotes:
+                            if(commentaire.key.id() == commentaireVote.idCommentaire):
+                                resultat.append(commentaireVote.to_dict())
+                    
+                    self.response.headers['Content-Type'] = 'application/json'
+                    self.response.out.write(json.dumps(resultat))
+            
+                else:
+                    self.error(404)
+                    return
+            else:
+                self.error(404)
+                return
+        except (ValueError, db.BadValueError), ex:
+            logging.info(ex)
+            self.error(400)
+            
+        except Exception, ex:
+            logging.exception(ex)
+            self.error(500)
     def put(self, username, idCommentaire, usernameVoteur):
         try:
             utilisateur = ndb.Key('Utilisateur',username).get()
@@ -620,12 +660,16 @@ class VoteHandler(webapp2.RequestHandler):
                         status = 204
                         
                         if(voteur.password == jsonObj['password']):
-                            commentaireVote = CommentaireVote(key = cle)
-                            commentaireVote.idCommentaire = idCommentaire
-                            commentaireVote.idVoteur = usernameVoteur
-                            commentaireVote.typeVote = jsonObj['typeVote']
-                            commentaireVote.put()
-                            status = 201
+                            
+                            if(jsonObj.get('typeVote') is not None):
+                                commentaireVote = CommentaireVote(key = cle)
+                                commentaireVote.idCommentaire = idCommentaire
+                                commentaireVote.idVoteur = usernameVoteur
+                                commentaireVote.typeVote = jsonObj['typeVote']
+                                commentaireVote.put()
+                                status = 201
+                            else:
+                                cle.delete()
                         else:
                             self.error(401)
                             return
@@ -671,7 +715,9 @@ application = webapp2.WSGIApplication(
         webapp2.Route(r'/utilisateurs/<username>/commentaires/<idCommentaire>',
                       handler=CommentairesHandler, methods=['GET', 'PUT']),
         webapp2.Route(r'/utilisateurs/<username>/commentaires/<idCommentaire>/vote/<usernameVoteur>',
-                      handler=VoteHandler, methods=['PUT'])
+                      handler=VoteHandler, methods=['PUT']),
+        webapp2.Route(r'/utilisateurs/<username>/commentaires/vote/<usernameVoteur>',
+                      handler=VoteHandler, methods=['GET'])
         
     ],
     debug=True)            

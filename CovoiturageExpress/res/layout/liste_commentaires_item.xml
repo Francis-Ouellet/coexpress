@@ -49,7 +49,8 @@
         <ImageView 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_thumb_up_black_24dp"
+            android:id="@+id/commentaire_upvote"
+            android:src="@drawable/ic_thumb_up_grey600_24dp"
             android:clickable="true"
             android:onClick="upvote"
             android:contentDescription="@string/desc_bouton_upvote"/>
@@ -63,7 +64,8 @@
         <ImageView 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_thumb_down_black_24dp"
+            android:id="@+id/commentaire_downvote"
+            android:src="@drawable/ic_thumb_down_grey600_24dp"
             android:clickable="true"
             android:onClick="downvote"
             android:contentDescription="@string/desc_bouton_downvote"/>

@@ -8,6 +8,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 
 import com.francisouellet.covoiturageexpress.R;
 import com.francisouellet.covoiturageexpress.classes.Commentaire;
+import com.francisouellet.covoiturageexpress.classes.CommentaireEtVote;
 import com.francisouellet.covoiturageexpress.classes.ParcoursEtCarte;
 import com.francisouellet.covoiturageexpress.classes.Utilisateur;
 import com.francisouellet.covoiturageexpress.database.UtilisateurDataSource;
@@ -22,26 +23,18 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CommentairesAdapter extends ArrayAdapter<Commentaire>{
+public class CommentairesAdapter extends ArrayAdapter<CommentaireEtVote>{
 
 	private Context m_Context;
-	private List<Commentaire> m_ListeCommentaires;
+	private List<CommentaireEtVote> m_ListeCommentaires;
 	private int m_LayoutResId;
 	
-	private Utilisateur utilisateur;
 	
-	private HttpClient m_ClientHttp = new DefaultHttpClient();
-	
-	 public CommentairesAdapter(Context p_Context, List<Commentaire> p_ListeCommentaires, int p_LayoutResId) {
+	 public CommentairesAdapter(Context p_Context, List<CommentaireEtVote> p_ListeCommentaires, int p_LayoutResId) {
 		super(p_Context, p_LayoutResId, p_ListeCommentaires);
 		this.m_Context = p_Context;
 		this.m_ListeCommentaires = p_ListeCommentaires;
 		this.m_LayoutResId = p_LayoutResId;
-		
-		UtilisateurDataSource uds = new UtilisateurDataSource(m_Context);
-		uds.open();
-		this.utilisateur = uds.getConnectedUser();
-		uds.close();
 	}
 	 
 	@Override
@@ -57,12 +50,15 @@ public class CommentairesAdapter extends ArrayAdapter<Commentaire>{
 			contenant.auteur = (TextView)view.findViewById(R.id.commentaire_auteur);
 			contenant.date = (TextView)view.findViewById(R.id.commentaire_date);
 			contenant.score = (TextView)view.findViewById(R.id.commentaire_score);
+			contenant.upvote = (ImageView)view.findViewById(R.id.commentaire_upvote);
+			contenant.downvote = (ImageView)view.findViewById(R.id.commentaire_downvote);
 			view.setTag(contenant);
 		}
 		else
 			contenant = (CommentaireHolder)view.getTag();
 		
-		Commentaire commentaire = m_ListeCommentaires.get(position);
+		Commentaire commentaire = m_ListeCommentaires.get(position).getCommentaire();
+		Boolean typeVote = m_ListeCommentaires.get(position).isTypeVote();
 		
 		if(!commentaire.getTexte().isEmpty())
 			contenant.texte.setText(commentaire.getTexte());
@@ -78,6 +74,13 @@ public class CommentairesAdapter extends ArrayAdapter<Commentaire>{
 		}
 		
 		contenant.score.setText(commentaire.calculerScore() + "");
+		
+		// Si typeVote true, il s'agit d'un vote positif. Vote négatif sinon. 
+		if(typeVote != null)
+			if(typeVote)
+				contenant.upvote.setImageResource(R.drawable.ic_thumb_up_black_24dp);
+			else
+				contenant.downvote.setImageResource(R.drawable.ic_thumb_down_black_24dp);
 			
 		return view;
 	}
@@ -87,6 +90,8 @@ public class CommentairesAdapter extends ArrayAdapter<Commentaire>{
 		TextView auteur;
 		TextView date;
 		TextView score;
+		ImageView upvote;
+		ImageView downvote;
 	}
 	
 }
