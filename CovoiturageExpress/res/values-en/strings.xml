@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Application et activités -->
+    <string name="app_name">CovoiturageExpress</string>
+    <string name="title_activity_connexion">Connection</string>
+    <string name="title_activity_creation_compte">Account creation</string>
+    <string name="title_activity_creation_parcours">Trip creation</string>
+    <string name="title_activity_modification_parcours">Trip modification</string>
+    <string name="title_activity_parcours_detail">Trip details</string>
+    <string name="title_activity_trouver_passagers">Find passengers</string>
+    <string name="title_activity_trouver_conducteur">Find a driver</string>
+    <string name="title_activity_profil_utilisateur_owner">My profile</string>
+    <string name="title_activity_profil_utilisateur">Profile of</string>
+    <string name="title_activity_modifier_compte">Edit my profile</string>
+    <string name="hello_world">Hello world!</string>
+
+    <!-- Connexion et création de compte -->
+    <string name="lbl_courriel">E-mail</string>
+    <string name="lbl_confirmer_le_courriel">Confirm e-mail</string>
+    <string name="lbl_mot_de_passe">Password</string>
+    <string name="lbl_confirmer_le_mot_de_passe">Confirm password</string>
+    <string name="lbl_connexion">Connection</string>
+    <string name="lbl_creer_un_compte">Create an account</string>
+    <string name="lbl_mot_de_passe_oublie">Forgotten password</string>
+    <string name="lbl_no_de_telephone">Phone number</string>
+    <string name="lbl_nom">Name</string>
+    <string name="lbl_prenom">Surname</string>
+    <string name="lbl_creer_le_compte">Create account</string>
+
+    <!-- Création d'un parcours -->
+    <string name="lbl_conducteur">Driver</string>
+    <string name="lbl_passager">Passenger</string>
+    <string name="lbl_adresse_depart">Initial address</string>
+    <string name="lbl_adresse_destination">Destination address</string>
+    <string name="lbl_distance_supp">Tolerated extra distance</string>
+    <string name="lbl_nb_places_disponibles">Available seats</string>
+    <string name="lbl_nb_places_demandees">Needed seats</string>
+    <string name="lbl_date_depart">Date of departure</string>
+    <string name="lbl_heure_depart">Hour of departure</string>
+    <string name="lbl_repeter">Repeat</string>
+    <string name="lbl_notes">Notes</string>
+    <string name="lbl_rep_dimanche">S</string>
+    <string name="lbl_rep_lundi">M</string>
+    <string name="lbl_rep_mardi">T</string>
+    <string name="lbl_rep_mercredi">W</string>
+    <string name="lbl_rep_jeudi">T</string>
+    <string name="lbl_rep_vendredi">F</string>
+    <string name="lbl_rep_samedi">S</string>
+
+    <!-- Liste des parcours -->
+    <string name="parcours_item_place_disponible">available place</string>
+    <string name="parcours_item_places_disponibles">available places</string>
+    <string name="parcours_item_demande">Asks</string>
+    <string name="parcours_item_place">place</string>
+    <string name="parcours_item_places">places</string>
+    <string name="parcours_fragment_titre_parcours">Trip</string>
+    <string name="parcours_fragment_titre_participants">Participants</string>
+    <string name="parcours_fragment_titre_carte">Map</string>
+    
+    <!-- Ajout d'un commentaire -->
+    <string name="lbl_commentaire">Your comment &#8230;</string>
+
+    <!-- Alertes et messages d'erreurs -->
+    <string name="txt_courriel_different">E-mail must be the same</string>
+    <string name="txt_courriel_invalide">E-mail must be valid</string>
+    <string name="txt_mot_de_passe_different">Password must be the same</string>
+    <string name="txt_tous_les_champs">All fields must be filled</string>
+    <string name="txt_utilisateur_cree">Account succesfully created</string>
+    <string name="txt_utilisateur_erreur_creation">Connection error while creating the account</string>
+    <string name="txt_utilisateur_erreur_modification">Connection error while modifying the account</string>
+    <string name="txt_erreur_connexion">Connection error</string>
+    <string name="txt_adresse_depart_invalide">An initial address must be given</string>
+    <string name="txt_adresse_destination_invalide">A destination address must be given</string>
+    <string name="txt_nb_places_invalide">A number of seats must be given</string>
+    <string name="txt_distance_supp_invalide">A tolerated extra distance must be given</string>
+    <string name="txt_date_heure_invalide">Given date is smaller than current date</string>
+    <string name="txt_parcours_cree">Trip succesfully created</string>
+    <string name="txt_parcours_modifie">Trip succesfully modified</string>
+    <string name="txt_parcours_erreur_creation">Error while creating the trip</string>
+    <string name="txt_parcours_erreur_suppression">Error while deleting the trip</string>
+    <string name="txt_parcours_erreur_modification">Error while modifying the trip</string>
+    <string name="txt_ajout_participant_erreur">Error while adding a participant</string>
+    <string name="txt_ajout_participant_succes">Participant succesfully added</string>
+    <string name="txt_chargement_des_parcours">Loading trips&#8230;</string>
+
+    <!-- Items de menu et d'action bar -->
+    <string name="action_deconnexion">Disconnect</string>
+    <string name="action_mon_profil">My profile</string>
+    <string name="action_settings">Parameters</string>
+    <string name="action_ajouter_personne">Add a participant</string>
+    <string name="action_ajouter_parcours">Add a trip</string>
+    <string name="action_editer_profil">Edit my profile</string>
+    <string name="action_ajouter_commentaire">Leave a comment</string>
+    <string name="action_modifier_commentaire">Edit a comment</string>
+    <string name="action_confirmer_modification">Confirm the modification</string>
+
+    <!-- Description des images -->
+    <string name="desc_bouton_ajouter">Add button</string>
+    <string name="desc_bouton_modifier">Edit button</string>
+    <string name="desc_bouton_supprimer">Delete button</string>
+    <string name="desc_bouton_annuler">Cancel button</string>
+    <string name="desc_image_google_map">Map showing departure and destination</string>
+    <string name="desc_bouton_upvote">Positive vote button</string>
+    <string name="desc_bouton_downvote">Negative vote button</string>
+    <string name="desc_bouton_commentaire">Send comment</string>
+    
+    <!-- Avertissements de liste vide -->
+    <string name="liste_vide_parcours">No trips to show</string>
+    <string name="liste_vide_commentaires">No comments to show</string>
+    <string name="liste_vide_participants">No participants to show</string>
+    <string name="liste_vide_participants_potentiels">No potential participants to show</string>
+    
+</resources>
