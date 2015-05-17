@@ -73,6 +73,7 @@ public class AjouterParticipantsActivity extends Activity implements OnItemClick
 		
 		m_ListeParcoursPotentiels = (ListView)this.findViewById(android.R.id.list);
 		m_ListeParcoursPotentiels.setEmptyView(findViewById(android.R.id.empty));
+		m_ListeParcoursPotentiels.setOnItemClickListener(this);
 		
 		new AsyncChercherParticipantsPotentiels(this).execute();
 	}
@@ -92,7 +93,7 @@ public class AjouterParticipantsActivity extends Activity implements OnItemClick
 		Intent i = new Intent(this, ProfilUtilisateurActivity.class);
 		i.putExtra(Util.EXTRA_ID_UTILISATEUR, m_Parcours.get(position).getProprietaire());
 		i.putExtra(Util.EXTRA_TYPE_PROFIL, false);
-		this.startActivity(i);
+		startActivity(i);
 	}
 	
 	private class AsyncChercherParticipantsPotentiels extends AsyncTask<Void, Void, List<Parcours>>{
